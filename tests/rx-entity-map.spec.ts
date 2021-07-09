@@ -1,4 +1,5 @@
 import { bufferCount, first, take } from 'rxjs/operators';
+
 import { forKey, MapStateChangeEventType, ofType, pluckChanges, pluckValue, RxEntityMap } from '../src';
 
 interface User {
