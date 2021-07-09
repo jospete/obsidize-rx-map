@@ -25,6 +25,18 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	) {
 	}
 
+	public keys(): K[] {
+		return Array.from(this.store.keys());
+	}
+
+	public values(): V[] {
+		return Array.from(this.store.values());
+	}
+
+	public entries(): [K, V][] {
+		return Array.from(this.store.entries());
+	}
+
 	public keyOf(entity: V): K | undefined {
 		return entity ? this.selectId(entity) : undefined;
 	}
