@@ -29,3 +29,14 @@ npm install --save git+https://github.com/jospete/obsidize-rx-map.git
 
 ## Usage
 
+```typescript
+import {RxEntityMapInt} from '@obsidize/rx-map';
+
+interface User {
+	id: number;
+	name: string;
+	age: number;
+}
+
+const users: RxEntityMapInt<User> = new RxEntityMapInt(v => v.id);
+```
