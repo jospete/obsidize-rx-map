@@ -2,31 +2,32 @@ import { Observable, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
-import { detectChanges, ValueChangeType } from './change-detection';
+import { ChangeDetectionEventType } from './change-detection-event';
+import { detectChanges } from './utility';
 
 /**
  * Extension of the standard ES6 Map with rxjs change event observables tacked on.
  */
 export class RxMap<K, V> implements Map<K, V> {
 
-	private readonly mStateChangeSubject: Subject<MapStateChangeEvent<K, V>> = new Subject();
-	private readonly source: Map<K, V> = new Map();
+	protected readonly mStateChangeSubject: Subject<MapStateChangeEvent<K, V>> = new Subject();
+	protected readonly source: Map<K, V> = new Map();
 
 	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.mStateChangeSubject.asObservable().pipe(share());
 
-	private emitStateChange(type: MapStateChangeEventType, key: K, changes?: Partial<V> | V): void {
+	protected emitStateChange(type: MapStateChangeEventType, key: K, changes?: Partial<V> | V): void {
 		this.mStateChangeSubject.next({ type, key, changes });
 	}
 
-	private emitAdd(key: K, value: V): void {
+	protected emitAdd(key: K, value: V): void {
 		this.emitStateChange(MapStateChangeEventType.ADD, key, value);
 	}
 
-	private emitUpdate(key: K, changes: Partial<V>): void {
+	protected emitUpdate(key: K, changes: Partial<V>): void {
 		this.emitStateChange(MapStateChangeEventType.UPDATE, key, changes);
 	}
 
-	private emitDelete(key: K): void {
+	protected emitDelete(key: K): void {
 		this.emitStateChange(MapStateChangeEventType.DELETE, key);
 	}
 
@@ -88,17 +89,17 @@ export class RxMap<K, V> implements Map<K, V> {
 		const previousValue = this.get(key);
 		const { type, changes } = detectChanges(previousValue, value);
 
-		this.source.set(key, value);
-
 		switch (type) {
-			case ValueChangeType.CREATE:
+			case ChangeDetectionEventType.CREATE:
+				this.source.set(key, value);
 				this.emitAdd(key, value);
 				break;
-			case ValueChangeType.UPDATE:
+			case ChangeDetectionEventType.UPDATE:
+				this.source.set(key, value);
 				this.emitUpdate(key, changes as V);
 				break;
-			case ValueChangeType.DELETE:
-				this.emitDelete(key);
+			case ChangeDetectionEventType.DELETE:
+				this.delete(key);
 				break;
 			default:
 				break;

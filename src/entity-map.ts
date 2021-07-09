@@ -1,3 +1,5 @@
+import { isNil } from './utility';
+
 export type Predicate<T> = (entity: T) => boolean;
 export type EntityTransform<T> = (entity: T | undefined) => T;
 export type IdSelector<K, V> = (entity: V) => K;
@@ -37,15 +39,16 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		return Array.from(this.store.entries());
 	}
 
-	public keyOf(entity: V): K | undefined {
+	public getId(entity: V): K | undefined {
 		return entity ? this.selectId(entity) : undefined;
 	}
 
+	public isValidId(id: K | undefined | null): boolean {
+		return !isNil(id);
+	}
+
 	public addOne(entity: V): V {
-		const id = this.keyOf(entity);
-		if (id === undefined) return entity;
-		if (this.store.has(id)) return this.upsertOne(entity);
-		return this.setOne(entity);
+		return this.upsertOne(entity);
 	}
 
 	public addMany(entities: V[]): V[] {
@@ -53,8 +56,8 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public setOne(entity: V): V {
-		const id = this.keyOf(entity);
-		if (id !== undefined) this.store.set(id, entity);
+		const id = this.getId(entity);
+		if (this.isValidId(id)) this.store.set(id!, entity);
 		return entity;
 	}
 
@@ -77,7 +80,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public removeWhere(predicate: Predicate<V>): V[] {
 		const entities = Array.from(this.store.values()).filter(predicate);
-		const keys: K[] = Array.from(entities).map(e => this.keyOf(e)!).filter(k => k !== undefined);
+		const keys: K[] = Array.from(entities).map(e => this.getId(e)!).filter(id => this.isValidId(id));
 		this.removeMany(keys);
 		return entities;
 	}
@@ -98,9 +101,9 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public upsertOne(entity: V): V {
-		const id = this.keyOf(entity);
-		if (id === undefined) return entity;
-		const entityUpdate = { id, changes: entity };
+		const id = this.getId(entity);
+		if (!this.isValidId(id)) return entity;
+		const entityUpdate = { id: id!, changes: entity };
 		return this.updateOne(entityUpdate);
 	}
 
