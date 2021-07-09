@@ -23,6 +23,6 @@ describe('RxEntityMap', () => {
 
 	it('can be created with implicit generics', () => {
 
-		const users = RxEntityMap.withPrimaryKey<User>('id');
+		const users = new RxEntityMap((user: User) => user.id);
 	});
 });

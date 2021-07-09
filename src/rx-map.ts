@@ -4,9 +4,11 @@ import { share } from 'rxjs/operators';
 import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
 import { detectChanges, ValueChangeType } from './change-detection';
 
-export class RxMap<K, V> extends Map<K, V> {
+export class RxMap<K, V> implements Map<K, V> {
 
 	private readonly mStateChangeSubject: Subject<MapStateChangeEvent<K, V>> = new Subject();
+	private readonly source: Map<K, V> = new Map();
+
 	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.mStateChangeSubject.asObservable().pipe(share());
 
 	private emitStateChange(type: MapStateChangeEventType, key: K, changes?: Partial<V> | V): void {
@@ -25,6 +27,42 @@ export class RxMap<K, V> extends Map<K, V> {
 		this.emitStateChange(MapStateChangeEventType.DELETE, key);
 	}
 
+	public get size(): number {
+		return this.source.size;
+	}
+
+	public get [Symbol.toStringTag](): string {
+		return this.source[Symbol.toStringTag];
+	}
+
+	public [Symbol.iterator](): IterableIterator<[K, V]> {
+		return this.source[Symbol.iterator]();
+	}
+
+	public get(key: K): V | undefined {
+		return this.source.get(key);
+	}
+
+	public has(key: K): boolean {
+		return this.source.has(key);
+	}
+
+	public entries(): IterableIterator<[K, V]> {
+		return this.source.entries();
+	}
+
+	public keys(): IterableIterator<K> {
+		return this.source.keys();
+	}
+
+	public values(): IterableIterator<V> {
+		return this.source.values();
+	}
+
+	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void): void {
+		this.source.forEach(callbackfn);
+	}
+
 	public destroy(): void {
 		this.mStateChangeSubject.error('destroyed');
 		this.mStateChangeSubject.unsubscribe();
@@ -32,12 +70,12 @@ export class RxMap<K, V> extends Map<K, V> {
 
 	public clear(): void {
 		const keys = Array.from(this.keys());
-		super.clear();
+		this.source.clear();
 		keys.forEach(key => this.emitDelete(key));
 	}
 
 	public delete(key: K): boolean {
-		const didDelete = super.delete(key);
+		const didDelete = this.source.delete(key);
 		if (didDelete) this.emitDelete(key);
 		return didDelete;
 	}
@@ -47,7 +85,7 @@ export class RxMap<K, V> extends Map<K, V> {
 		const previousValue = this.get(key);
 		const { type, changes } = detectChanges(previousValue, value);
 
-		super.set(key, value);
+		this.source.set(key, value);
 
 		switch (type) {
 			case ValueChangeType.CREATE:
