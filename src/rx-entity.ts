@@ -27,6 +27,11 @@ export class RxEntity<T> {
 		return Object.assign({}, this.mState);
 	}
 
+	public destroy(): void {
+		this.mStateChangeSubject.error('destroyed');
+		this.mStateChangeSubject.unsubscribe();
+	}
+
 	public select<K extends keyof T, R extends T[K]>(key: K): Observable<R> {
 		return this.changes.pipe(
 			filter(ev => (key in ev.changes)),
