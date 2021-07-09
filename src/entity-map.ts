@@ -29,6 +29,17 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		return entity ? this.selectId(entity) : undefined;
 	}
 
+	public addOne(entity: V): V {
+		const id = this.keyOf(entity);
+		if (id === undefined) return entity;
+		if (this.store.has(id)) return this.upsertOne(entity);
+		return this.setOne(entity);
+	}
+
+	public addMany(entities: V[]): V[] {
+		return Array.from(entities).map(e => this.addOne(e));
+	}
+
 	public setOne(entity: V): V {
 		const id = this.keyOf(entity);
 		if (id !== undefined) this.store.set(id, entity);

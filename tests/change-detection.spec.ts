@@ -1,4 +1,4 @@
-import { isEqual } from '../src';
+import { detectChanges, isEqual, ValueChangeType } from '../src';
 
 describe('change detection utilities', () => {
 
@@ -24,6 +24,20 @@ describe('change detection utilities', () => {
 			expect(a === b).toBe(false);
 			expect(isEqual(a, b)).toBe(false);
 			expect(isEqual('yes', 'but not really')).toBe(false);
+		});
+	});
+
+	describe('detectChanges', () => {
+
+		it('generates state change metadata between given states A and B', () => {
+			expect(detectChanges(null, null)).toEqual({ type: ValueChangeType.NONE });
+			expect(detectChanges(null, { hello: true })).toEqual({ type: ValueChangeType.CREATE });
+			expect(detectChanges({ hello: true }, null)).toEqual({ type: ValueChangeType.DELETE });
+			expect(detectChanges({ hello: true }, undefined)).toEqual({ type: ValueChangeType.DELETE });
+			expect(detectChanges({ hello: true }, 0 as any)).toEqual({ type: ValueChangeType.DELETE });
+			expect(detectChanges({ hello: true }, '' as any)).toEqual({ type: ValueChangeType.DELETE });
+			expect(detectChanges({ hello: true, nope: '', yep: 'y' }, { hello: false, potato: 5, yep: 'y' }))
+				.toEqual({ type: ValueChangeType.UPDATE, changes: { hello: false, potato: 5 } });
 		});
 	});
 });

@@ -36,8 +36,8 @@ export const detectChanges = <T>(a: T, b: T): ValueChangeMetadata<T> => {
 
 	if (isEqual(a, b)) return { type: ValueChangeType.NONE };
 
-	const hasA = !isNil(a);
-	const hasB = !isNil(b);
+	const hasA = !!a;
+	const hasB = !!b;
 
 	if (!hasA && hasB) return { type: ValueChangeType.CREATE };
 	if (hasA && !hasB) return { type: ValueChangeType.DELETE };

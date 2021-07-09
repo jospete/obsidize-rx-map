@@ -24,5 +24,12 @@ describe('RxEntityMap', () => {
 	it('can be created with implicit generics', () => {
 
 		const users = new RxEntityMap((user: User) => user.id);
+		const products = new RxEntityMap((product: Product) => product.id);
+		const orders = new RxEntityMap((order: ProductOrder) => order.id);
+
+		users.addMany([
+			{ id: 'asdf', name: 'Dennis', age: 37 },
+			{ id: 'bvcx', name: 'Fred', age: 25 },
+		]);
 	});
 });
