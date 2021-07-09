@@ -1,8 +1,11 @@
 {
   "name": "@obsidize/rx-map",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "ES6 Map with rxjs extensions for change detection",
-  "main": "index.js",
+  "main": "es5.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "karma start",
     "test:single": "karma start --single-run",
