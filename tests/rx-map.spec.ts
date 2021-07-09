@@ -99,4 +99,70 @@ describe('RxMap', () => {
 		games.destroy();
 		expect(() => games.changes.subscribe()).toThrowError();
 	});
+
+	it('augments the set() behavior based on previous values', async () => {
+
+		const games = new RxMap<number, Game>();
+		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
+
+		games.set(tetris.id, tetris);
+
+		const updateStream = games.changes.pipe(
+			ofType(MapStateChangeEventType.UPDATE),
+			first()
+		).toPromise();
+
+		games.set(tetris.id, Object.assign({}, tetris, { playerCount: 5 }));
+		const { changes } = await updateStream;
+		expect(changes).toEqual({ playerCount: 5 });
+
+		const deleteStream = games.changes.pipe(
+			ofType(MapStateChangeEventType.DELETE),
+			first()
+		).toPromise();
+
+		games.set(tetris.id, null);
+		const { key } = await deleteStream;
+		expect(key).toBe(tetris.id);
+	});
+
+	it('does not emit an event when no value changes are detected from duplicate set calls', async () => {
+
+		const games = new RxMap<number, Game>();
+		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
+
+		const changesSpy = jasmine.createSpy('changesSpy');
+		const updateStream = games.changes.toPromise();
+
+		games.changes.subscribe(changesSpy);
+		games.set(tetris.id, tetris);
+
+		// Both of these will be ignored by change stream
+		games.set(tetris.id, tetris);
+		games.set(tetris.id, tetris);
+
+		games.clear();
+		games.destroy();
+
+		const result = await updateStream.catch(e => e);
+		expect(result).toBe('destroyed');
+		expect(changesSpy).toHaveBeenCalledTimes(2);
+	});
+
+	it('shares standard read accessors from the ES6 Map definition', () => {
+
+		const games = new RxMap<number, Game>();
+		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
+		const pong: Game = { id: 1, name: 'Pong', playerCount: 1234 };
+
+		games.set(tetris.id, tetris);
+		games.set(pong.id, pong);
+
+		games.forEach(v => expect(v).toBeDefined());
+		expect(() => games.keys()).not.toThrowError();
+		expect(() => games.values()).not.toThrowError();
+		expect(() => games.entries()).not.toThrowError();
+		expect(games[Symbol.toStringTag]).toBeDefined();
+		expect(() => games[Symbol.iterator]()).not.toThrowError();
+	});
 });
