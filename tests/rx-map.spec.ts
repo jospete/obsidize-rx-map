@@ -1,4 +1,4 @@
-import { first } from 'rxjs/operators';
+import { bufferCount, first } from 'rxjs/operators';
 import { MapStateChangeEventType, ofType, pluckValue, RxMap } from '../src';
 
 interface Game {
@@ -67,5 +67,36 @@ describe('RxMap', () => {
 
 		const nextEvent = await nextEventStream;
 		expect(nextEvent.type).toBe(MapStateChangeEventType.ADD);
+	});
+
+	it('notifies when a values are deleted via map clear', async () => {
+
+		const games = new RxMap<number, Game>();
+		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
+		const pong: Game = { id: 1, name: 'Pong', playerCount: 1234 };
+
+		games.set(tetris.id, tetris);
+		games.set(pong.id, pong);
+		const gameCount = games.size;
+
+		const removeStream = games.changes.pipe(
+			ofType(MapStateChangeEventType.DELETE),
+			bufferCount(gameCount),
+			first()
+		).toPromise();
+
+		games.clear();
+
+		const removeResults = await removeStream;
+		expect(removeResults.length).toBe(gameCount);
+		expect(removeResults.every(ev => ev.type === MapStateChangeEventType.DELETE)).toBe(true);
+		expect(removeResults.some(ev => ev.key === tetris.id)).toBe(true);
+		expect(removeResults.some(ev => ev.key === pong.id)).toBe(true);
+	});
+
+	it('can be destroyed', () => {
+		const games = new RxMap<number, Game>();
+		games.destroy();
+		expect(() => games.changes.subscribe()).toThrowError();
 	});
 });
