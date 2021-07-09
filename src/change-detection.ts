@@ -10,21 +10,23 @@ export interface ValueChangeMetadata<T> {
 	readonly changes?: Partial<T> | T;
 }
 
-export const isNil = (v: any) => v === null || v === undefined;
+export const isNil = (v: any): boolean => {
+	return v === null || v === undefined;
+};
 
 export const isEqual = (a: any, b: any): boolean => {
 
 	if (a === b) return true;
-	if (isNaN(a) && isNaN(b)) return true;
+	if (Number.isNaN(a) && Number.isNaN(b)) return true;
 	if (isNil(a) || isNil(b)) return false;
 
 	const ta = typeof (a);
 	const tb = typeof (b);
 
-	if (ta !== tb) return false;
-	if (ta === 'object') return Object.keys(a).every(key => isEqual(a[key], b[key]));
+	if (ta !== tb || ta !== 'object') return false;
 
-	return false;
+	const keys = new Set(Object.keys(a).concat(Object.keys(b)));
+	return Array.from(keys.values()).every(key => isEqual(a[key], b[key]));
 };
 
 /**

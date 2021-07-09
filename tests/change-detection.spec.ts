@@ -18,8 +18,12 @@ describe('change detection utilities', () => {
 
 		it('knows when things are not equal', () => {
 			expect(isEqual(null, { potato: { yes: true } })).toBe(false);
-			// expect(isEqual({ potato: { yes: true }, id: 42, name: 'johnson' }, undefined)).toBe(false);
-			expect(isEqual({ potato: { yes: true }, id: 42, name: 'johnson' }, { potato: '{ yes: true }', id: 42, name: 'johnson' })).toBe(false);
+			expect(isEqual({ potato: { yes: true }, id: 42, name: 'johnson' }, undefined)).toBe(false);
+			const a: any = { potato: { yes: true }, id: 42, name: 'johnson' };
+			const b: any = { potato: '{ yes: true }', id: 42, name: 'johnson' };
+			expect(a === b).toBe(false);
+			expect(isEqual(a, b)).toBe(false);
+			expect(isEqual('yes', 'but not really')).toBe(false);
 		});
 	});
 });
