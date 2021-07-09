@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import { captureEntity, captureManyEntities, MapStateChangeEventType, ofType, pluckValue, RxEntityMap } from '../src';
+import { storeEntityIn, storeEntityArrayIn, MapStateChangeEventType, ofType, pluckValue, RxEntityMap } from '../src';
 
 
 describe('General Usage', () => {
@@ -43,7 +43,7 @@ describe('General Usage', () => {
 		const productOrders = new RxEntityMap((v: ProductOrder) => v.id);
 
 		const user = await loadUser().pipe(
-			captureEntity(users)
+			storeEntityIn(users)
 		).toPromise();
 
 		const onCaptureUserProductOrder = productOrders.store.changes.pipe(
@@ -53,11 +53,11 @@ describe('General Usage', () => {
 		).toPromise();
 
 		await loadProducts().pipe(
-			captureManyEntities(products)
+			storeEntityArrayIn(products)
 		).toPromise();
 
 		await loadProductOrdersByUserId(user.id).pipe(
-			captureManyEntities(productOrders)
+			storeEntityArrayIn(productOrders)
 		).toPromise();
 
 		const capturedOrder = await onCaptureUserProductOrder;

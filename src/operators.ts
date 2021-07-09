@@ -28,13 +28,13 @@ export const pluckChanges = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>
 	);
 };
 
-export const captureEntity = <K, V>(entityMap: RxEntityMap<K, V>): MonoTypeOperatorFunction<V> => {
+export const storeEntityIn = <K, V>(entityMap: RxEntityMap<K, V>): MonoTypeOperatorFunction<V> => {
 	return source => source.pipe(
 		map(v => entityMap.upsertOne(v)!)
 	);
 };
 
-export const captureManyEntities = <K, V>(entityMap: RxEntityMap<K, V>): MonoTypeOperatorFunction<V[]> => {
+export const storeEntityArrayIn = <K, V>(entityMap: RxEntityMap<K, V>): MonoTypeOperatorFunction<V[]> => {
 	return source => source.pipe(
 		map(v => entityMap.upsertMany(v)!)
 	);
