@@ -30,7 +30,7 @@ npm install --save git+https://github.com/jospete/obsidize-rx-map.git
 ## Usage
 
 ```typescript
-import {RxEntityMap, MapStateChangeEventType, ofType, pluckValue} from '@obsidize/rx-map';
+import {RxEntityMap, MapStateChangeEventType, ofType, pluckValue, storeEntityIn} from '@obsidize/rx-map';
 
 interface User {
 	id: number;
@@ -44,14 +44,19 @@ const bob: User = {id: 0, name: 'Bob', age: 37};
 users.addOne(bob);
 
 // ... somewhere else that's watching for updates ...
-
 users.store.changes.pipe(
-	ofType(MapStateChangeEventType.ADD),
+	ofType(MapStateChangeEventType.ADD, MapStateChangeEventType.UPDATE),
 	pluckValue()
 ).subscribe(user => {
 	console.log('added user -> ', user); // {id: 0, name: 'Bob', age: 37}
 });
 
-// Or get Bob's model manually
+// To get a model manually from the map
 const bob = users.store.get(0);
+
+// You can also use this module's utility operator functions to 
+// capture values as they come in from http / other observable sources 
+loadUserModelFromHttpApi().pipe(
+	storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
+);
 ```
