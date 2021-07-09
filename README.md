@@ -3,7 +3,7 @@
 This is intended to be a very, _very_ light-weight entity storage management system that slightly resembles parts of [@ngrx/entity](https://ngrx.io/api/entity).
 
 The idea here is that the most useful part of ngrx is the store itself, and being able to watch for "single source of truth" entity changes from anywhere.
-However, ngrx completely undermines this useful feature by adding a million different constructs in the way of just publishing to something that is effectively _just a map of values_. (See: actions, reducers, effects, effects of effects, actions for effects of effects, etc...)
+However, ngrx completely undermines this usefulness by adding a million different constructs in the way of just publishing to something that is effectively _just a map of values_. (See: actions, reducers, effects, effects of effects, actions for effects of effects, etc...)
 
 The mantra of this module is simple:
 
@@ -11,7 +11,7 @@ The mantra of this module is simple:
 2. put it in an ```RxMap``` or ```RxEntityMap``` instance
 3. watch for changes on the exposed "changes" observable and render changes to the UI (or react to them in some other service(s))
 
-What we lose in action publishing and redux "state history" features, we gain in immense reduction of boilerplate and a much easier syntax to pick up on.
+Although this format loses some of the rigidity and guarantees that ngrx offers, it grants a much easier syntax and general usage
 
 ## Installation
 
@@ -30,7 +30,7 @@ npm install --save git+https://github.com/jospete/obsidize-rx-map.git
 ## Usage
 
 ```typescript
-import {RxEntityMapInt} from '@obsidize/rx-map';
+import {RxEntityMap, MapStateChangeEventType, ofType, pluckValue} from '@obsidize/rx-map';
 
 interface User {
 	id: number;
@@ -38,5 +38,20 @@ interface User {
 	age: number;
 }
 
-const users: RxEntityMapInt<User> = new RxEntityMapInt(v => v.id);
+// key and value types are inferred by the given id selector
+const users: RxEntityMap = new RxEntityMap((user: User) => user.id);
+const bob: User = {id: 0, name: 'Bob', age: 37};
+users.addOne(bob);
+
+// ... somewhere else that's watching for updates ...
+
+users.store.changes.pipe(
+	ofType(MapStateChangeEventType.ADD),
+	pluckValue()
+).subscribe(user => {
+	console.log('added user -> ', user); // {id: 0, name: 'Bob', age: 37}
+});
+
+// Or get Bob's model manually
+const bob = users.store.get(0);
 ```

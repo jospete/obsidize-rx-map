@@ -1,5 +1,5 @@
-import { bufferCount, take } from 'rxjs/operators';
-import { MapStateChangeEventType, ofType, pluckValue, RxEntityMap } from '../src';
+import { bufferCount, first, take } from 'rxjs/operators';
+import { forKey, MapStateChangeEventType, ofType, pluckChanges, pluckValue, RxEntityMap } from '../src';
 
 interface User {
 	id: string;
@@ -155,5 +155,86 @@ describe('RxEntityMap', () => {
 		users.removeWhere(v => v.age >= 20);
 		expect(users.store.has(a.id)).toBe(false);
 		expect(users.store.has(b.id)).toBe(false);
+	});
+
+	it('can update many at once', () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+		const b: User = { id: 'zxcv', name: 'David', age: 25 };
+		const c: User = { id: 'gggg', name: 'Bob', age: 15 };
+
+		users.setMany([a, b, c]);
+
+		const a2 = Object.assign({}, a, { name: 'test update 1' });
+		const c2 = Object.assign({}, c, { age: 42 });
+
+		users.upsertMany([a2, null, c2]); // should be able to handle random non-entity values
+		expect(users.store.get(a.id)).toEqual(a2);
+		expect(users.store.get(b.id)).toEqual(b);
+		expect(users.store.get(c.id)).toEqual(c2);
+
+		users.updateMany([null, { id: b.id, changes: { name: 'test udpate 2' } }, { id: c.id, changes: { age: 33 } }]);
+		expect(users.store.get(a.id)).toEqual(a2);
+		expect(users.store.get(b.id).name).toEqual('test udpate 2');
+		expect(users.store.get(c.id).age).toEqual(33);
+	});
+
+	it('can transform an entity in-place', () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+
+		users.addOne(a);
+
+		users.transformOne({
+			id: a.id, transform: entity => {
+				entity.name += '5';
+				return entity;
+			}
+		});
+
+		expect(users.store.get(a.id).name).toBe('Dennis5');
+		expect(() => users.transformOne(null)).not.toThrowError();
+	});
+
+	it('can transform many entities in-place', () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+		const b: User = { id: 'zxcv', name: 'David', age: 25 };
+		const c: User = { id: 'gggg', name: 'Bob', age: 15 };
+
+		users.setMany([a, b, c]);
+
+		users.transformMany(user => {
+			if (user.age > 16) user.age = 16;
+			return user;
+		});
+
+		expect(users.store.get(a.id).age).toBe(16);
+		expect(users.store.get(b.id).age).toBe(16);
+		expect(users.store.get(c.id).age).toBe(15);
+		expect(() => users.transformMany(null)).not.toThrowError();
+	});
+
+	it('can watch for changes by a target entity id', async () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+
+		users.addOne(a);
+
+		const onUserPropChange = users.store.changes.pipe(
+			ofType(MapStateChangeEventType.UPDATE),
+			forKey(a.id),
+			pluckChanges(),
+			first()
+		).toPromise();
+
+		const updateProps = { age: 99 };
+		users.upsertOne(Object.assign({}, a, updateProps));
+		const update = await onUserPropChange;
+		expect(update).toEqual(updateProps);
 	});
 });

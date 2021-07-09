@@ -47,12 +47,12 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		return !isNil(id);
 	}
 
-	public addOne(entity: V): V {
+	public addOne(entity: V): V | undefined {
 		return this.upsertOne(entity);
 	}
 
 	public addMany(entities: V[]): V[] {
-		return Array.from(entities).map(e => this.addOne(e));
+		return Array.from(entities).map(e => this.addOne(e)!);
 	}
 
 	public setOne(entity: V): V {
@@ -89,7 +89,8 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		this.store.clear();
 	}
 
-	public updateOne(update: Update<K, V>): V {
+	public updateOne(update: Update<K, V>): V | undefined {
+		if (!update) return undefined;
 		const { id, changes } = update;
 		const combinedValue = Object.assign({}, this.store.get(id), changes);
 		this.store.set(id, combinedValue);
@@ -97,10 +98,10 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public updateMany(updates: Update<K, V>[]): V[] {
-		return Array.from(updates).map(u => this.updateOne(u));
+		return Array.from(updates).map(u => this.updateOne(u)!);
 	}
 
-	public upsertOne(entity: V): V {
+	public upsertOne(entity: V): V | undefined {
 		const id = this.getId(entity);
 		if (!this.isValidId(id)) return entity;
 		const entityUpdate = { id: id!, changes: entity };
@@ -108,19 +109,21 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public upsertMany(entities: V[]): V[] {
-		return Array.from(entities).map(e => this.upsertOne(e));
+		return Array.from(entities).map(e => this.upsertOne(e)!);
 	}
 
-	public transformOne(options: EntityTransformOne<K, V>): V {
+	public transformOne(options: EntityTransformOne<K, V>): V | undefined {
+		if (!options) return undefined;
 		const { id, transform } = options;
 		const changes = transform(this.store.get(id));
 		return this.updateOne({ id, changes });
 	}
 
 	public transformMany(transform: EntityTransform<V>): V[] {
+		if (!transform || typeof transform !== 'function') return this.values();
 		return Array.from(this.store.entries()).map(([id, entity]) => {
 			const entityUpdate = { id, changes: transform(entity) };
-			return this.updateOne(entityUpdate);
+			return this.updateOne(entityUpdate)!;
 		});
 	}
 }

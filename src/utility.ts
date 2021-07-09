@@ -13,25 +13,14 @@ export const isNil = (v: any): boolean => {
  */
 export const isEqual = (a: any, b: any): boolean => {
 
-	// If the values are exactly equal, no further processing needed
 	if (a === b) return true;
-
-	// NaN is a special case where the first check does not apply
-	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
-	if (Number.isNaN(a) && Number.isNaN(b)) return true;
-
-	// If either value is "nullish" and the first check did not pass, then
-	// there is no way the two values are equal.
+	if (Number.isNaN(a) && Number.isNaN(b)) return true; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
 	if (isNil(a) || isNil(b)) return false;
 
-	const ta = typeof (a);
-	const tb = typeof (b);
+	const typeOfA = typeof (a);
+	const typeOfB = typeof (b);
+	if (typeOfA !== typeOfB || typeOfA !== 'object') return false;
 
-	// If the types differ, or if they are the same but not an object,
-	// we cannot do further comparison so they must not be equal (i.e., two strings / numbers / booleans)
-	if (ta !== tb || ta !== 'object') return false;
-
-	// Two valid objects were given, check all keys on both objects for equality.
 	const keys = new Set(Object.keys(a).concat(Object.keys(b)));
 	return Array.from(keys.values()).every(key => isEqual(a[key], b[key]));
 };

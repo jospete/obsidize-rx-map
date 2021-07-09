@@ -31,3 +31,9 @@ export const pluckValue = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, 
 		map(ev => ev.value)
 	);
 };
+
+export const pluckChanges = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, Partial<V> | undefined> => {
+	return source => source.pipe(
+		map(ev => ev.changes)
+	);
+};
