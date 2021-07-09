@@ -66,7 +66,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public setAll(entities: V[]): V[] {
-		this.store.clear();
+		this.removeAll();
 		return this.setMany(entities);
 	}
 
