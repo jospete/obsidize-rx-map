@@ -1,7 +1,3 @@
-import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
-
-import { MapStateChangeEvent } from './map-state-change-event';
 import { EntityMap, IdSelector } from './entity-map';
 import { RxMap } from './rx-map';
 
@@ -12,9 +8,5 @@ export class RxEntityMap<K, V> extends EntityMap<K, V, RxMap<K, V>> {
 
 	constructor(selectId: IdSelector<K, V>) {
 		super(new RxMap<K, V>(), selectId);
-	}
-
-	public watch(key: K): Observable<MapStateChangeEvent<K, V>> {
-		return this.store.changes.pipe(filter(ev => ev.key === key));
 	}
 }

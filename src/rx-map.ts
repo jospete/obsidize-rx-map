@@ -16,7 +16,8 @@ export class RxMap<K, V> implements Map<K, V> {
 	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.mStateChangeSubject.asObservable().pipe(share());
 
 	protected emitStateChange(type: MapStateChangeEventType, key: K, changes?: Partial<V> | V): void {
-		this.mStateChangeSubject.next({ type, key, changes });
+		const value = this.get(key);
+		this.mStateChangeSubject.next({ type, key, value, changes });
 	}
 
 	protected emitAdd(key: K, value: V): void {
@@ -72,16 +73,14 @@ export class RxMap<K, V> implements Map<K, V> {
 		this.mStateChangeSubject.unsubscribe();
 	}
 
-	public clear(): void {
-		const keys = Array.from(this.keys());
-		this.source.clear();
-		keys.forEach(key => this.emitDelete(key));
+	public delete(key: K): boolean {
+		if (this.has(key)) this.emitDelete(key);
+		return this.source.delete(key);
 	}
 
-	public delete(key: K): boolean {
-		const didDelete = this.source.delete(key);
-		if (didDelete) this.emitDelete(key);
-		return didDelete;
+	public clear(): void {
+		const keys = Array.from(this.keys());
+		keys.forEach(key => this.delete(key));
 	}
 
 	public set(key: K, value: V): this {

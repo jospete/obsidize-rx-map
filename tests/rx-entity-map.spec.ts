@@ -1,4 +1,5 @@
-import { RxEntityMap } from '../src';
+import { bufferCount, take } from 'rxjs/operators';
+import { MapStateChangeEventType, ofType, pluckValue, RxEntityMap } from '../src';
 
 interface User {
 	id: string;
@@ -6,30 +7,27 @@ interface User {
 	age: number;
 }
 
-interface Product {
-	id: number;
-	name: string;
-	serial: string;
-	count: number;
-}
-
-interface ProductOrder {
-	id: number;
-	userId: string;
-	productId: number;
-}
-
 describe('RxEntityMap', () => {
 
-	it('can be created with implicit generics', () => {
+	it('is used to store and query entity models', async () => {
 
 		const users = new RxEntityMap((user: User) => user.id);
-		const products = new RxEntityMap((product: Product) => product.id);
-		const orders = new RxEntityMap((order: ProductOrder) => order.id);
 
-		users.addMany([
+		const addedUsersPromise = users.store.changes.pipe(
+			ofType(MapStateChangeEventType.ADD),
+			pluckValue()
+		).pipe(
+			bufferCount(2),
+			take(1)
+		).toPromise();
+
+		const addedUsers = [
 			{ id: 'asdf', name: 'Dennis', age: 37 },
 			{ id: 'bvcx', name: 'Fred', age: 25 },
-		]);
+		];
+
+		users.addMany(addedUsers);
+		const addedUsersResult = await addedUsersPromise;
+		expect(addedUsersResult).toEqual(addedUsers);
 	});
 });
