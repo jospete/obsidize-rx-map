@@ -4,6 +4,9 @@ import { share } from 'rxjs/operators';
 import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
 import { detectChanges, ValueChangeType } from './change-detection';
 
+/**
+ * Extension of the standard ES6 Map with rxjs change event observables tacked on.
+ */
 export class RxMap<K, V> implements Map<K, V> {
 
 	private readonly mStateChangeSubject: Subject<MapStateChangeEvent<K, V>> = new Subject();
