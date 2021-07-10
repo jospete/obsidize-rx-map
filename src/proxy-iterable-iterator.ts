@@ -1,3 +1,7 @@
+/**
+ * Utility for masking RxMap iterators, so that 
+ * the underlying map values cannot be mutated while using them.
+ */
 export class ProxyIterableIterator<T, R> implements IterableIterator<R> {
 
 	constructor(
@@ -19,5 +23,8 @@ export class ProxyIterableIterator<T, R> implements IterableIterator<R> {
 	}
 }
 
+/**
+ * Simplified generics
+ */
 export class MonoProxyIterableIterator<T> extends ProxyIterableIterator<T, T> {
 }

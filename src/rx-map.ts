@@ -88,9 +88,9 @@ export class RxMap<K, V> implements Map<K, V> {
 
 	public set(key: K, value: V): this {
 
-		const previousValue = this.get(key);
 		const targetValue = cloneDeep(value);
-		const { type, changes } = detectChanges(previousValue, targetValue);
+		const previousValue = this.get(key);
+		const { type, changes } = detectChanges(targetValue, previousValue);
 
 		switch (type) {
 			case ChangeDetectionEventType.CREATE:
