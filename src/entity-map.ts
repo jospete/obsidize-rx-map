@@ -27,6 +27,14 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	) {
 	}
 
+	public getId(entity: V): K | undefined {
+		return entity ? this.selectId(entity) : undefined;
+	}
+
+	public isValidId(id: K | undefined | null): boolean {
+		return !isNil(id);
+	}
+
 	public keys(): K[] {
 		return Array.from(this.store.keys());
 	}
@@ -37,14 +45,6 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public entries(): [K, V][] {
 		return Array.from(this.store.entries());
-	}
-
-	public getId(entity: V): K | undefined {
-		return entity ? this.selectId(entity) : undefined;
-	}
-
-	public isValidId(id: K | undefined | null): boolean {
-		return !isNil(id);
 	}
 
 	public getOne(id: K): V | undefined {
