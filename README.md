@@ -41,9 +41,6 @@ The general idea is:
 ```typescript
 import {
 	RxEntityMap, 
-	MapStateChangeEventType, 
-	ofType, 
-	pluckValue, 
 	storeEntityIn
 } from '@obsidize/rx-map';
 
@@ -79,5 +76,5 @@ loadUserModelFromHttpApi().pipe(
 
 - [RxEntityMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-entity-map.ts) - core entry point, use this to update and watch a collection of entities (Inherits from ```EntityMap```, and uses an ```RxMap``` as its storage mechanism).
 - [EntityMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/entity-map.ts) - an overlay of an ES6 Map that is aware of the concept of "primary keys" in the map's values.
-- [RxMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-map.ts) - shares the same API as the standard [ES6 Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)) with the addition of a ```changes``` Observable.
-- [operators](https://github.com/jospete/obsidize-rx-map/blob/master/src/operators.ts) - helper rxjs operator functions for transforming events from the ```rxMap```'s "changes" Observable stream
+- [RxMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-map.ts) - shares the same API as the standard [ES6 Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) with the addition of a ```changes``` Observable.
+- [rxjs operators](https://github.com/jospete/obsidize-rx-map/blob/master/src/operators.ts) - helper operator functions for transforming events from the ```RxMap``` "changes" Observable stream
