@@ -1,5 +1,6 @@
+import { map, filter, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { identity } from 'lodash';
 
 import { forKey, forKeyIn, pluckValue } from './operators';
 import { MapStateChangeEvent } from './map-state-change-event';
@@ -26,20 +27,20 @@ export class RxEntityMap<K, V> extends EntityMap<K, V, RxMap<K, V>> {
 		);
 	}
 
-	public watchOne(id: K): Observable<V | undefined> {
+	public watchOne(id: K): Observable<V> {
 		return this.changes.pipe(
 			forKey(id),
 			pluckValue(),
-			startWith(this.getOne(id))
+			startWith(this.getOne(id)!),
+			filter(identity)
 		);
 	}
 
 	public watchMany(ids: K[]): Observable<V[]> {
-		ids = Array.from(ids);
 		return this.changes.pipe(
 			forKeyIn(ids),
-			map(() => this.getMany(ids)),
-			startWith(this.getMany(ids))
+			map(() => this.getManyExisting(ids)),
+			startWith(this.getManyExisting(ids))
 		);
 	}
 }

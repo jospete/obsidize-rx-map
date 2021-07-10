@@ -1,5 +1,6 @@
 import { MonoTypeOperatorFunction, OperatorFunction } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { identity } from 'lodash';
 
 import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
 import { RxEntityMap } from './rx-entity-map';
@@ -46,18 +47,20 @@ export const forKeyIn = <K, V>(ids: K[]): MonoTypeOperatorFunction<MapStateChang
 /**
  * map change events to their corresponding entity value
  */
-export const pluckValue = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, V | undefined> => {
+export const pluckValue = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, V> => {
 	return source => source.pipe(
-		map(ev => ev.value)
+		map(ev => ev.value!),
+		filter(identity)
 	);
 };
 
 /**
  * map change events to their corresponding entity update differences (will be a partial entity object)
  */
-export const pluckChanges = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, Partial<V> | undefined> => {
+export const pluckChanges = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, Partial<V>> => {
 	return source => source.pipe(
-		map(ev => ev.changes)
+		map(ev => ev.changes!),
+		filter(identity)
 	);
 };
 

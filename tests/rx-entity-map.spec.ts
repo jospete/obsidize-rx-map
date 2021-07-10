@@ -1,3 +1,4 @@
+import { some } from 'lodash';
 import { bufferCount, first, tap, skipWhile, take } from 'rxjs/operators';
 
 import { forKey, MapStateChangeEventType, ofType, pluckChanges, pluckValue, RxEntityMap } from '../src';
@@ -313,17 +314,51 @@ describe('RxEntityMap', () => {
 			first()
 		).toPromise();
 
-		// 1st event is the startWith() operator for the current entity state
-		users.addOne(a); // 2nd event
+		users.addOne(a); // event 1
 
 		a.name += '-5';
-		users.upsertOne(a); // 3rd event
+		users.upsertOne(a); // event 2
 
 		a.age = 25;
-		users.upsertOne(a); // 4th event
+		users.upsertOne(a); // event 3
 
 		const update = await onCollectionChange;
 		expect(update).toEqual(a);
-		expect(userUpdateSpy).toHaveBeenCalledTimes(4);
+		expect(userUpdateSpy).toHaveBeenCalledTimes(3);
+	});
+
+	it('has a convenience method for watching a set of entity ids', async () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+		const b: User = { id: 'jhgf', name: 'Bob', age: 32 };
+		const c: User = { id: 'trew', name: 'Larry', age: 64 };
+		const userUpdateSpy = jasmine.createSpy('userUpdateSpy');
+
+		const onCollectionChange = users.watchMany([a.id, b.id, c.id]).pipe(
+			tap(userUpdateSpy),
+			skipWhile(users => !some(users, u => !!u && u.age > 99)),
+			first()
+		).toPromise();
+
+		// 1st event is the startWith() operator for the current entity state
+		users.setMany([a, b, c]); // event 2, 3, 4 (each add is atomic)
+
+		a.name += '-5';
+		users.upsertOne(a); // event 5
+		users.upsertOne(b); // NOT an event, because b should still match the 'b' in the store
+
+		b.age = 25;
+		users.upsertOne(b); // event 6
+
+		c.age = 55;
+		users.upsertOne(c); // event 7
+
+		a.age = 9001;
+		users.upsertOne(a); // event 8
+
+		const update = await onCollectionChange;
+		expect(update).toEqual([a, b, c]);
+		expect(userUpdateSpy).toHaveBeenCalledTimes(8);
 	});
 });

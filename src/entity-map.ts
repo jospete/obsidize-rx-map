@@ -1,4 +1,4 @@
-import { isNil, merge, isFunction } from 'lodash';
+import { isNil, merge, isFunction, identity } from 'lodash';
 
 export type Predicate<T> = (entity: T) => boolean;
 export type EntityTransform<T> = (entity: T | undefined) => T;
@@ -53,6 +53,10 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public getMany(ids: K[]): V[] {
 		return Array.from(ids).map(id => this.getOne(id)!);
+	}
+
+	public getManyExisting(ids: K[]): V[] {
+		return this.getMany(ids).filter(identity);
 	}
 
 	public hasOne(id: K): boolean {
