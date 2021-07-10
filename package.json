@@ -1,6 +1,6 @@
 {
   "name": "@obsidize/rx-map",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "ES6 Map with rxjs extensions for change detection",
   "main": "es5.js",
   "module": "index.js",
