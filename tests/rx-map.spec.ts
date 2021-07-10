@@ -142,8 +142,7 @@ describe('RxMap', () => {
 		games.set(tetris.id, tetris);
 
 		const waitForClear = games.changes.pipe(
-			ofType(MapStateChangeEventType.EMPTY),
-			first()
+			takeWhile(() => games.size > 0)
 		).toPromise();
 
 		games.clear();
@@ -153,22 +152,25 @@ describe('RxMap', () => {
 
 		const result = await updateStream.catch(e => e);
 		expect(result).toBe('destroyed');
-		expect(changesSpy).toHaveBeenCalledTimes(3);
+		expect(changesSpy).toHaveBeenCalledTimes(2);
 	});
 
 	it('shares standard read accessors from the ES6 Map definition', () => {
 
-		const games = new RxMap<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 		const pong: Game = { id: 1, name: 'Pong', playerCount: 1234 };
-
-		games.set(tetris.id, tetris);
-		games.set(pong.id, pong);
+		const games = new RxMap<number, Game>()
+			.set(tetris.id, tetris)
+			.set(pong.id, pong);
 
 		games.forEach(v => expect(v).toBeDefined());
-		expect(() => games.keys()).not.toThrowError();
-		expect(() => games.values()).not.toThrowError();
-		expect(() => games.entries()).not.toThrowError();
+		expect(games.keys()).toBeDefined();
+		expect(games.values()).toBeDefined();
+		expect(games.entries()).toBeDefined();
+	});
+
+	it('shares standard symbols from the ES6 Map definition', () => {
+		const games = new RxMap<number, Game>();
 		expect(games[Symbol.toStringTag]).toBeDefined();
 		expect(() => games[Symbol.iterator]()).not.toThrowError();
 	});

@@ -15,25 +15,20 @@ export class RxMap<K, V> implements Map<K, V> {
 
 	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.mStateChangeSubject.asObservable().pipe(share());
 
-	protected emitStateChange(type: MapStateChangeEventType, key?: K, changes?: Partial<V> | V): void {
-		const value = this.get(key!);
+	protected emitStateChange(type: MapStateChangeEventType, key: K, value?: V, changes?: Partial<V> | V): void {
 		this.mStateChangeSubject.next({ type, key, value, changes });
 	}
 
 	protected emitAdd(key: K, value: V): void {
-		this.emitStateChange(MapStateChangeEventType.ADD, key, value);
+		this.emitStateChange(MapStateChangeEventType.ADD, key, value, value);
 	}
 
 	protected emitUpdate(key: K, changes: Partial<V>): void {
-		this.emitStateChange(MapStateChangeEventType.UPDATE, key, changes);
+		this.emitStateChange(MapStateChangeEventType.UPDATE, key, this.get(key), changes);
 	}
 
-	protected emitDelete(key: K): void {
-		this.emitStateChange(MapStateChangeEventType.DELETE, key);
-	}
-
-	protected checkEmptyState(): void {
-		if (this.size <= 0) this.emitStateChange(MapStateChangeEventType.EMPTY);
+	protected emitDelete(key: K, value: V): void {
+		this.emitStateChange(MapStateChangeEventType.DELETE, key, value);
 	}
 
 	public get size(): number {
@@ -78,10 +73,10 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public delete(key: K): boolean {
-		if (this.has(key)) this.emitDelete(key);
-		const result = this.source.delete(key);
-		this.checkEmptyState();
-		return result;
+		const value = this.get(key);
+		const didDelete = this.source.delete(key);
+		if (didDelete) this.emitDelete(key, value!);
+		return didDelete;
 	}
 
 	public clear(): void {
