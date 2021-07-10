@@ -1,4 +1,5 @@
 import { bufferCount, first, takeWhile } from 'rxjs/operators';
+
 import { MapStateChangeEventType, ofType, pluckValue, RxMap } from '../src';
 
 interface Game {

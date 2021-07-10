@@ -1,8 +1,10 @@
 import { Observable, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
+import { cloneDeep } from 'lodash';
 
 import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
 import { ChangeDetectionEventType } from './change-detection-event';
+import { MonoProxyIterableIterator } from './proxy-iterable-iterator';
 import { detectChanges } from './utility';
 
 /**
@@ -44,7 +46,7 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public get(key: K): V | undefined {
-		return this.source.get(key);
+		return cloneDeep(this.source.get(key));
 	}
 
 	public has(key: K): boolean {
@@ -52,15 +54,15 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public entries(): IterableIterator<[K, V]> {
-		return this.source.entries();
+		return new MonoProxyIterableIterator<[K, V]>(this.source.entries(), ([key, value]: [K, V]) => ([cloneDeep(key), cloneDeep(value)]));
 	}
 
 	public keys(): IterableIterator<K> {
-		return this.source.keys();
+		return new MonoProxyIterableIterator<K>(this.source.keys(), (k: K) => cloneDeep(k));
 	}
 
 	public values(): IterableIterator<V> {
-		return this.source.values();
+		return new MonoProxyIterableIterator<V>(this.source.values(), (v: V) => cloneDeep(v));
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void): void {
@@ -87,15 +89,16 @@ export class RxMap<K, V> implements Map<K, V> {
 	public set(key: K, value: V): this {
 
 		const previousValue = this.get(key);
-		const { type, changes } = detectChanges(previousValue, value);
+		const targetValue = cloneDeep(value);
+		const { type, changes } = detectChanges(previousValue, targetValue);
 
 		switch (type) {
 			case ChangeDetectionEventType.CREATE:
-				this.source.set(key, value);
-				this.emitAdd(key, value);
+				this.source.set(key, targetValue);
+				this.emitAdd(key, targetValue);
 				break;
 			case ChangeDetectionEventType.UPDATE:
-				this.source.set(key, value);
+				this.source.set(key, targetValue);
 				this.emitUpdate(key, changes as V);
 				break;
 			case ChangeDetectionEventType.DELETE:

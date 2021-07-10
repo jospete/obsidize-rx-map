@@ -1,4 +1,4 @@
-import { isNil } from './utility';
+import { isNil, merge, isFunction } from 'lodash';
 
 export type Predicate<T> = (entity: T) => boolean;
 export type EntityTransform<T> = (entity: T | undefined) => T;
@@ -57,7 +57,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public setOne(entity: V): V {
 		const id = this.getId(entity);
-		if (this.isValidId(id)) this.store.set(id!, Object.assign({}, entity));
+		if (this.isValidId(id)) this.store.set(id!, entity);
 		return entity;
 	}
 
@@ -92,7 +92,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	public updateOne(update: Update<K, V>): V | undefined {
 		if (!update) return undefined;
 		const { id, changes } = update;
-		const combinedValue = Object.assign({}, this.store.get(id), changes);
+		const combinedValue = merge(this.store.get(id), changes);
 		this.store.set(id, combinedValue);
 		return combinedValue;
 	}
@@ -120,7 +120,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public transformMany(transform: EntityTransform<V>): V[] {
-		if (!transform || typeof transform !== 'function') return this.values();
+		if (!isFunction(transform)) return this.values();
 		return Array.from(this.store.entries()).map(([id, entity]) => {
 			const entityUpdate = { id, changes: transform(entity) };
 			return this.updateOne(entityUpdate)!;
