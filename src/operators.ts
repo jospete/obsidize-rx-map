@@ -21,7 +21,7 @@ export const spreadFilterBy = <T, R>(values: T[], extractValue: (emission: R) =>
  */
 export const ofType = <K, V>(...types: MapStateChangeEventType[]): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
 	return source => source.pipe(
-		filter(ev => types.includes(ev.type))
+		spreadFilterBy(types, ev => ev.type)
 	);
 };
 
