@@ -5,6 +5,18 @@ import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change
 import { RxEntityMap } from './rx-entity-map';
 
 /**
+ * Variant of filter() that uses a Set to increase lookup speed when checking emissions for a single property value.
+ * NOTE: this variant is top-heavy, and more expensive on smaller value lists; only use this when 
+ * the 'values' collection can become large.
+ */
+export const spreadFilterBy = <T, R>(values: T[], extractValue: (emission: R) => T): MonoTypeOperatorFunction<R> => {
+	const lookup = new Set<T>(values);
+	return source => source.pipe(
+		filter(v => lookup.has(extractValue(v)))
+	);
+};
+
+/**
  * filter by map change event types (useful if you only want to watch ADD or UPDATE changes)
  */
 export const ofType = <K, V>(...types: MapStateChangeEventType[]): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
@@ -19,6 +31,15 @@ export const ofType = <K, V>(...types: MapStateChangeEventType[]): MonoTypeOpera
 export const forKey = <K, V>(id: K): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
 	return source => source.pipe(
 		filter(ev => ev.key === id)
+	);
+};
+
+/**
+ * filter by a set of entity primary keys
+ */
+export const forKeyIn = <K, V>(ids: K[]): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
+	return source => source.pipe(
+		spreadFilterBy(ids, ev => ev.key)
 	);
 };
 
