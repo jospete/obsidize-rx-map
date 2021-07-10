@@ -47,6 +47,26 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		return !isNil(id);
 	}
 
+	public getOne(id: K): V | undefined {
+		return this.store.get(id);
+	}
+
+	public getMany(ids: K[]): V[] {
+		return Array.from(ids).map(id => this.getOne(id)!);
+	}
+
+	public hasOne(id: K): boolean {
+		return this.store.has(id);
+	}
+
+	public hasEvery(ids: K[]): boolean {
+		return Array.from(ids).every(id => this.hasOne(id));
+	}
+
+	public hasSome(ids: K[]): boolean {
+		return Array.from(ids).some(id => this.hasOne(id));
+	}
+
 	public addOne(entity: V): V | undefined {
 		return this.upsertOne(entity);
 	}
