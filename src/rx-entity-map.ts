@@ -10,10 +10,10 @@ import { RxMap } from './rx-map';
 /**
  * Combinatory entity map that uses an RxMap as the store.
  */
-export class RxEntityMap<K, V> extends EntityMap<K, V, RxMap<K, V>> {
+export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends EntityMap<K, V, T> {
 
 	constructor(selectKey: KeySelector<K, V>) {
-		super(new RxMap<K, V>(), selectKey);
+		super(new RxMap<K, V>() as T, selectKey);
 	}
 
 	public get changes(): Observable<MapStateChangeEvent<K, V>> {
