@@ -11,7 +11,7 @@ The mantra of this module is simple:
 2. put it in an ```RxMap``` or ```RxEntityMap``` instance
 3. watch for changes on the exposed "changes" observable and render changes to the UI (or react to them in some other service(s))
 
-Although this format loses some of the rigidity and guarantees that ngrx offers, it grants a much easier syntax and general usage
+Although this format loses some of the rigidity and guarantees that ngrx offers, it grants a much easier syntax and does a much better job of not "getting in the way".
 
 ## Installation
 
@@ -29,8 +29,23 @@ npm install --save git+https://github.com/jospete/obsidize-rx-map.git
 
 ## Usage
 
+This module is primarily geared towards use of ```RxEntityMap```, which is a Map with "primary key" addons.
+This means that ```RxEntityMap``` is aware of entity primary keys, and can make many useful mutations / transformations based on them.
+
+The general idea is:
+
+1. Make a bunch of ```RxEntityMap``` instances that will exist for the lifetime of the application
+2. Subscribe to the change observables of those instances as needed
+3. Publish changes to those instances (any changes made will be echoed to subscribers of the change observables)
+
 ```typescript
-import {RxEntityMap, MapStateChangeEventType, ofType, pluckValue, storeEntityIn} from '@obsidize/rx-map';
+import {
+	RxEntityMap, 
+	MapStateChangeEventType, 
+	ofType, 
+	pluckValue, 
+	storeEntityIn
+} from '@obsidize/rx-map';
 
 interface User {
 	id: number;
@@ -44,7 +59,7 @@ const bob: User = {id: 0, name: 'Bob', age: 37};
 users.addOne(bob);
 
 // ... somewhere else that's watching for updates ...
-users.store.changes.pipe(
+users.changes.pipe(
 	ofType(MapStateChangeEventType.ADD, MapStateChangeEventType.UPDATE),
 	pluckValue()
 ).subscribe(user => {
@@ -55,8 +70,17 @@ users.store.changes.pipe(
 const bob = users.store.get(0);
 
 // You can also use this module's utility operator functions to 
-// capture values as they come in from http / other observable sources 
+// capture values as they come in from http / other observable sources.
 loadUserModelFromHttpApi().pipe(
 	storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
 );
 ```
+
+Available rxjs utility operators:
+
+- ```ofType``` - filter by map change event types (useful if you only want to watch ADD or UPDATE changes)
+- ```forKey``` - filter by entity primary key
+- ```pluckValue``` - map change events to their corresponding entity value
+- ```pluckChanges``` - map change events to their corresponding entity update differences (will be a partial entity object)
+- ```storeEntityIn``` - capture emitted values and store them in the provided map reference by side-effect
+- ```storeEntityArrayIn``` - capture emitted values and store them in the provided map reference by side-effect
