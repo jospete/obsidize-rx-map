@@ -238,4 +238,23 @@ describe('RxEntityMap', () => {
 		const update = await onUserPropChange;
 		expect(update).toEqual(updateProps);
 	});
+
+	it('performs proper change detection when an entity is mutated and then re-inserted', async () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+
+		users.setOne(a);
+
+		const onUserPropChange = users.store.changes.pipe(
+			pluckChanges(),
+			first()
+		).toPromise();
+
+		a.age = 1234;
+		users.setOne(a);
+
+		const update = await onUserPropChange;
+		expect(update).toEqual({ age: 1234 });
+	});
 });

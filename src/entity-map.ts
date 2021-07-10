@@ -57,7 +57,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public setOne(entity: V): V {
 		const id = this.getId(entity);
-		if (this.isValidId(id)) this.store.set(id!, entity);
+		if (this.isValidId(id)) this.store.set(id!, Object.assign({}, entity));
 		return entity;
 	}
 
