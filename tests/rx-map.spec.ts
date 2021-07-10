@@ -31,7 +31,7 @@ describe('RxMap', () => {
 		expect(addSpy).not.toHaveBeenCalled();
 
 		games.set(tetris.id, tetris);
-		expect(games.get(tetris.id)).toBe(tetris);
+		expect(games.get(tetris.id)).toEqual(tetris);
 
 		const addResult = await onAdd;
 		expect(addSpy).toHaveBeenCalledWith(addResult);

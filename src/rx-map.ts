@@ -54,7 +54,7 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public entries(): IterableIterator<[K, V]> {
-		return new MonoProxyIterableIterator<[K, V]>(this.source.entries(), ([key, value]: [K, V]) => ([cloneDeep(key), cloneDeep(value)]));
+		return new MonoProxyIterableIterator<[K, V]>(this.source.entries(), (pair: [K, V]) => cloneDeep(pair));
 	}
 
 	public keys(): IterableIterator<K> {
