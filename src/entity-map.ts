@@ -2,15 +2,15 @@ import { isNil, merge, isFunction, identity } from 'lodash';
 
 export type Predicate<T> = (entity: T) => boolean;
 export type EntityTransform<T> = (entity: T | undefined) => T;
-export type IdSelector<K, V> = (entity: V) => K;
+export type KeySelector<K, V> = (entity: V) => K;
 
 export interface Update<K, V> {
-	id: K;
+	key: K;
 	changes: Partial<V>;
 }
 
 export interface EntityTransformOne<K, V> {
-	id: K;
+	key: K;
 	transform: EntityTransform<V>;
 }
 
@@ -23,16 +23,16 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	constructor(
 		public readonly store: T,
-		private readonly selectId: IdSelector<K, V>
+		private readonly selectKey: KeySelector<K, V>
 	) {
 	}
 
-	public getId(entity: V): K | undefined {
-		return entity ? this.selectId(entity) : undefined;
+	public keyOf(entity: V): K | undefined {
+		return entity ? this.selectKey(entity) : undefined;
 	}
 
-	public isValidId(id: K | undefined | null): boolean {
-		return !isNil(id);
+	public isValidKey(key: K | undefined | null): boolean {
+		return !isNil(key);
 	}
 
 	public keys(): K[] {
@@ -47,28 +47,28 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		return Array.from(this.store.entries());
 	}
 
-	public getOne(id: K): V | undefined {
-		return this.store.get(id);
+	public getOne(key: K): V | undefined {
+		return this.store.get(key);
 	}
 
-	public getMany(ids: K[]): V[] {
-		return Array.from(ids).map(id => this.getOne(id)!);
+	public getMany(keys: K[]): V[] {
+		return Array.from(keys).map(key => this.getOne(key)!);
 	}
 
-	public getManyExisting(ids: K[]): V[] {
-		return this.getMany(ids).filter(identity);
+	public getManyExisting(keys: K[]): V[] {
+		return this.getMany(keys).filter(identity);
 	}
 
-	public hasOne(id: K): boolean {
-		return this.store.has(id);
+	public hasOne(key: K): boolean {
+		return this.store.has(key);
 	}
 
-	public hasEvery(ids: K[]): boolean {
-		return Array.from(ids).every(id => this.hasOne(id));
+	public hasEvery(keys: K[]): boolean {
+		return Array.from(keys).every(key => this.hasOne(key));
 	}
 
-	public hasSome(ids: K[]): boolean {
-		return Array.from(ids).some(id => this.hasOne(id));
+	public hasSome(keys: K[]): boolean {
+		return Array.from(keys).some(key => this.hasOne(key));
 	}
 
 	public addOne(entity: V): V | undefined {
@@ -80,8 +80,8 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public setOne(entity: V): V {
-		const id = this.getId(entity);
-		if (this.isValidId(id)) this.store.set(id!, entity);
+		const key = this.keyOf(entity);
+		if (this.isValidKey(key)) this.store.set(key!, entity);
 		return entity;
 	}
 
@@ -104,7 +104,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public removeWhere(predicate: Predicate<V>): V[] {
 		const entities = Array.from(this.store.values()).filter(predicate);
-		const keys: K[] = Array.from(entities).map(e => this.getId(e)!).filter(id => this.isValidId(id));
+		const keys: K[] = Array.from(entities).map(e => this.keyOf(e)!).filter(key => this.isValidKey(key));
 		this.removeMany(keys);
 		return entities;
 	}
@@ -115,9 +115,9 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public updateOne(update: Update<K, V>): V | undefined {
 		if (!update) return undefined;
-		const { id, changes } = update;
-		const combinedValue = merge(this.store.get(id), changes);
-		this.store.set(id, combinedValue);
+		const { key, changes } = update;
+		const combinedValue = merge(this.store.get(key), changes);
+		this.store.set(key, combinedValue);
 		return combinedValue;
 	}
 
@@ -126,9 +126,9 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public upsertOne(entity: V): V | undefined {
-		const id = this.getId(entity);
-		if (!this.isValidId(id)) return entity;
-		const entityUpdate = { id: id!, changes: entity };
+		const key = this.keyOf(entity)!;
+		if (!this.isValidKey(key)) return entity;
+		const entityUpdate = { key, changes: entity };
 		return this.updateOne(entityUpdate);
 	}
 
@@ -136,18 +136,17 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		return Array.from(entities).map(e => this.upsertOne(e)!);
 	}
 
-	public transformOne(options: EntityTransformOne<K, V>): V | undefined {
-		if (!options) return undefined;
-		const { id, transform } = options;
-		const changes = transform(this.store.get(id));
-		return this.updateOne({ id, changes });
+	public transformOne(key: K, transform: EntityTransform<V>): V | undefined {
+		if (!this.isValidKey(key) || !isFunction(transform)) return undefined;
+		const changes = transform(this.store.get(key));
+		return this.updateOne({ key: key, changes });
 	}
 
 	public transformMany(transform: EntityTransform<V>): V[] {
 		if (!isFunction(transform)) return this.values();
-		return Array.from(this.store.entries()).map(([id, entity]) => {
-			const entityUpdate = { id, changes: transform(entity) };
-			return this.updateOne(entityUpdate)!;
+		return Array.from(this.store.entries()).map(([key, entity]) => {
+			const changes = transform(entity);
+			return this.updateOne({ key, changes })!;
 		});
 	}
 }

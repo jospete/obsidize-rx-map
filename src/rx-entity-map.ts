@@ -4,7 +4,7 @@ import { identity } from 'lodash';
 
 import { forKey, forKeyIn, pluckValue } from './operators';
 import { MapStateChangeEvent } from './map-state-change-event';
-import { EntityMap, IdSelector } from './entity-map';
+import { EntityMap, KeySelector } from './entity-map';
 import { RxMap } from './rx-map';
 
 /**
@@ -12,8 +12,8 @@ import { RxMap } from './rx-map';
  */
 export class RxEntityMap<K, V> extends EntityMap<K, V, RxMap<K, V>> {
 
-	constructor(selectId: IdSelector<K, V>) {
-		super(new RxMap<K, V>(), selectId);
+	constructor(selectKey: KeySelector<K, V>) {
+		super(new RxMap<K, V>(), selectKey);
 	}
 
 	public get changes(): Observable<MapStateChangeEvent<K, V>> {
@@ -27,20 +27,20 @@ export class RxEntityMap<K, V> extends EntityMap<K, V, RxMap<K, V>> {
 		);
 	}
 
-	public watchOne(id: K): Observable<V> {
+	public watchOne(key: K): Observable<V> {
 		return this.changes.pipe(
-			forKey(id),
+			forKey(key),
 			pluckValue(),
-			startWith(this.getOne(id)!),
+			startWith(this.getOne(key)!),
 			filter(identity)
 		);
 	}
 
-	public watchMany(ids: K[]): Observable<V[]> {
+	public watchMany(keys: K[]): Observable<V[]> {
 		return this.changes.pipe(
-			forKeyIn(ids),
-			map(() => this.getManyExisting(ids)),
-			startWith(this.getManyExisting(ids))
+			forKeyIn(keys),
+			map(() => this.getManyExisting(keys)),
+			startWith(this.getManyExisting(keys))
 		);
 	}
 }

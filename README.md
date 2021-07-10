@@ -55,19 +55,18 @@ interface User {
 
 // key and value types are inferred by the given id selector
 const users: RxEntityMap = new RxEntityMap((user: User) => user.id);
-const bob: User = {id: 0, name: 'Bob', age: 37};
+
+const bobId = 1234;
+const bob: User = {id: bobId, name: 'Bob', age: 37};
 users.addOne(bob);
 
 // ... somewhere else that's watching for updates ...
-users.changes.pipe(
-	ofType(MapStateChangeEventType.ADD, MapStateChangeEventType.UPDATE),
-	pluckValue()
-).subscribe(user => {
-	console.log('added user -> ', user); // {id: 0, name: 'Bob', age: 37}
+users.watchOne(bobId).subscribe(user => {
+	console.log('added user -> ', user); // {id: 1234, name: 'Bob', age: 37}
 });
 
 // To get a model manually from the map
-const bob = users.store.get(0);
+const bob = users.getOne(bobId);
 
 // You can also use this module's utility operator functions to 
 // capture values as they come in from http / other observable sources.
@@ -76,11 +75,9 @@ loadUserModelFromHttpApi().pipe(
 );
 ```
 
-Available rxjs utility operators:
+## API
 
-- ```ofType``` - filter by map change event types (useful if you only want to watch ADD or UPDATE changes)
-- ```forKey``` - filter by entity primary key
-- ```pluckValue``` - map change events to their corresponding entity value
-- ```pluckChanges``` - map change events to their corresponding entity update differences (will be a partial entity object)
-- ```storeEntityIn``` - capture emitted values and store them in the provided map reference by side-effect
-- ```storeEntityArrayIn``` - capture emitted values and store them in the provided map reference by side-effect
+- [RxEntityMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-entity-map.ts) - core entry point, use this to update and watch a collection of entities (Inherits from ```EntityMap```, and uses an ```RxMap``` as its storage mechanism).
+- [EntityMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/entity-map.ts) - an overlay of an ES6 Map that is aware of the concept of "primary keys" in the map's values.
+- [RxMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-map.ts) - shares the same API as the standard [ES6 Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)) with the addition of a ```changes``` Observable.
+- [operators](https://github.com/jospete/obsidize-rx-map/blob/master/src/operators.ts) - helper rxjs operator functions for transforming events from the ```rxMap```'s "changes" Observable stream

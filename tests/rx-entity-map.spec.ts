@@ -69,7 +69,7 @@ describe('RxEntityMap', () => {
 
 	it('returns undefined id for nullish entities', () => {
 		const users = new RxEntityMap((user: User) => user.id);
-		expect(users.getId(null)).not.toBeDefined();
+		expect(users.keyOf(null)).not.toBeDefined();
 	});
 
 	it('has a shortcut for clearing the store', () => {
@@ -202,7 +202,7 @@ describe('RxEntityMap', () => {
 		expect(users.store.get(b.id)).toEqual(b);
 		expect(users.store.get(c.id)).toEqual(c2);
 
-		users.updateMany([null, { id: b.id, changes: { name: 'test udpate 2' } }, { id: c.id, changes: { age: 33 } }]);
+		users.updateMany([null, { key: b.id, changes: { name: 'test udpate 2' } }, { key: c.id, changes: { age: 33 } }]);
 		expect(users.store.get(a.id)).toEqual(a2);
 		expect(users.store.get(b.id).name).toEqual('test udpate 2');
 		expect(users.store.get(c.id).age).toEqual(33);
@@ -215,15 +215,13 @@ describe('RxEntityMap', () => {
 
 		users.addOne(a);
 
-		users.transformOne({
-			id: a.id, transform: entity => {
-				entity.name += '5';
-				return entity;
-			}
+		users.transformOne(a.id, entity => {
+			entity.name += '5';
+			return entity;
 		});
 
 		expect(users.store.get(a.id).name).toBe('Dennis5');
-		expect(() => users.transformOne(null)).not.toThrowError();
+		expect(() => users.transformOne(null, null)).not.toThrowError();
 	});
 
 	it('can transform many entities in-place', () => {
