@@ -31,10 +31,11 @@
     "url": "git+https://github.com/jospete/obsidize-rx-map.git"
   },
   "keywords": [
-    "rxjs",
-    "map",
-    "observable",
     "rx",
+    "entity",
+    "map",
+    "rxjs",
+    "observable",
     "obsidize"
   ],
   "author": "Josh Noel <obsidize@gmail.com>",

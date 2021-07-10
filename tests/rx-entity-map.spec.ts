@@ -1,4 +1,4 @@
-import { bufferCount, first, take } from 'rxjs/operators';
+import { bufferCount, first, tap, skipWhile, take } from 'rxjs/operators';
 
 import { forKey, MapStateChangeEventType, ofType, pluckChanges, pluckValue, RxEntityMap } from '../src';
 
@@ -92,6 +92,32 @@ describe('RxEntityMap', () => {
 
 		users.setOne(b);
 		expect(users.store.get(a.id)).toEqual(b);
+	});
+
+	it('has query utilities for entities by id', () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 37 };
+		const b: User = { id: 'mnbv', name: 'Potato', age: 5 };
+
+		expect(users.hasOne(a.id)).toBe(false);
+		expect(users.hasSome([a.id, b.id])).toBe(false);
+		expect(users.hasEvery([a.id, b.id])).toBe(false);
+
+		users.addMany([a, b]);
+
+		expect(users.hasOne(a.id)).toBe(true);
+		expect(users.hasSome([a.id, b.id])).toBe(true);
+		expect(users.hasEvery([a.id, b.id])).toBe(true);
+
+		users.removeOne(b.id);
+
+		expect(users.hasSome([a.id, b.id])).toBe(true);
+		expect(users.hasEvery([a.id, b.id])).toBe(false);
+
+		users.removeOne(a.id);
+
+		expect(users.hasSome([a.id, b.id])).toBe(false);
 	});
 
 	it('can overwrite multiple instances at once', () => {
@@ -256,5 +282,48 @@ describe('RxEntityMap', () => {
 
 		const update = await onUserPropChange;
 		expect(update).toEqual({ age: 1234 });
+	});
+
+	it('has a convenience method for watching the entire collection', async () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+		const b: User = { id: 'nbvc', name: 'Bob', age: 42 };
+
+		const onCollectionChange = users.watchAll().pipe(
+			skipWhile(() => users.store.size < 2),
+			first()
+		).toPromise();
+
+		users.addMany([a, b]);
+
+		const update = await onCollectionChange;
+		expect(update).toEqual(users.values());
+	});
+
+	it('has a convenience method for watching a single entity', async () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
+		const userUpdateSpy = jasmine.createSpy('userUpdateSpy');
+
+		const onCollectionChange = users.watchOne(a.id).pipe(
+			tap(userUpdateSpy),
+			skipWhile(user => !user || user.age < 25),
+			first()
+		).toPromise();
+
+		// 1st event is the startWith() operator for the current entity state
+		users.addOne(a); // 2nd event
+
+		a.name += '-5';
+		users.upsertOne(a); // 3rd event
+
+		a.age = 25;
+		users.upsertOne(a); // 4th event
+
+		const update = await onCollectionChange;
+		expect(update).toEqual(a);
+		expect(userUpdateSpy).toHaveBeenCalledTimes(4);
 	});
 });
