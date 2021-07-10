@@ -246,7 +246,7 @@ describe('RxEntityMap', () => {
 
 		users.setOne(a);
 
-		const onUserPropChange = users.store.changes.pipe(
+		const onUserPropChange = users.changes.pipe(
 			pluckChanges(),
 			first()
 		).toPromise();

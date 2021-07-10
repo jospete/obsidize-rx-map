@@ -1,4 +1,4 @@
-import { bufferCount, first } from 'rxjs/operators';
+import { bufferCount, first, takeWhile } from 'rxjs/operators';
 import { MapStateChangeEventType, ofType, pluckValue, RxMap } from '../src';
 
 interface Game {
@@ -141,12 +141,19 @@ describe('RxMap', () => {
 		games.set(tetris.id, tetris);
 		games.set(tetris.id, tetris);
 
+		const waitForClear = games.changes.pipe(
+			ofType(MapStateChangeEventType.EMPTY),
+			first()
+		).toPromise();
+
 		games.clear();
+		await waitForClear;
+
 		games.destroy();
 
 		const result = await updateStream.catch(e => e);
 		expect(result).toBe('destroyed');
-		expect(changesSpy).toHaveBeenCalledTimes(2);
+		expect(changesSpy).toHaveBeenCalledTimes(3);
 	});
 
 	it('shares standard read accessors from the ES6 Map definition', () => {
