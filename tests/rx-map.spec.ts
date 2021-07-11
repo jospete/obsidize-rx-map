@@ -95,20 +95,6 @@ describe('RxMap', () => {
 		expect(removeResults.some(ev => ev.key === pong.id)).toBe(true);
 	});
 
-	it('can be destroyed', async () => {
-
-		const games = new RxMap<number, Game>();
-		const errorPromise = games.changes.pipe(first()).toPromise().catch(e => e);
-
-		games.destroy();
-
-		// Should not blow up if destroy is called multiple times
-		expect(() => games.destroy()).not.toThrow();
-
-		const destroyedError = await errorPromise;
-		expect(destroyedError).toBeDefined();
-	});
-
 	it('augments the set() behavior based on previous values', async () => {
 
 		const games = new RxMap<number, Game>();

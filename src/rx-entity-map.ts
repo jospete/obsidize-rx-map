@@ -20,6 +20,10 @@ export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends Enti
 		return this.store.changes;
 	}
 
+	public destroy(): void {
+		this.store.destroy();
+	}
+
 	public watchOne(key: K): Observable<V> {
 		return this.changes.pipe(
 			forKey(key),

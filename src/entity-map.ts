@@ -1,4 +1,5 @@
 import { isNil, merge, isFunction, identity } from 'lodash';
+import 'tslib';
 
 export type Predicate<T> = (entity: T) => boolean;
 export type KeySelector<K, V> = (entity: V) => K;

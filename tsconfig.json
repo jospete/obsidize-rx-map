@@ -12,6 +12,7 @@
     "target": "ES5",
     "strict": true,
     "skipLibCheck": true,
+    "importHelpers": true,
     "lib": [
       "ES2017",
       "DOM"

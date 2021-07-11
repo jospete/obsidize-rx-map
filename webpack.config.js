@@ -23,4 +23,8 @@ module.exports = {
 			type: 'commonjs-module'
 		}
 	},
+	externals: {
+		lodash: 'lodash',
+		tslib: 'tslib'
+	}
 };

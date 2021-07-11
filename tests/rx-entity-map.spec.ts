@@ -45,6 +45,20 @@ describe('RxEntityMap', () => {
 		expect(keys.includes(addedUsers[1].id)).toBe(true);
 	});
 
+	it('can be destroyed', async () => {
+
+		const users = new RxEntityMap((user: User) => user.id);
+		const errorPromise = users.changes.pipe(first()).toPromise().catch(e => e);
+
+		users.destroy();
+
+		// Should not blow up if destroy is called multiple times
+		expect(() => users.destroy()).not.toThrow();
+
+		const destroyedError = await errorPromise;
+		expect(destroyedError).toBeDefined();
+	});
+
 	it('has a shortcut for obtaining values', () => {
 
 		const users = new RxEntityMap((user: User) => user.id);
