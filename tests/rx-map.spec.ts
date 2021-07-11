@@ -142,7 +142,12 @@ describe('RxMap', () => {
 
 		const changesSpy = jasmine.createSpy('changesSpy');
 
-		games.changes.subscribe(changesSpy);
+		games.changes.subscribe({
+			next: changesSpy,
+			error: () => { },
+			complete: () => { }
+		});
+
 		games.set(tetris.id, tetris);
 
 		// Both of these will be ignored by change stream
