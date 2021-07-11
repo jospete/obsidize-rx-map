@@ -22,9 +22,13 @@ export interface EntityTransformOne<K, V> {
 export class EntityMap<K, V, T extends Map<K, V>> {
 
 	constructor(
-		public readonly store: T,
-		private readonly selectKey: KeySelector<K, V>
+		protected readonly store: T,
+		protected readonly selectKey: KeySelector<K, V>
 	) {
+	}
+
+	public get count(): number {
+		return this.store.size;
 	}
 
 	public keyOf(entity: V): K | undefined {

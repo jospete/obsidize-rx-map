@@ -21,7 +21,7 @@ describe('RxEntityMap', () => {
 		const users = new RxEntityMap((user: User) => user.id);
 		const addedUsers = getTestUsers();
 
-		const addedUsersPromise = users.store.changes.pipe(
+		const addedUsersPromise = users.changes.pipe(
 			ofType(MapStateChangeEventType.ADD),
 			pluckValue()
 		).pipe(
@@ -73,10 +73,16 @@ describe('RxEntityMap', () => {
 	});
 
 	it('has a shortcut for clearing the store', () => {
+
 		const users = new RxEntityMap((user: User) => user.id);
-		spyOn(users.store, 'clear').and.callThrough();
+		const a: User = { id: 'asdf', name: 'Dennis', age: 37 };
+		expect(users.count).toBe(0);
+
+		users.addOne(a);
+		expect(users.count).toBe(1);
+
 		users.removeAll();
-		expect(users.store.clear).toHaveBeenCalled();
+		expect(users.count).toBe(0);
 	});
 
 	it('has a shortcut for overwriting a single entity', () => {
@@ -89,10 +95,10 @@ describe('RxEntityMap', () => {
 		const b: User = { id: 'asdf', name: 'Potato', age: 5 };
 
 		users.setOne(a);
-		expect(users.store.get(a.id)).toEqual(a);
+		expect(users.getOne(a.id)).toEqual(a);
 
 		users.setOne(b);
-		expect(users.store.get(a.id)).toEqual(b);
+		expect(users.getOne(a.id)).toEqual(b);
 	});
 
 	it('has query utilities for entities by id', () => {
@@ -131,8 +137,8 @@ describe('RxEntityMap', () => {
 		const b: User = { id: 'zxcv', name: 'Potato', age: 5 };
 
 		users.setMany([a, b]);
-		expect(users.store.get(a.id)).toEqual(a);
-		expect(users.store.get(b.id)).toEqual(b);
+		expect(users.getOne(a.id)).toEqual(a);
+		expect(users.getOne(b.id)).toEqual(b);
 	});
 
 	it('can overwrite the entire map at once', () => {
@@ -142,12 +148,12 @@ describe('RxEntityMap', () => {
 		const b: User = { id: 'zxcv', name: 'Potato', age: 5 };
 
 		users.setMany([a, b]);
-		expect(users.store.get(a.id)).toEqual(a);
-		expect(users.store.get(b.id)).toEqual(b);
+		expect(users.getOne(a.id)).toEqual(a);
+		expect(users.getOne(b.id)).toEqual(b);
 
 		users.setAll([b]);
-		expect(users.store.get(a.id)).not.toBeDefined();
-		expect(users.store.get(b.id)).toEqual(b);
+		expect(users.getOne(a.id)).not.toBeDefined();
+		expect(users.getOne(b.id)).toEqual(b);
 	});
 
 	it('can remove one or multiple ids from the map', () => {
@@ -157,15 +163,15 @@ describe('RxEntityMap', () => {
 		const b: User = { id: 'zxcv', name: 'Potato', age: 5 };
 
 		users.setMany([a, b]);
-		expect(users.store.get(a.id)).toEqual(a);
-		expect(users.store.get(b.id)).toEqual(b);
+		expect(users.getOne(a.id)).toEqual(a);
+		expect(users.getOne(b.id)).toEqual(b);
 
 		users.removeOne(b.id);
-		expect(users.store.get(a.id)).toEqual(a);
-		expect(users.store.get(b.id)).not.toBeDefined();
+		expect(users.getOne(a.id)).toEqual(a);
+		expect(users.getOne(b.id)).not.toBeDefined();
 
 		users.removeMany([a.id]);
-		expect(users.store.get(a.id)).not.toBeDefined();
+		expect(users.getOne(a.id)).not.toBeDefined();
 	});
 
 	it('can remove by a predicate', () => {
@@ -176,13 +182,13 @@ describe('RxEntityMap', () => {
 		const c: User = { id: 'gggg', name: 'Bob', age: 15 };
 
 		users.setMany([a, b, c]);
-		expect(users.store.get(a.id)).toEqual(a);
-		expect(users.store.get(b.id)).toEqual(b);
-		expect(users.store.get(c.id)).toEqual(c);
+		expect(users.getOne(a.id)).toEqual(a);
+		expect(users.getOne(b.id)).toEqual(b);
+		expect(users.getOne(c.id)).toEqual(c);
 
 		users.removeWhere(v => v.age >= 20);
-		expect(users.store.has(a.id)).toBe(false);
-		expect(users.store.has(b.id)).toBe(false);
+		expect(users.hasOne(a.id)).toBe(false);
+		expect(users.hasOne(b.id)).toBe(false);
 	});
 
 	it('can update many at once', () => {
@@ -198,14 +204,14 @@ describe('RxEntityMap', () => {
 		const c2 = Object.assign({}, c, { age: 42 });
 
 		users.upsertMany([a2, null, c2]); // should be able to handle random non-entity values
-		expect(users.store.get(a.id)).toEqual(a2);
-		expect(users.store.get(b.id)).toEqual(b);
-		expect(users.store.get(c.id)).toEqual(c2);
+		expect(users.getOne(a.id)).toEqual(a2);
+		expect(users.getOne(b.id)).toEqual(b);
+		expect(users.getOne(c.id)).toEqual(c2);
 
 		users.updateMany([null, { key: b.id, changes: { name: 'test udpate 2' } }, { key: c.id, changes: { age: 33 } }]);
-		expect(users.store.get(a.id)).toEqual(a2);
-		expect(users.store.get(b.id).name).toEqual('test udpate 2');
-		expect(users.store.get(c.id).age).toEqual(33);
+		expect(users.getOne(a.id)).toEqual(a2);
+		expect(users.getOne(b.id).name).toEqual('test udpate 2');
+		expect(users.getOne(c.id).age).toEqual(33);
 	});
 
 	it('can transform an entity in-place', () => {
@@ -220,7 +226,7 @@ describe('RxEntityMap', () => {
 			return entity;
 		});
 
-		expect(users.store.get(a.id).name).toBe('Dennis5');
+		expect(users.getOne(a.id).name).toBe('Dennis5');
 		expect(() => users.transformOne(null, null)).not.toThrowError();
 	});
 
@@ -238,9 +244,9 @@ describe('RxEntityMap', () => {
 			return user;
 		});
 
-		expect(users.store.get(a.id).age).toBe(16);
-		expect(users.store.get(b.id).age).toBe(16);
-		expect(users.store.get(c.id).age).toBe(15);
+		expect(users.getOne(a.id).age).toBe(16);
+		expect(users.getOne(b.id).age).toBe(16);
+		expect(users.getOne(c.id).age).toBe(15);
 		expect(() => users.transformMany(null)).not.toThrowError();
 	});
 
@@ -251,7 +257,7 @@ describe('RxEntityMap', () => {
 
 		users.addOne(a);
 
-		const onUserPropChange = users.store.changes.pipe(
+		const onUserPropChange = users.changes.pipe(
 			ofType(MapStateChangeEventType.UPDATE),
 			forKey(a.id),
 			pluckChanges(),
@@ -290,7 +296,7 @@ describe('RxEntityMap', () => {
 		const b: User = { id: 'nbvc', name: 'Bob', age: 42 };
 
 		const onCollectionChange = users.watchAll().pipe(
-			skipWhile(() => users.store.size < 2),
+			skipWhile(() => users.count < 2),
 			first()
 		).toPromise();
 

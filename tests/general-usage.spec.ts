@@ -36,7 +36,31 @@ const loadProductOrdersByUserId = (userId: number): Observable<ProductOrder[]> =
 
 describe('General Usage', () => {
 
-	it('works as advertised', async () => {
+	it('works as advertised', () => {
+
+		// key and value types are inferred by the given id selector
+		const users = new RxEntityMap((user: User) => user.id);
+
+		const bobId = 1234;
+		const bob: User = { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' };
+		users.addOne(bob);
+
+		// ... somewhere else that's watching for updates ...
+		users.watchOne(bobId).subscribe(user => {
+			console.log('added user -> ', user); // {id: 1234, name: 'Bob', age: 37}
+		});
+
+		// To get a model manually from the map
+		const bobCopy = users.getOne(bobId);
+
+		// You can also use this module's utility operator functions to 
+		// capture values as they come in from http / other observable sources.
+		of(bobCopy).pipe(
+			storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
+		);
+	});
+
+	it('can perform complex relational loading', async () => {
 
 		const users = new RxEntityMap((v: User) => v.id);
 		const products = new RxEntityMap((v: Product) => v.id);
@@ -46,7 +70,7 @@ describe('General Usage', () => {
 			storeEntityIn(users)
 		).toPromise();
 
-		const onCaptureUserProductOrder = productOrders.store.changes.pipe(
+		const onCaptureUserProductOrder = productOrders.changes.pipe(
 			ofType(MapStateChangeEventType.ADD, MapStateChangeEventType.UPDATE),
 			pluckValue(),
 			first(order => order.userId === user.id)
@@ -63,6 +87,6 @@ describe('General Usage', () => {
 		const capturedOrder = await onCaptureUserProductOrder;
 
 		expect(capturedOrder.userId).toBe(user.id);
-		expect(products.store.get(capturedOrder.productId).name).toBe('Milk');
+		expect(products.getOne(capturedOrder.productId).name).toBe('Milk');
 	});
 });

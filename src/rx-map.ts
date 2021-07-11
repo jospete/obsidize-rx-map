@@ -38,11 +38,11 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public get [Symbol.toStringTag](): string {
-		return this.source[Symbol.toStringTag];
+		return 'RxMap';
 	}
 
 	public [Symbol.iterator](): IterableIterator<[K, V]> {
-		return this.source[Symbol.iterator]();
+		return this.entries();
 	}
 
 	public get(key: K): V | undefined {
@@ -66,7 +66,7 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void): void {
-		this.source.forEach(callbackfn);
+		this.source.forEach((value, key) => callbackfn(cloneDeep(value), cloneDeep(key), this));
 	}
 
 	public destroy(): void {

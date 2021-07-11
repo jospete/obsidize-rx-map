@@ -7,5 +7,5 @@ export enum ChangeDetectionEventType {
 
 export interface ChangeDetectionEvent<T> {
 	readonly type: ChangeDetectionEventType;
-	readonly changes?: Partial<T> | T;
+	readonly changes?: Partial<T>;
 }

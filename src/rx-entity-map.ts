@@ -4,7 +4,7 @@ import { identity } from 'lodash';
 
 import { forKey, forKeyIn, pluckValue } from './operators';
 import { MapStateChangeEvent } from './map-state-change-event';
-import { EntityMap, KeySelector } from './entity-map';
+import { EntityMap, KeySelector, Predicate } from './entity-map';
 import { RxMap } from './rx-map';
 
 /**
@@ -20,13 +20,6 @@ export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends Enti
 		return this.store.changes;
 	}
 
-	public watchAll(): Observable<V[]> {
-		return this.changes.pipe(
-			map(() => this.values()),
-			startWith(this.values())
-		);
-	}
-
 	public watchOne(key: K): Observable<V> {
 		return this.changes.pipe(
 			forKey(key),
@@ -36,11 +29,26 @@ export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends Enti
 		);
 	}
 
+	public watchWhere(predicate: Predicate<V>): Observable<V> {
+		return this.changes.pipe(
+			pluckValue(),
+			filter(identity),
+			filter(predicate)
+		);
+	}
+
 	public watchMany(keys: K[]): Observable<V[]> {
 		return this.changes.pipe(
 			forKeyIn(keys),
 			map(() => this.getManyExisting(keys)),
 			startWith(this.getManyExisting(keys))
+		);
+	}
+
+	public watchAll(): Observable<V[]> {
+		return this.changes.pipe(
+			map(() => this.values()),
+			startWith(this.values())
 		);
 	}
 }

@@ -47,14 +47,14 @@ import {
 interface User {
 	id: number;
 	name: string;
-	age: number;
+	email: string;
 }
 
 // key and value types are inferred by the given id selector
-const users: RxEntityMap = new RxEntityMap((user: User) => user.id);
+const users = new RxEntityMap((user: User) => user.id);
 
 const bobId = 1234;
-const bob: User = {id: bobId, name: 'Bob', age: 37};
+const bob: User = { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' };
 users.addOne(bob);
 
 // ... somewhere else that's watching for updates ...
@@ -63,11 +63,11 @@ users.watchOne(bobId).subscribe(user => {
 });
 
 // To get a model manually from the map
-const bob = users.getOne(bobId);
+const bobCopy = users.getOne(bobId);
 
 // You can also use this module's utility operator functions to 
 // capture values as they come in from http / other observable sources.
-loadUserModelFromHttpApi().pipe(
+of(bobCopy).pipe(
 	storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
 );
 ```

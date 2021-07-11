@@ -29,18 +29,18 @@ export const ofType = <K, V>(...types: MapStateChangeEventType[]): MonoTypeOpera
 /**
  * filter by entity primary key
  */
-export const forKey = <K, V>(id: K): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
+export const forKey = <K, V>(key: K): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
 	return source => source.pipe(
-		filter(ev => ev.key === id)
+		filter(ev => ev.key === key)
 	);
 };
 
 /**
  * filter by a set of entity primary keys
  */
-export const forKeyIn = <K, V>(ids: K[]): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
+export const forKeyIn = <K, V>(keys: K[]): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> => {
 	return source => source.pipe(
-		spreadFilterBy(ids, ev => ev.key)
+		spreadFilterBy(keys, ev => ev.key)
 	);
 };
 
