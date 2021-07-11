@@ -18,7 +18,8 @@ export class RxMap<K, V> implements Map<K, V> {
 	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.mStateChangeSubject.asObservable().pipe(share());
 
 	protected emitStateChange(type: MapStateChangeEventType, key: K, value?: V, changes?: Partial<V> | V): void {
-		this.mStateChangeSubject.next({ type, key, value, changes });
+		// Always clone parameterized event values to prevent internal state mutation via observable subscriptions
+		this.mStateChangeSubject.next(cloneDeep({ type, key, value, changes }));
 	}
 
 	protected emitAdd(key: K, value: V): void {

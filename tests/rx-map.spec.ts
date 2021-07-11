@@ -174,4 +174,26 @@ describe('RxMap', () => {
 		expect(games[Symbol.toStringTag]).toBeDefined();
 		expect(() => games[Symbol.iterator]()).not.toThrowError();
 	});
+
+	it('emits cloned data in the changes observable to prevent unauthorized mutation of the underlying data', async () => {
+
+		const games = new RxMap<number, Game>();
+		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
+
+		const addEventPromise = games.changes.pipe(
+			ofType(MapStateChangeEventType.ADD),
+			first()
+		).toPromise();
+
+		games.set(tetris.id, tetris);
+
+		const addEvent = await addEventPromise;
+		const addedGame = addEvent.value;
+		const oldPlayerCount = addedGame.playerCount;
+
+		addedGame.playerCount = 12;
+
+		// The above line should not be able to mutate the internal map value
+		expect(games.get(tetris.id).playerCount).toBe(oldPlayerCount);
+	});
 });
