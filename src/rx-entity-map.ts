@@ -4,7 +4,7 @@ import { identity } from 'lodash';
 
 import { forKey, forKeyIn, pluckValue } from './operators';
 import { MapStateChangeEvent } from './map-state-change-event';
-import { EntityMap, KeySelector, Predicate } from './entity-map';
+import { EntityMap, KeySelector } from './entity-map';
 import { RxMap } from './rx-map';
 
 /**
@@ -26,14 +26,6 @@ export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends Enti
 			pluckValue(),
 			startWith(this.getOne(key)!),
 			filter(identity)
-		);
-	}
-
-	public watchWhere(predicate: Predicate<V>): Observable<V> {
-		return this.changes.pipe(
-			pluckValue(),
-			filter(identity),
-			filter(predicate)
 		);
 	}
 

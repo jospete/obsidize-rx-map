@@ -95,10 +95,11 @@ describe('RxMap', () => {
 		expect(removeResults.some(ev => ev.key === pong.id)).toBe(true);
 	});
 
-	it('can be destroyed', () => {
+	it('can be destroyed', async () => {
 		const games = new RxMap<number, Game>();
 		games.destroy();
-		expect(() => games.changes.subscribe()).toThrowError();
+		const destroyedError = await games.changes.pipe(first()).toPromise().catch(e => e);
+		expect(destroyedError).toBeDefined();
 	});
 
 	it('augments the set() behavior based on previous values', async () => {
@@ -151,8 +152,8 @@ describe('RxMap', () => {
 
 		games.destroy();
 
-		const result = await updateStream.catch(e => e);
-		expect(result).toBe('destroyed');
+		const destroyedError = await updateStream.catch(e => e);
+		expect(destroyedError).toBeDefined();
 		expect(changesSpy).toHaveBeenCalledTimes(2);
 	});
 

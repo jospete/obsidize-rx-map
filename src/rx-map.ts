@@ -70,8 +70,10 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public destroy(): void {
-		this.mStateChangeSubject.error('destroyed');
-		this.mStateChangeSubject.unsubscribe();
+		const s = this.mStateChangeSubject;
+		if (s.closed && s.isStopped) return;
+		s.error('destroyed');
+		s.unsubscribe();
 	}
 
 	public delete(key: K): boolean {

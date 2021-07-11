@@ -71,9 +71,8 @@ describe('General Usage', () => {
 		).toPromise();
 
 		const onCaptureUserProductOrder = productOrders.changes.pipe(
-			ofType(MapStateChangeEventType.ADD, MapStateChangeEventType.UPDATE),
 			pluckValue(),
-			first(order => order.userId === user.id)
+			first(order => !!order && order.userId === user.id)
 		).toPromise();
 
 		await loadProducts().pipe(
