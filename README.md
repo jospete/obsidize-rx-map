@@ -1,17 +1,24 @@
 # @obsidize/rx-map
 
-This is intended to be a very, _very_ light-weight entity storage management system that slightly resembles parts of [@ngrx/entity](https://ngrx.io/api/entity).
+A minimalist implementation of the [@ngrx/entity](https://ngrx.io/api/entity) EntityAdapter API, 
+which aims to completely eliminate action / reducer / effects boilerplate and stay out of your way as much as possible.
 
-The idea here is that the most useful part of ngrx is the store itself, and being able to watch for "single source of truth" entity changes from anywhere.
-However, ngrx completely undermines this usefulness by adding a million different constructs in the way of just publishing to something that is effectively _just a map of values_. (See: actions, reducers, effects, effects of effects, actions for effects of effects, etc...)
+This module acts as a library rather than a framework to give you back control of your data store.
 
-The mantra of this module is simple:
+The pattern here does **not** follow the redux / ngrx scheme of:
 
-1. download some data from _somewhere_
-2. put it in an ```RxMap``` or ```RxEntityMap``` instance
-3. watch for changes on the exposed "changes" observable and render changes to the UI (or react to them in some other service(s))
+1. dispatch action
+2. effects
+3. store state mutation
+4. store state selectors updated
 
-Although this format loses some of the rigidity and guarantees that ngrx offers, it grants a much easier syntax and does a much better job of not "getting in the way".
+Rather, this module uses a simple observable datastructure called ```RxEntityMap``` that acts as a "slice" of your complete store:
+
+1. create a long-lived ```RxEntityMap``` instance per entity type that you want to track (i.e. "User", "Product", "ProductOrder", etc.)
+2. subscribe to ```RxEntityMap.changes``` as needed to watch any number of entities by id (or just watch the entire collection)
+3. publish updates to the map instance directly
+
+Step 3 here essentially bypasses steps 2, 3 and 4 of the redux paradigm, and rips out all of the action / reducer / effects boilerplate.
 
 ## Installation
 
@@ -29,16 +36,9 @@ npm install --save git+https://github.com/jospete/obsidize-rx-map.git
 
 ## Usage
 
-This module is primarily geared towards use of ```RxEntityMap```, which is a Map with "primary key" addons.
-This means that ```RxEntityMap``` is aware of entity primary keys, and can make many useful mutations / transformations based on them.
-
-The general idea is:
-
-1. Make a bunch of ```RxEntityMap``` instances that will exist for the lifetime of the application
-2. Subscribe to the change observables of those instances as needed
-3. Publish changes to those instances (any changes made will be echoed to subscribers of the change observables)
-
 ```typescript
+import {of} from 'rxjs';
+
 import {
 	RxEntityMap, 
 	storeEntityIn
@@ -59,14 +59,17 @@ users.addOne(bob);
 
 // ... somewhere else that's watching for updates ...
 users.watchOne(bobId).subscribe(user => {
-	console.log('added user -> ', user); // {id: 1234, name: 'Bob', age: 37}
+	console.log('user model change -> ', user); // { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' }
 });
 
-// To get a model manually from the map
+// Get a model manually from the map
 const bobCopy = users.getOne(bobId);
 
-// You can also use this module's utility operator functions to 
-// capture values as they come in from http / other observable sources.
+// NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection
+bobCopy.email = 'altbobemail@blah.com';
+
+// Use this module's utility operator functions to capture entity models 
+// as they come in from http / other observable sources.
 of(bobCopy).pipe(
 	storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
 );

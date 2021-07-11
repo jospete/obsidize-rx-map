@@ -47,14 +47,17 @@ describe('General Usage', () => {
 
 		// ... somewhere else that's watching for updates ...
 		users.watchOne(bobId).subscribe(user => {
-			console.log('added user -> ', user); // {id: 1234, name: 'Bob', age: 37}
+			console.log('user model change -> ', user); // { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' }
 		});
 
-		// To get a model manually from the map
+		// Get a model manually from the map
 		const bobCopy = users.getOne(bobId);
 
-		// You can also use this module's utility operator functions to 
-		// capture values as they come in from http / other observable sources.
+		// NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection
+		bobCopy.email = 'altbobemail@blah.com';
+
+		// Use this module's utility operator functions to capture entity models 
+		// as they come in from http / other observable sources.
 		of(bobCopy).pipe(
 			storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
 		);
