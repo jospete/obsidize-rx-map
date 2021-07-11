@@ -1,9 +1,9 @@
 # @obsidize/rx-map
 
 A minimalist implementation of the [@ngrx/entity](https://ngrx.io/api/entity) EntityAdapter [API](https://ngrx.io/guide/entity/adapter#adapter-collection-methods), 
-which aims to completely eliminate action / reducer / effects boilerplate and stay out of your way as much as possible.
+which completely eliminates action / reducer / effects boilerplate in order to stay out of your way as much as possible.
 
-This module acts as a library rather than a framework to give you maximum control of in-memory your data storage.
+This module acts as a library rather than a framework to give you maximum control over your in-memory data stores.
 
 The pattern of this module does **not** follow the redux / ngrx scheme of:
 
@@ -12,7 +12,7 @@ The pattern of this module does **not** follow the redux / ngrx scheme of:
 3. store state mutation
 4. store state selectors updated
 
-Rather, this uses a simple observable datastructure called ```RxEntityMap``` that acts as a "slice" of your complete store:
+But rather uses a simple observable datastructure called ```RxEntityMap``` that acts as a "slice" of your complete store:
 
 1. create a long-lived ```RxEntityMap``` instance per entity type that you want to track (i.e. "User", "Product", "ProductOrder", etc.)
 2. subscribe to ```RxEntityMap.changes``` as needed to watch any number of entities by id (or just watch the entire collection)
@@ -80,10 +80,13 @@ of(bobCopy).pipe(
 NOTE: each level of this module is designed to be an extendable class, which you can customize at your leisure.
 
 ```typescript
+import {map} from 'rxjs/operators';
+
 import {
 	RxEntityMap, 
 	RxMap,
-	KeySelector
+	KeySelector,
+	Predicate
 } from '@obsidize/rx-map';
 
 class MyCustomRxMap<K, V> extends RxMap<K, V> {
@@ -102,8 +105,10 @@ class MyCustomEntityMap<K, V> extends RxEntityMap<K, V, MyCustomRxMap<K, V>> {
 	}
 
 	// You can also add on new methods to keep your entity map logic dry.
-	public watchSomethingSpecific(): Observable<V> {
-		return this.watchOne(SOME_STATIC_ID);
+	public watchManyWhere(predicate: Predicate<V>): Observable<V> {
+		return this.watchAll().pipe(
+			map(values => values.filter(predicate))
+		);
 	}
 }
 
