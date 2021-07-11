@@ -18,7 +18,7 @@ But rather uses a simple observable datastructure called ```RxEntityMap``` that 
 2. subscribe to ```RxEntityMap.changes``` as needed to watch any number of entities by id (or just watch the entire collection)
 3. publish updates to the map instance directly
 
-Step 3 above essentially bypasses steps 2, 3 and 4 of the redux paradigm, and rips out all of the action / reducer / effects boilerplate.
+Step 3 above essentially bypasses steps 1, 2, and 3 of the redux paradigm, and rips out all of the action / reducer / effects boilerplate.
 
 ## Installation
 
