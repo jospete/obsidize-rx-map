@@ -66,14 +66,17 @@ users.watchOne(bobId).subscribe(user => {
 const bobCopy = users.getOne(bobId);
 
 // NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection
-bobCopy.email = 'altbobemail@blah.com';
 console.log(bobCopy === bob); // false
 
-// Use this module's utility operator functions to capture entity models 
-// as they come in from http / other observable sources.
+// Make some changes and publish back
+bobCopy.email = 'altbobemail@blah.com';
+users.upsertOne(bobCopy);
+
+// This module also has operator functions to capture entity models 
+// as they come in from other http / observable sources.
 of(bobCopy).pipe(
 	storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
-).subscribe();
+).subscribe(user => console.log(user));
 ```
 
 
