@@ -125,7 +125,7 @@ interface Food {
 	name: FoodName;
 }
 
-// The key selector can be any type you want - this behavior is built in by default
+// Note that the key selector can return any type you want, and is not limited to strings and numbers
 const customMapInst = new MyCustomEntityMap((food: Food) => food.name);
 ```
 
