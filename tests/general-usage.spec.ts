@@ -38,7 +38,7 @@ describe('General Usage', () => {
 
 	it('works as advertised', () => {
 
-		// key and value types are inferred by the given id selector
+		// key / Value types are inferred by the given key selector function
 		const users = new RxEntityMap((user: User) => user.id);
 
 		const bobId = 1234;
