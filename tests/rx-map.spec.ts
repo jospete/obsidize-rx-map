@@ -98,6 +98,7 @@ describe('RxMap', () => {
 	it('can be destroyed', async () => {
 		const games = new RxMap<number, Game>();
 		games.destroy();
+		expect(() => games.destroy()).not.toThrow();
 		const destroyedError = await games.changes.pipe(first()).toPromise().catch(e => e);
 		expect(destroyedError).toBeDefined();
 	});
