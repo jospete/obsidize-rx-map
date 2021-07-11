@@ -60,7 +60,10 @@ describe('General Usage', () => {
 		// as they come in from http / other observable sources.
 		of(bobCopy).pipe(
 			storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
-		);
+		).subscribe();
+
+		expect(bobCopy).toEqual(users.getOne(bobId));
+		expect(bobCopy).not.toBe(users.getOne(bobId));
 	});
 
 	it('can perform complex relational loading', async () => {

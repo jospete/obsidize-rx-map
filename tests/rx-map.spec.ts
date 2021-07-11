@@ -96,10 +96,16 @@ describe('RxMap', () => {
 	});
 
 	it('can be destroyed', async () => {
+
 		const games = new RxMap<number, Game>();
+		const errorPromise = games.changes.pipe(first()).toPromise().catch(e => e);
+
 		games.destroy();
+
+		// Should not blow up if destroy is called multiple times
 		expect(() => games.destroy()).not.toThrow();
-		const destroyedError = await games.changes.pipe(first()).toPromise().catch(e => e);
+
+		const destroyedError = await errorPromise;
 		expect(destroyedError).toBeDefined();
 	});
 
@@ -135,7 +141,6 @@ describe('RxMap', () => {
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 
 		const changesSpy = jasmine.createSpy('changesSpy');
-		const updateStream = games.changes.toPromise();
 
 		games.changes.subscribe(changesSpy);
 		games.set(tetris.id, tetris);
@@ -151,9 +156,10 @@ describe('RxMap', () => {
 		games.clear();
 		await waitForClear;
 
+		const destroyPromise = games.changes.toPromise().catch(e => e);
 		games.destroy();
 
-		const destroyedError = await updateStream.catch(e => e);
+		const destroyedError = await destroyPromise;
 		expect(destroyedError).toBeDefined();
 		expect(changesSpy).toHaveBeenCalledTimes(2);
 	});

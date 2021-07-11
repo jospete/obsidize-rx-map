@@ -1,17 +1,12 @@
 import { isNil, merge, isFunction, identity } from 'lodash';
 
 export type Predicate<T> = (entity: T) => boolean;
-export type EntityTransform<T> = (entity: T | undefined) => T;
 export type KeySelector<K, V> = (entity: V) => K;
+export type EntityTransform<T> = (entity: T) => T;
 
 export interface Update<K, V> {
 	key: K;
 	changes: Partial<V>;
-}
-
-export interface EntityTransformOne<K, V> {
-	key: K;
-	transform: EntityTransform<V>;
 }
 
 /**
@@ -107,8 +102,8 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public removeWhere(predicate: Predicate<V>): V[] {
-		const entities = Array.from(this.store.values()).filter(predicate);
-		const keys: K[] = Array.from(entities).map(e => this.keyOf(e)!).filter(key => this.isValidKey(key));
+		const entities = this.values().filter(predicate);
+		const keys: K[] = entities.map(e => this.keyOf(e)!).filter(key => this.isValidKey(key));
 		this.removeMany(keys);
 		return entities;
 	}
@@ -141,14 +136,15 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	}
 
 	public transformOne(key: K, transform: EntityTransform<V>): V | undefined {
-		if (!this.isValidKey(key) || !isFunction(transform)) return undefined;
-		const changes = transform(this.store.get(key));
+		const entity = this.getOne(key);
+		if (!entity || !isFunction(transform)) return entity;
+		const changes = transform(entity);
 		return this.updateOne({ key: key, changes });
 	}
 
 	public transformMany(transform: EntityTransform<V>): V[] {
 		if (!isFunction(transform)) return this.values();
-		return Array.from(this.store.entries()).map(([key, entity]) => {
+		return this.entries().map(([key, entity]) => {
 			const changes = transform(entity);
 			return this.updateOne({ key, changes })!;
 		});
