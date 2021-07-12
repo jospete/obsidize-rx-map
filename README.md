@@ -5,7 +5,7 @@ except without the action / reducer / effects boilerplate that typically comes w
 
 This module acts as a library rather than a framework to give you maximum control over your in-memory data stores.
 
-The pattern of this module does **not** follow the redux / ngrx scheme of:
+The pattern of this module does _**not**_ follow the redux / ngrx scheme of:
 
 1. dispatch action
 2. effects
@@ -141,6 +141,6 @@ const customMapInst = new MyCustomEntityMap((food: Food) => food.name);
 
 ```RxMap``` is backed by ```ImmutableMap``` by default to prevent bypassing of change detection via direct object editing. This means that ```RxMap``` can reduce change emissions to only happen when there are actual changes (avoids set() redundancies).
 
-While this is a "nice to have" for reducing map state change event noise, change detection can become very expensive if the size of the entity object(s) or number of them is substantial.
+While this is a "nice to have" for reducing map state change event noise, change detection can become very expensive if the size of the entity object(s) or the amount of them  in the map is substantial.
 
-To bypass these features and increase performance, use [MutableRxEntityMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/mutable-rx-entity-map.ts) (**use with caution - you probably don't need this**)
+To bypass these features for potential performance gains, use [MutableRxEntityMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/mutable-rx-entity-map.ts) (**use with caution - you probably don't need this**)
