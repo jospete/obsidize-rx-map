@@ -1,37 +1,49 @@
 import { Observable, Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { filter, map, share } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
 
-import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
-import { ChangeDetectionEventType } from './change-detection-event';
-import { MonoProxyIterableIterator } from './proxy-iterable-iterator';
-import { detectChanges } from './utility';
+import { MapStateChangeEvent, MapStateChangeEventContext, MapStateChangeEventType } from './map-state-change-event';
+import { isChangeDetectionResultTypeValid as isChangeDetectionResultTypeActionable } from './change-detection-event';
+import { ImmutableMap } from './immutable-map';
+import { extractChanges } from './utility';
 
 /**
  * Extension of the standard ES6 Map with rxjs change event observables tacked on.
  */
-export class RxMap<K, V> implements Map<K, V> {
+export class RxMap<K, V, T extends Map<K, V> = Map<K, V>> implements Map<K, V> {
 
 	protected readonly mStateChangeSubject: Subject<MapStateChangeEvent<K, V>> = new Subject();
-	protected readonly source: Map<K, V> = new Map();
 
-	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.mStateChangeSubject.asObservable().pipe(share());
+	public readonly allChanges: Observable<MapStateChangeEvent<K, V>> = this.mStateChangeSubject.asObservable().pipe(
+		share()
+	);
 
-	protected emitStateChange(type: MapStateChangeEventType, key: K, value?: V, changes?: Partial<V> | V): void {
-		// Always clone parameterized event values to prevent internal state mutation via observable subscriptions
-		this.mStateChangeSubject.next(cloneDeep({ type, key, value, changes }));
+	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.allChanges.pipe(
+		map(ev => extractChanges(ev)),
+		filter(ev => isChangeDetectionResultTypeActionable(ev.changeType))
+	);
+
+	constructor(
+		protected readonly source: T = (new ImmutableMap<K, V>() as any)
+	) {
 	}
 
-	protected emitAdd(key: K, value: V): void {
-		this.emitStateChange(MapStateChangeEventType.ADD, key, value, value);
+	protected emit(
+		type: MapStateChangeEventType,
+		key: K,
+		value?: V,
+		previousValue?: Partial<V>,
+		context: MapStateChangeEventContext = { source: 'unknown' }
+	): void {
+		this.mStateChangeSubject.next({ type, key, value, previousValue, context });
 	}
 
-	protected emitUpdate(key: K, changes: Partial<V>): void {
-		this.emitStateChange(MapStateChangeEventType.UPDATE, key, this.get(key), changes);
+	protected emitSet(key: K, value: V, previousValue?: V, context?: MapStateChangeEventContext): void {
+		this.emit(MapStateChangeEventType.SET, key, value, previousValue, context);
 	}
 
-	protected emitDelete(key: K, value: V): void {
-		this.emitStateChange(MapStateChangeEventType.DELETE, key, value);
+	protected emitDelete(key: K, value: V, context?: MapStateChangeEventContext): void {
+		this.emit(MapStateChangeEventType.DELETE, key, value, undefined, context);
 	}
 
 	public get size(): number {
@@ -47,7 +59,7 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public get(key: K): V | undefined {
-		return cloneDeep(this.source.get(key));
+		return this.source.get(key);
 	}
 
 	public has(key: K): boolean {
@@ -55,19 +67,19 @@ export class RxMap<K, V> implements Map<K, V> {
 	}
 
 	public entries(): IterableIterator<[K, V]> {
-		return new MonoProxyIterableIterator<[K, V]>(this.source.entries(), (pair: [K, V]) => cloneDeep(pair));
+		return this.source.entries();
 	}
 
 	public keys(): IterableIterator<K> {
-		return new MonoProxyIterableIterator<K>(this.source.keys(), (k: K) => cloneDeep(k));
+		return this.source.keys();
 	}
 
 	public values(): IterableIterator<V> {
-		return new MonoProxyIterableIterator<V>(this.source.values(), (v: V) => cloneDeep(v));
+		return this.source.values();
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void): void {
-		this.source.forEach((value, key) => callbackfn(cloneDeep(value), cloneDeep(key), this));
+		this.source.forEach(callbackfn);
 	}
 
 	public destroy(): void {
@@ -77,40 +89,22 @@ export class RxMap<K, V> implements Map<K, V> {
 		s.unsubscribe();
 	}
 
-	public delete(key: K): boolean {
-		const value = this.get(key);
-		const didDelete = this.source.delete(key);
-		if (didDelete) this.emitDelete(key, value!);
-		return didDelete;
-	}
-
 	public clear(): void {
 		const keys = Array.from(this.keys());
 		keys.forEach(key => this.delete(key));
 	}
 
-	public set(key: K, value: V): this {
+	public delete(key: K, context?: MapStateChangeEventContext): boolean {
+		const value = this.get(key);
+		const didDelete = this.source.delete(key);
+		this.emitDelete(key, value!, context);
+		return didDelete;
+	}
 
-		const targetValue = cloneDeep(value);
-		const previousValue = this.get(key);
-		const { type, changes } = detectChanges(targetValue, previousValue);
-
-		switch (type) {
-			case ChangeDetectionEventType.CREATE:
-				this.source.set(key, targetValue);
-				this.emitAdd(key, targetValue);
-				break;
-			case ChangeDetectionEventType.UPDATE:
-				this.source.set(key, targetValue);
-				this.emitUpdate(key, changes as V);
-				break;
-			case ChangeDetectionEventType.DELETE:
-				this.delete(key);
-				break;
-			default:
-				break;
-		}
-
+	public set(key: K, value: V, context?: MapStateChangeEventContext): this {
+		const previousValue = cloneDeep(this.get(key));
+		this.source.set(key, value);
+		this.emitSet(key, value, previousValue, context);
 		return this;
 	}
 }

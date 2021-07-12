@@ -20,7 +20,7 @@ describe('RxMap', () => {
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 
 		const addStream = games.changes.pipe(
-			ofType(MapStateChangeEventType.ADD),
+			ofType(MapStateChangeEventType.SET),
 			pluckValue()
 		);
 
@@ -58,7 +58,6 @@ describe('RxMap', () => {
 		expect(removeResult).toEqual(tetris);
 
 		const nextEventStream = games.changes.pipe(
-			ofType(MapStateChangeEventType.ADD, MapStateChangeEventType.DELETE),
 			first()
 		).toPromise();
 
@@ -67,7 +66,7 @@ describe('RxMap', () => {
 		games.set(tetris.id, tetris);
 
 		const nextEvent = await nextEventStream;
-		expect(nextEvent.type).toBe(MapStateChangeEventType.ADD);
+		expect(nextEvent.type).toBe(MapStateChangeEventType.SET);
 	});
 
 	it('notifies when a values are deleted via map clear', async () => {
@@ -103,7 +102,7 @@ describe('RxMap', () => {
 		games.set(tetris.id, tetris);
 
 		const updateStream = games.changes.pipe(
-			ofType(MapStateChangeEventType.UPDATE),
+			ofType(MapStateChangeEventType.SET),
 			first()
 		).toPromise();
 
@@ -116,7 +115,7 @@ describe('RxMap', () => {
 			first()
 		).toPromise();
 
-		games.set(tetris.id, null);
+		games.delete(tetris.id);
 		const { key } = await deleteStream;
 		expect(key).toBe(tetris.id);
 	});
@@ -181,7 +180,7 @@ describe('RxMap', () => {
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 
 		const addEventPromise = games.changes.pipe(
-			ofType(MapStateChangeEventType.ADD),
+			ofType(MapStateChangeEventType.SET),
 			first()
 		).toPromise();
 

@@ -1,7 +1,7 @@
 import { Observable, of } from 'rxjs';
 import { first } from 'rxjs/operators';
 
-import { storeEntityIn, storeEntityArrayIn, MapStateChangeEventType, ofType, pluckValue, RxEntityMap } from '../src';
+import { storeEntityIn, storeEntityArrayIn, pluckValue, RxEntityMap } from '../src';
 
 interface User {
 	id: number;

@@ -22,7 +22,7 @@ describe('RxEntityMap', () => {
 		const addedUsers = getTestUsers();
 
 		const addedUsersPromise = users.changes.pipe(
-			ofType(MapStateChangeEventType.ADD),
+			ofType(MapStateChangeEventType.SET),
 			pluckValue()
 		).pipe(
 			bufferCount(2),
@@ -272,7 +272,7 @@ describe('RxEntityMap', () => {
 		users.addOne(a);
 
 		const onUserPropChange = users.changes.pipe(
-			ofType(MapStateChangeEventType.UPDATE),
+			ofType(MapStateChangeEventType.SET),
 			forKey(a.id),
 			pluckChanges(),
 			first()
