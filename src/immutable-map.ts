@@ -9,7 +9,10 @@ import { MonoProxyIterableIterator } from './proxy-iterable-iterator';
  */
 export class ImmutableMap<K, V> implements Map<K, V> {
 
-	protected readonly source: Map<K, V> = new Map();
+	constructor(
+		protected readonly source: Map<K, V> = new Map()
+	) {
+	}
 
 	public get size(): number {
 		return this.source.size;

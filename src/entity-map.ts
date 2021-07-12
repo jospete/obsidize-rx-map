@@ -23,6 +23,10 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 	) {
 	}
 
+	protected onSetKeyValuePair(key: K, value: V): void {
+		this.store.set(key, value);
+	}
+
 	public get count(): number {
 		return this.store.size;
 	}
@@ -81,7 +85,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 
 	public setOne(entity: V): V {
 		const key = this.keyOf(entity);
-		if (this.isValidKey(key)) this.store.set(key!, entity);
+		if (this.isValidKey(key)) this.onSetKeyValuePair(key!, entity);
 		return entity;
 	}
 
@@ -117,7 +121,7 @@ export class EntityMap<K, V, T extends Map<K, V>> {
 		if (!update) return undefined;
 		const { key, changes } = update;
 		const combinedValue = merge(this.store.get(key), changes);
-		this.store.set(key, combinedValue);
+		this.onSetKeyValuePair(key, combinedValue);
 		return combinedValue;
 	}
 
