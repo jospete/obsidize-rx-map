@@ -45,7 +45,7 @@ import {
 } from '@obsidize/rx-map';
 
 interface User {
-	id: number;
+	id: string;
 	name: string;
 	email: string;
 }
@@ -53,7 +53,7 @@ interface User {
 // key / Value types are inferred by the given key selector function
 const users = new RxEntityMap((user: User) => user.id);
 
-const bobId = 1234;
+const bobId = 'adsfzxcv';
 const bob: User = { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' };
 users.addOne(bob);
 
