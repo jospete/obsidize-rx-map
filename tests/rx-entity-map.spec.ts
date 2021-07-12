@@ -2,17 +2,7 @@ import { some } from 'lodash';
 import { bufferCount, first, tap, skipWhile, take } from 'rxjs/operators';
 
 import { forKey, MapStateChangeEventType, ofType, pluckChanges, pluckValue, RxEntityMap } from '../src';
-
-interface User {
-	id: string;
-	name: string;
-	age: number;
-}
-
-const getTestUsers = () => [
-	{ id: 'asdf', name: 'Dennis', age: 37 },
-	{ id: 'bvcx', name: 'Fred', age: 25 },
-];
+import { getTestUsers, User } from './test-utility';
 
 describe('RxEntityMap', () => {
 

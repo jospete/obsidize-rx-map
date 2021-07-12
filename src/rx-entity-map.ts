@@ -14,8 +14,11 @@ export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends Enti
 
 	public activeContext: string = 'RxEntityMap default context';
 
-	constructor(selectKey: KeySelector<K, V>) {
-		super(new RxMap<K, V>() as T, selectKey);
+	constructor(
+		selectKey: KeySelector<K, V>,
+		store: T = (new RxMap<K, V>() as T)
+	) {
+		super(store, selectKey);
 	}
 
 	protected onSetKeyValuePair(k: K, v: V): void {

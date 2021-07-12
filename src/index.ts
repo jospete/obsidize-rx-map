@@ -2,6 +2,7 @@ export * from './change-detection-event';
 export * from './entity-map';
 export * from './immutable-map';
 export * from './map-state-change-event';
+export * from './mutable-rx-entity-map';
 export * from './operators';
 export * from './proxy-iterable-iterator';
 export * from './rx-entity-map';

@@ -1,10 +1,5 @@
 import { EntityMap } from '../src';
-
-interface Book {
-	id: number;
-	name: string;
-	pageCount: number;
-}
+import { Book } from './test-utility';
 
 describe('EntityMap', () => {
 

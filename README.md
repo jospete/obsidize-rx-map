@@ -1,7 +1,7 @@
 # @obsidize/rx-map
 
 A minimalist implementation of the [@ngrx/entity](https://ngrx.io/api/entity) EntityAdapter [API](https://ngrx.io/guide/entity/adapter#adapter-collection-methods), 
-which completely eliminates action / reducer / effects boilerplate in order to stay out of your way as much as possible.
+except without the action / reducer / effects boilerplate that typically comes with a state management system.
 
 This module acts as a library rather than a framework to give you maximum control over your in-memory data stores.
 
@@ -12,7 +12,7 @@ The pattern of this module does **not** follow the redux / ngrx scheme of:
 3. store state mutation
 4. store state selectors updated
 
-But rather uses a simple observable datastructure called ```RxEntityMap``` that acts as a "slice" of your complete store:
+But rather uses a simple observable datastructure called ```RxEntityMap``` that acts as a "slice" of your database:
 
 1. create a long-lived ```RxEntityMap``` instance per entity type that you want to track (i.e. "User", "Product", "ProductOrder", etc.)
 2. subscribe to ```RxEntityMap.changes``` as needed to watch any number of entities by id (or just watch the entire collection)
@@ -136,3 +136,11 @@ const customMapInst = new MyCustomEntityMap((food: Food) => food.name);
 - [RxMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-map.ts) - shares the same API as the standard [ES6 Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) with the addition of a ```changes``` Observable.
 - [ImmutableMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/immutable-map.ts) - special flavor of an ES6 Map who's values cannot be mutated outside of the ```set()``` and ```delete()``` methods. Deep object cloning is used to enforce this for all query methods.
 - [rxjs operators](https://github.com/jospete/obsidize-rx-map/blob/master/src/operators.ts) - helper operator functions for transforming events from the ```RxMap.changes``` Observable stream
+
+## Supplemental Notes
+
+```RxMap``` is backed by ```ImmutableMap``` by default to prevent bypassing of change detection via direct object editing. This means that ```RxMap``` can reduce change emissions to only happen when there are actual changes (avoids set() redundancies).
+
+While this is a "nice to have" for reducing map state change event noise, change detection can become very expensive if the size of the entity object(s) or number of them is substantial.
+
+To bypass these features and increase performance, use [MutableRxEntityMap](https://github.com/jospete/obsidize-rx-map/blob/master/src/mutable-rx-entity-map.ts) (**use with caution - you probably don't need this**)

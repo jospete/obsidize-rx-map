@@ -1,12 +1,7 @@
 import { bufferCount, first, takeWhile } from 'rxjs/operators';
 
 import { MapStateChangeEventType, ofType, pluckValue, RxMap } from '../src';
-
-interface Game {
-	id: number;
-	name: string;
-	playerCount: number;
-}
+import { Game } from './test-utility';
 
 describe('RxMap', () => {
 
