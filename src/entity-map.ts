@@ -1,5 +1,5 @@
-import { isNil, merge, isFunction, identity } from 'lodash';
 import 'tslib';
+import { isNil, merge, isFunction, identity } from 'lodash';
 
 export type Predicate<T> = (entity: T) => boolean;
 export type KeySelector<K, V> = (entity: V) => K;
@@ -10,12 +10,40 @@ export interface Update<K, V> {
 	changes: Partial<V>;
 }
 
+export interface EntityMapLike<K, V> {
+	keyOf(entity: V): K | undefined;
+	keys(): K[];
+	values(): V[];
+	entries(): [K, V][];
+	getOne(key: K): V | undefined;
+	getMany(keys: K[]): V[];
+	getManyExisting(keys: K[]): V[];
+	hasOne(key: K): boolean;
+	hasEvery(keys: K[]): boolean;
+	hasSome(keys: K[]): boolean;
+	addOne(entity: V): V | undefined;
+	addMany(entities: V[]): V[];
+	setOne(entity: V): V;
+	setMany(entities: V[]): V[];
+	setAll(entities: V[]): V[];
+	removeOne(key: K): boolean;
+	removeMany(keys: K[]): boolean[];
+	removeWhere(predicate: Predicate<V>): V[];
+	removeAll(): void;
+	updateOne(update: Update<K, V>): V | undefined;
+	updateMany(updates: Update<K, V>[]): V[];
+	upsertOne(entity: V): V | undefined;
+	upsertMany(entities: V[]): V[];
+	transformOne(key: K, transform: EntityTransform<V>): V | undefined;
+	transformMany(transform: EntityTransform<V>): V[];
+}
+
 /**
  * Heavily influenced by @ngrx/entity's entity adapter interface.
  * The methods defined here are intended to follow the same paradigm as the ngrx adapter collection methods:
  * https://ngrx.io/guide/entity/adapter#adapter-collection-methods
  */
-export class EntityMap<K, V, T extends Map<K, V>> {
+export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V> {
 
 	constructor(
 		protected readonly store: T,
