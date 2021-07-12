@@ -195,4 +195,49 @@ describe('RxMap', () => {
 		// The above line should not be able to mutate the internal map value
 		expect(games.get(tetris.id).playerCount).toBe(oldPlayerCount);
 	});
+
+	it('can be instantiated with a custom map source', () => {
+
+		const testSource = new Map<number, string>();
+		const testRxMap = new RxMap<number, string>(testSource);
+
+		spyOn(testSource, 'set').and.callThrough();
+		testRxMap.set(5, 'asdfasdfg');
+		expect(testSource.set).toHaveBeenCalled();
+	});
+
+	it('can have custom context data passed along with set calls', async () => {
+
+		const games = new RxMap<number, Game>();
+		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
+		const sourceName = 'unit_test_block_12345';
+
+		const gameAddEventPromise = games.changes.pipe(
+			first()
+		).toPromise();
+
+		games.set(tetris.id, tetris, { source: sourceName });
+		const gameAddEvent = await gameAddEventPromise;
+
+		expect(gameAddEvent.context).toBeDefined();
+		expect(gameAddEvent.context.source).toBe(sourceName);
+	});
+
+	it('can have custom context data passed along with delete calls', async () => {
+
+		const games = new RxMap<number, Game>();
+		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
+		const sourceName = 'unit_test_block_12345';
+		games.set(tetris.id, tetris);
+
+		const gameDeleteEventPromise = games.changes.pipe(
+			first()
+		).toPromise();
+
+		games.delete(tetris.id, { source: sourceName });
+		const gameDeleteEvent = await gameDeleteEventPromise;
+
+		expect(gameDeleteEvent.context).toBeDefined();
+		expect(gameDeleteEvent.context.source).toBe(sourceName);
+	});
 });
