@@ -1,5 +1,4 @@
 export * from './change-detection-event';
-export * from './duplex-rx-entity-map';
 export * from './entity-map';
 export * from './immutable-map';
 export * from './map-state-change-event';
