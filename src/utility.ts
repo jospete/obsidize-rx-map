@@ -7,15 +7,15 @@ import { MapStateChangeEvent } from './map-state-change-event';
 // https://gist.github.com/Yimiprod/7ee176597fef230d1451#gistcomment-2565071
 export const deepDifferenceBetween = <T>(current: T, previous: T): Partial<T> => {
 
-	return transform<any, any>(current, (result, value, key) => {
+	return transform<any, any>(current, (result, currentValue, key) => {
 
 		const previousValue = (previous as any)[key];
-		if (isEqual(value, previousValue)) return;
+		if (isEqual(currentValue, previousValue)) return;
 
-		const recurse = (isObject(value) && isObject(previousValue));
-		result[key] = recurse ? deepDifferenceBetween(value, previousValue) : value;
+		const recurse = (isObject(currentValue) && isObject(previousValue));
+		result[key] = recurse ? deepDifferenceBetween(currentValue, previousValue) : currentValue;
 	});
-}
+};
 
 /**
  * Evaluates changes between the two given values, 

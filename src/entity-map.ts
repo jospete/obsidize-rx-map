@@ -51,8 +51,12 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	) {
 	}
 
-	protected onSetKeyValuePair(key: K, value: V): void {
+	protected onSetEntry(key: K, value: V): void {
 		this.store.set(key, value);
+	}
+
+	protected onDeleteEntry(key: K): boolean {
+		return this.store.delete(key);
 	}
 
 	public get count(): number {
@@ -113,7 +117,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 
 	public setOne(entity: V): V {
 		const key = this.keyOf(entity);
-		if (this.isValidKey(key)) this.onSetKeyValuePair(key!, entity);
+		if (this.isValidKey(key)) this.onSetEntry(key!, entity);
 		return entity;
 	}
 
@@ -127,7 +131,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public removeOne(key: K): boolean {
-		return this.store.delete(key);
+		return this.onDeleteEntry(key);
 	}
 
 	public removeMany(keys: K[]): boolean[] {
@@ -149,7 +153,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 		if (!update) return undefined;
 		const { key, changes } = update;
 		const combinedValue = merge(this.store.get(key), changes);
-		this.onSetKeyValuePair(key, combinedValue);
+		this.onSetEntry(key, combinedValue);
 		return combinedValue;
 	}
 

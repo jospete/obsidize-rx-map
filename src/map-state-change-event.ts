@@ -1,7 +1,6 @@
 export enum MapStateChangeEventType {
 	SET = 'SET',
-	DELETE = 'DELETE',
-	CLEAR = 'CLEAR'
+	DELETE = 'DELETE'
 }
 
 export interface MapStateChangeEventContext {

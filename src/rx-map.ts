@@ -3,7 +3,7 @@ import { filter, map, share } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
 
 import { MapStateChangeEvent, MapStateChangeEventContext, MapStateChangeEventType } from './map-state-change-event';
-import { isChangeDetectionResultTypeValid as isChangeDetectionResultTypeActionable } from './change-detection-event';
+import { isActionableChangeDetectionResultType } from './change-detection-event';
 import { ImmutableMap } from './immutable-map';
 import { extractChanges } from './utility';
 
@@ -20,7 +20,7 @@ export class RxMap<K, V, T extends Map<K, V> = Map<K, V>> implements Map<K, V> {
 
 	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.allChanges.pipe(
 		map(ev => extractChanges(ev)),
-		filter(ev => isChangeDetectionResultTypeActionable(ev.changeType))
+		filter(ev => isActionableChangeDetectionResultType(ev.changeType))
 	);
 
 	constructor(
@@ -102,7 +102,9 @@ export class RxMap<K, V, T extends Map<K, V> = Map<K, V>> implements Map<K, V> {
 	}
 
 	public set(key: K, value: V, context?: MapStateChangeEventContext): this {
-		const previousValue = cloneDeep(this.get(key));
+		const storedValue = this.get(key);
+		// Only clone the stored value when necessary since cloning can be expensive
+		const previousValue = storedValue === value ? cloneDeep(storedValue) : storedValue;
 		this.source.set(key, value);
 		this.emitSet(key, value, previousValue, context);
 		return this;

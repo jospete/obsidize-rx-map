@@ -1,6 +1,6 @@
 import { cloneDeep, isFunction } from 'lodash';
 
-import { MonoProxyIterableIterator } from './proxy-iterable-iterator';
+import { ProxyIterableIterator } from './proxy-iterable-iterator';
 
 /**
  * ES6 Map implementation that prevents entry mutation outside of explicit set() calls.
@@ -48,15 +48,15 @@ export class ImmutableMap<K, V> implements Map<K, V> {
 	}
 
 	public entries(): IterableIterator<[K, V]> {
-		return new MonoProxyIterableIterator(this.source.entries(), v => cloneDeep(v));
+		return new ProxyIterableIterator(this.source.entries(), v => cloneDeep(v));
 	}
 
 	public keys(): IterableIterator<K> {
-		return new MonoProxyIterableIterator(this.source.keys(), v => cloneDeep(v));
+		return new ProxyIterableIterator(this.source.keys(), v => cloneDeep(v));
 	}
 
 	public values(): IterableIterator<V> {
-		return new MonoProxyIterableIterator(this.source.values(), v => cloneDeep(v));
+		return new ProxyIterableIterator(this.source.values(), v => cloneDeep(v));
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void): void {

@@ -22,9 +22,3 @@ export class ProxyIterableIterator<T, R> implements IterableIterator<R> {
 		};
 	}
 }
-
-/**
- * Simplified generics
- */
-export class MonoProxyIterableIterator<T> extends ProxyIterableIterator<T, T> {
-}
