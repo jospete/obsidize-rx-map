@@ -23,8 +23,8 @@ import { RxEntityMap } from './rx-entity-map';
  */
 export class RxStore {
 
-	protected readonly props: Map<string, BehaviorSubject<any>> = new Map();
-	protected readonly propKeys: Map<BehaviorSubject<any>, string> = new Map();
+	protected readonly properties: Map<string, BehaviorSubject<any>> = new Map();
+	protected readonly propertyKeys: Map<BehaviorSubject<any>, string> = new Map();
 	protected readonly entityMaps: Map<string, RxEntityMap<any, any>> = new Map();
 	protected readonly entityMapKeys: Map<RxEntityMap<any, any>, string> = new Map();
 
@@ -33,9 +33,9 @@ export class RxStore {
 	}
 
 	public definePropertyBinding<V>(id: string, property: BehaviorSubject<V>): BehaviorSubject<V> {
-		if (this.props.has(id)) throw new Error('property ID already defined! -> ' + id);
-		this.props.set(id, property);
-		this.propKeys.set(property, id);
+		if (this.properties.has(id)) throw new Error('property ID already defined! -> ' + id);
+		this.properties.set(id, property);
+		this.propertyKeys.set(property, id);
 		return property;
 	}
 
@@ -51,11 +51,11 @@ export class RxStore {
 	}
 
 	public getProperty(id: string): BehaviorSubject<any> | undefined {
-		return this.props.get(id);
+		return this.properties.get(id);
 	}
 
 	public getPropertyId(property: BehaviorSubject<any>): string | undefined {
-		return this.propKeys.get(property);
+		return this.propertyKeys.get(property);
 	}
 
 	public getEntityMap(id: string): RxEntityMap<any, any> | undefined {
@@ -68,7 +68,7 @@ export class RxStore {
 
 	public destroy(): void {
 		this.entityMaps.forEach((value, key) => this.onDestroyEntityMap(value, key));
-		this.props.forEach((value, key) => this.onDestroyProperty(value, key));
+		this.properties.forEach((value, key) => this.onDestroyProperty(value, key));
 	}
 
 	protected onDestroyProperty(property: BehaviorSubject<any>, _id: string): void {
