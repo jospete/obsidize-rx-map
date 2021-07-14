@@ -1,9 +1,11 @@
 import { MonoTypeOperatorFunction, OperatorFunction } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { identity } from 'lodash';
+import { filter, map, scan } from 'rxjs/operators';
+import { identity, get } from 'lodash';
 
+import { ChangeDetectionResult, isActionableChangeDetectionResultType } from './change-detection-event';
 import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
 import { RxEntityMap } from './rx-entity-map';
+import { ChangeDetectionAccumulator, detectAccumulatedChanges, detectChanges } from './utility';
 
 /**
  * Variant of filter() that uses a Set to increase lookup speed when checking emissions for a single property value.
@@ -47,7 +49,7 @@ export const forKeyIn = <K, V>(keys: K[]): MonoTypeOperatorFunction<MapStateChan
 /**
  * map change events to their corresponding entity value
  */
-export const pluckValue = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, V> => {
+export const pluckValue = <T>(): OperatorFunction<{ value?: T }, T> => {
 	return source => source.pipe(
 		map(ev => ev.value!),
 		filter(identity)
@@ -57,7 +59,7 @@ export const pluckValue = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, 
 /**
  * map change events to their corresponding entity update differences (will be a partial entity object)
  */
-export const pluckChanges = <K, V>(): OperatorFunction<MapStateChangeEvent<K, V>, Partial<V>> => {
+export const pluckChanges = <T>(): OperatorFunction<{ changes?: T }, Partial<T>> => {
 	return source => source.pipe(
 		map(ev => ev.changes!),
 		filter(identity)
@@ -79,5 +81,16 @@ export const storeEntityIn = <K, V>(entityMap: RxEntityMap<K, V>): MonoTypeOpera
 export const storeEntityArrayIn = <K, V>(entityMap: RxEntityMap<K, V>): MonoTypeOperatorFunction<V[]> => {
 	return source => source.pipe(
 		map(v => entityMap.setMany(v)!)
+	);
+};
+
+/**
+ * Emits change detection diffs between each emission and the one previous of it.
+ * NOTE: if the detection result type is NO_CHANGE, then the emission will be dropped.
+ */
+export const accumulateChanges = <T>(): OperatorFunction<T, ChangeDetectionAccumulator<T>> => {
+	return source => source.pipe(
+		scan((acc: ChangeDetectionAccumulator<T>, current: T) => detectAccumulatedChanges(acc, current)),
+		filter((next: ChangeDetectionAccumulator<T>) => !!next && isActionableChangeDetectionResultType(next.type)),
 	);
 };

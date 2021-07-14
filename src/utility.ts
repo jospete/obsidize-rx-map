@@ -1,4 +1,4 @@
-import { transform, isEqual, isObject } from 'lodash';
+import { transform, isEqual, isObject, get } from 'lodash';
 
 import { ChangeDetectionResult, ChangeDetectionResultType } from './change-detection-event';
 import { MapStateChangeEvent } from './map-state-change-event';
@@ -26,11 +26,17 @@ export const deepDifferenceBetween = <T>(current: T, previous: T): Partial<T> =>
  */
 export const detectChanges = <T>(current: T, previous: T): ChangeDetectionResult<T> => {
 
-	if (isEqual(current, previous)) return { type: ChangeDetectionResultType.NO_CHANGE };
-	if (current && !previous) return { type: ChangeDetectionResultType.CREATE };
-	if (!current && previous) return { type: ChangeDetectionResultType.DELETE };
+	const withType = (type: ChangeDetectionResultType, changes?: Partial<T>): ChangeDetectionResult<T> => {
+		const result: ChangeDetectionResult<T> = { type };
+		if (changes) (result as any).changes = changes;
+		return result;
+	};
 
-	return { type: ChangeDetectionResultType.UPDATE, changes: deepDifferenceBetween(current, previous) };
+	if (isEqual(current, previous)) return withType(ChangeDetectionResultType.NO_CHANGE);
+	if (current && !previous) return withType(ChangeDetectionResultType.CREATE);
+	if (!current && previous) return withType(ChangeDetectionResultType.DELETE);
+
+	return withType(ChangeDetectionResultType.UPDATE, deepDifferenceBetween(current, previous));
 };
 
 /**
@@ -48,3 +54,17 @@ export const extractChanges = <K, V>(ev: MapStateChangeEvent<K, V>): MapStateCha
 
 	return ev;
 };
+
+export interface ChangeDetectionAccumulator<T> extends ChangeDetectionResult<T> {
+	current: T;
+	previous?: T;
+}
+
+/**
+ * Special variant of change detection that compares against an accumulated state.
+ */
+export const detectAccumulatedChanges = <T>(acc: ChangeDetectionAccumulator<T>, current: T): ChangeDetectionAccumulator<T> => {
+	const previous: T = get(acc, 'current')!;
+	const changeDetectionResult = detectChanges(current, previous);
+	return Object.assign({ current, previous }, changeDetectionResult);
+}

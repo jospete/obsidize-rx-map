@@ -7,4 +7,5 @@ export * from './operators';
 export * from './proxy-iterable-iterator';
 export * from './rx-entity-map';
 export * from './rx-map';
+export * from './rx-store';
 export * from './utility';
