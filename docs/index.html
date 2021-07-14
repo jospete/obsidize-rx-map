@@ -81,27 +81,43 @@
 					<h2>Usage</h2>
 				</a>
 				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">of</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;rxjs&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">RxStore</span><span style="color: #000000">, </span><span style="color: #001080">storeEntityIn</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@obsidize/rx-map&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #001080">RxEntityMap</span><span style="color: #000000">, </span>
-<span style="color: #000000">    </span><span style="color: #001080">storeEntityIn</span>
-<span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@obsidize/rx-map&#039;</span><span style="color: #000000">;</span>
-
-<span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">User</span><span style="color: #000000"> {</span>
+<span style="color: #008000">// Define the shape of the entity instances you will store.</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">User</span><span style="color: #000000"> {</span>
 <span style="color: #000000">    </span><span style="color: #001080">id</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
 <span style="color: #000000">    </span><span style="color: #001080">name</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
 <span style="color: #000000">    </span><span style="color: #001080">email</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
 <span style="color: #000000">}</span>
 
-<span style="color: #008000">// key / Value types are inferred by the given key selector function</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">users</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">RxEntityMap</span><span style="color: #000000">((</span><span style="color: #001080">user</span><span style="color: #000000">: </span><span style="color: #267F99">User</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">user</span><span style="color: #000000">.</span><span style="color: #001080">id</span><span style="color: #000000">);</span>
+<span style="color: #008000">// Define your &quot;single source of truth&quot; - all state changes should go through an instance of this.</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">AppStore</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxStore</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span>
+<span style="color: #000000">    </span><span style="color: #008000">// There are two types of storage mechanisms we can define here:</span>
+<span style="color: #000000">    </span>
+<span style="color: #000000">    </span><span style="color: #008000">// 1. definedProperty() - declares an observable non-entity value</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">readonly</span><span style="color: #000000"> </span><span style="color: #001080">darkMode</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineProperty</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;darkMode&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span>
+<span style="color: #000000">    </span><span style="color: #008000">// 1. defineEntityMap() - declares an observable map of entity values</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">readonly</span><span style="color: #000000"> </span><span style="color: #001080">users</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineEntityMap</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;users&#039;</span><span style="color: #000000">, (</span><span style="color: #001080">user</span><span style="color: #000000">: </span><span style="color: #267F99">User</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">user</span><span style="color: #000000">.</span><span style="color: #001080">id</span><span style="color: #000000">);</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">store</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">AppStore</span><span style="color: #000000">();</span>
+
+<span style="color: #008000">// update a store property</span>
+<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">darkMode</span><span style="color: #000000">.</span><span style="color: #795E26">next</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// watch a store property</span>
+<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">darkMode</span><span style="color: #000000">.</span><span style="color: #795E26">subscribe</span><span style="color: #000000">(</span><span style="color: #001080">isDarkMode</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">isDarkMode</span><span style="color: #000000">)); </span><span style="color: #008000">// true</span>
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">bobId</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;adsfzxcv&#039;</span><span style="color: #000000">;</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">bob</span><span style="color: #000000">: </span><span style="color: #267F99">User</span><span style="color: #000000"> = { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #001080">bobId</span><span style="color: #000000">, </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Bob&#039;</span><span style="color: #000000">, </span><span style="color: #001080">email:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;whatsy@whosit.org&#039;</span><span style="color: #000000"> };</span>
-<span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">addOne</span><span style="color: #000000">(</span><span style="color: #001080">bob</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// Add an entity to the store</span>
+<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">addOne</span><span style="color: #000000">(</span><span style="color: #001080">bob</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// ... somewhere else that&#039;s watching for updates ...</span>
-<span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">watchOne</span><span style="color: #000000">(</span><span style="color: #001080">bobId</span><span style="color: #000000">).</span><span style="color: #795E26">subscribe</span><span style="color: #000000">(</span><span style="color: #001080">user</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">watchOne</span><span style="color: #000000">(</span><span style="color: #001080">bobId</span><span style="color: #000000">).</span><span style="color: #795E26">subscribe</span><span style="color: #000000">(</span><span style="color: #001080">user</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
 <span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;user model change -&gt; &#039;</span><span style="color: #000000">, </span><span style="color: #001080">user</span><span style="color: #000000">); </span><span style="color: #008000">// { id: bobId, name: &#039;Bob&#039;, email: &#039;whatsy@whosit.org&#039; }</span>
 <span style="color: #000000">});</span>
 
@@ -113,76 +129,28 @@
 
 <span style="color: #008000">// Make some changes and publish back</span>
 <span style="color: #001080">bobCopy</span><span style="color: #000000">.</span><span style="color: #001080">email</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;altbobemail@blah.com&#039;</span><span style="color: #000000">;</span>
-<span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">upsertOne</span><span style="color: #000000">(</span><span style="color: #001080">bobCopy</span><span style="color: #000000">);</span>
+<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">upsertOne</span><span style="color: #000000">(</span><span style="color: #001080">bobCopy</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// This module also has operator functions to capture entity models </span>
 <span style="color: #008000">// as they come in from other http / observable sources.</span>
 <span style="color: #795E26">of</span><span style="color: #000000">(</span><span style="color: #001080">bobCopy</span><span style="color: #000000">).</span><span style="color: #795E26">pipe</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #795E26">storeEntityIn</span><span style="color: #000000">(</span><span style="color: #001080">users</span><span style="color: #000000">) </span><span style="color: #008000">// will publish emitted values into the &#039;users&#039; map by side-effect</span>
+<span style="color: #000000">    </span><span style="color: #795E26">storeEntityIn</span><span style="color: #000000">(</span><span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">) </span><span style="color: #008000">// will publish emitted values into the &#039;users&#039; map by side-effect</span>
 <span style="color: #000000">).</span><span style="color: #795E26">subscribe</span><span style="color: #000000">(</span><span style="color: #001080">user</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">user</span><span style="color: #000000">));</span>
 </code></pre>
-				<p>NOTE: each level of this module is designed to be an extendable class, which you can customize at your leisure.</p>
-				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">map</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;rxjs/operators&#039;</span><span style="color: #000000">;</span>
-
-<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #001080">RxEntityMap</span><span style="color: #000000">, </span>
-<span style="color: #000000">    </span><span style="color: #001080">RxMap</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #001080">KeySelector</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #001080">Predicate</span>
-<span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@obsidize/rx-map&#039;</span><span style="color: #000000">;</span>
-
-<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">MyCustomRxMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #267F99">V</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #267F99">V</span><span style="color: #000000">&gt; {</span>
-
-<span style="color: #000000">    </span><span style="color: #008000">// Inherited methods can be overridden</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">set</span><span style="color: #000000">(</span><span style="color: #001080">key</span><span style="color: #000000">: </span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">V</span><span style="color: #000000">): </span><span style="color: #267F99">this</span><span style="color: #000000"> {</span>
-<span style="color: #000000">        </span><span style="color: #008000">// Do some custom logic here</span>
-<span style="color: #000000">        </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #0000FF">super</span><span style="color: #000000">.</span><span style="color: #795E26">set</span><span style="color: #000000">(</span><span style="color: #001080">key</span><span style="color: #000000">, </span><span style="color: #001080">value</span><span style="color: #000000">);</span>
-<span style="color: #000000">    }</span>
+				<p>Note that for angular projects, your store should be a root-level service:</p>
+				<pre><code class="language-typescript"><span style="color: #000000">@</span><span style="color: #795E26">Injectable</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">providedIn:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;root&#039;</span>
+<span style="color: #000000">})</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">AppStoreService</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxStore</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// TODO: add properties and entity maps here</span>
 <span style="color: #000000">}</span>
-
-<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">MyCustomEntityMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #267F99">V</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxEntityMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #267F99">V</span><span style="color: #000000">, </span><span style="color: #267F99">MyCustomRxMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #267F99">V</span><span style="color: #000000">&gt;&gt; {</span>
-<span style="color: #000000">    </span>
-<span style="color: #000000">    </span><span style="color: #0000FF">constructor</span><span style="color: #000000">(</span><span style="color: #001080">selectKey</span><span style="color: #000000">: </span><span style="color: #267F99">KeySelector</span><span style="color: #000000">&lt;</span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #267F99">V</span><span style="color: #000000">&gt;) {</span>
-<span style="color: #000000">        </span><span style="color: #0000FF">super</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MyCustomRxMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">K</span><span style="color: #000000">, </span><span style="color: #267F99">V</span><span style="color: #000000">&gt;(), </span><span style="color: #001080">selectKey</span><span style="color: #000000">);</span>
-<span style="color: #000000">    }</span>
-
-<span style="color: #000000">    </span><span style="color: #008000">// You can also add on new methods to keep your entity map logic dry.</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">watchManyWhere</span><span style="color: #000000">(</span><span style="color: #001080">predicate</span><span style="color: #000000">: </span><span style="color: #267F99">Predicate</span><span style="color: #000000">&lt;</span><span style="color: #267F99">V</span><span style="color: #000000">&gt;): </span><span style="color: #267F99">Observable</span><span style="color: #000000">&lt;</span><span style="color: #267F99">V</span><span style="color: #000000">&gt; {</span>
-<span style="color: #000000">        </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">watchAll</span><span style="color: #000000">().</span><span style="color: #795E26">pipe</span><span style="color: #000000">(</span>
-<span style="color: #000000">            </span><span style="color: #795E26">map</span><span style="color: #000000">(</span><span style="color: #001080">values</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">values</span><span style="color: #000000">.</span><span style="color: #795E26">filter</span><span style="color: #000000">(</span><span style="color: #001080">predicate</span><span style="color: #000000">))</span>
-<span style="color: #000000">        );</span>
-<span style="color: #000000">    }</span>
-<span style="color: #000000">}</span>
-
-<span style="color: #0000FF">enum</span><span style="color: #000000"> </span><span style="color: #267F99">FoodName</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #0070C1">Pizza</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #0070C1">Salad</span><span style="color: #000000">,</span>
-<span style="color: #000000">    </span><span style="color: #0070C1">Fries</span>
-<span style="color: #000000">}</span>
-
-<span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">Food</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #001080">name</span><span style="color: #000000">: </span><span style="color: #267F99">FoodName</span><span style="color: #000000">;</span>
-<span style="color: #000000">}</span>
-
-<span style="color: #008000">// Note that the key selector can return any type you want, and is not limited to strings and numbers</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">customMapInst</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MyCustomEntityMap</span><span style="color: #000000">((</span><span style="color: #001080">food</span><span style="color: #000000">: </span><span style="color: #267F99">Food</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">food</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">);</span>
 </code></pre>
 				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
 					<h2>API</h2>
 				</a>
 				<ul>
-					<li><a href="https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-entity-map.ts">RxEntityMap</a> - core entry point; use this to store, update, and watch a collection of entities (Inherits from <code>EntityMap</code>, and uses an <code>RxMap</code> as its storage mechanism by default).</li>
-					<li><a href="https://github.com/jospete/obsidize-rx-map/blob/master/src/entity-map.ts">EntityMap</a> - an overlay of an ES6 Map that is aware of the concept of &quot;primary keys&quot; in the map&#39;s values.</li>
-					<li><a href="https://github.com/jospete/obsidize-rx-map/blob/master/src/rx-map.ts">RxMap</a> - shares the same API as the standard <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">ES6 Map</a> with the addition of a <code>changes</code> Observable.</li>
-					<li><a href="https://github.com/jospete/obsidize-rx-map/blob/master/src/immutable-map.ts">ImmutableMap</a> - special flavor of an ES6 Map who&#39;s values cannot be mutated outside of the <code>set()</code> and <code>delete()</code> methods. Deep object cloning is used to enforce this for all query methods.</li>
-					<li><a href="https://github.com/jospete/obsidize-rx-map/blob/master/src/operators.ts">rxjs operators</a> - helper operator functions for transforming events from the <code>RxMap.changes</code> Observable stream</li>
+					<li>Source documentation can be found <a href="https://jospete.github.io/obsidize-rx-map/">here</a></li>
 				</ul>
-				<a href="#supplemental-notes" id="supplemental-notes" style="color: inherit; text-decoration: none;">
-					<h2>Supplemental Notes</h2>
-				</a>
-				<p><code>RxMap</code> is backed by <code>ImmutableMap</code> by default to prevent bypassing of change detection via direct object editing. This means that <code>RxMap</code> can reduce change emissions to only happen when there are actual changes (avoids set() redundancies).</p>
-				<p>While this is a &quot;nice to have&quot; for reducing map state change event noise, change detection can become very expensive if the size of the entity object(s) or the amount of them  in the map is substantial.</p>
-				<p>To bypass these features for potential performance gains, use <a href="https://github.com/jospete/obsidize-rx-map/blob/master/src/mutable-rx-entity-map.ts">MutableRxEntityMap</a> (<strong>use with caution - you probably don&#39;t need this</strong>)</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
