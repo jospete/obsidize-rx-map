@@ -27,21 +27,21 @@ import {of} from 'rxjs';
 import {RxStore, storeEntityIn} from '@obsidize/rx-map';
 
 // Define the shape of the entity instances you will store.
-export interface User {
+interface User {
 	id: string;
 	name: string;
 	email: string;
 }
 
 // Define your "single source of truth" - all state changes should go through an instance of this.
-export class AppStore extends RxStore {
-	
+class AppStore extends RxStore {
+
 	// There are two types of storage mechanisms we can define here:
-	
+
 	// 1. definedProperty() - declares an observable non-entity value
 	public readonly darkMode = this.defineProperty('darkMode', false);
-	
-	// 1. defineEntityMap() - declares an observable map of entity values
+
+	// 2. defineEntityMap() - declares an observable map of entity values
 	public readonly users = this.defineEntityMap('users', (user: User) => user.id);
 }
 
@@ -65,7 +65,7 @@ store.users.watchOne(bobId).subscribe(user => {
 });
 
 // Get a model manually from the map
-const bobCopy = users.getOne(bobId);
+const bobCopy = store.users.getOne(bobId);
 
 // NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection
 console.log(bobCopy === bob); // false

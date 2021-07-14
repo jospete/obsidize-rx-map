@@ -1,39 +1,62 @@
 import { of } from 'rxjs';
 import { first } from 'rxjs/operators';
 
-import { storeEntityIn, storeEntityArrayIn, pluckValue, RxEntityMap } from '../src';
+import { storeEntityIn, storeEntityArrayIn, pluckValue, RxEntityMap, RxStore } from '../src';
 import { loadProductOrdersByUserId, loadProducts, loadUser, Product, ProductOrder, User } from './test-utility';
 
 describe('General Usage', () => {
 
 	it('works as advertised', () => {
 
-		// key / Value types are inferred by the given key selector function
-		const users = new RxEntityMap((user: User) => user.id);
+		// Define your "single source of truth" - all state changes should go through an instance of this.
+		class AppStore extends RxStore {
+
+			// There are two types of storage mechanisms we can define here:
+
+			// 1. definedProperty() - declares an observable non-entity value
+			public readonly darkMode = this.defineProperty('darkMode', false);
+
+			// 2. defineEntityMap() - declares an observable map of entity values
+			public readonly users = this.defineEntityMap('users', (user: User) => user.id);
+		}
+
+		const store = new AppStore();
+
+		// update a store property
+		store.darkMode.next(true);
+
+		// watch a store property
+		store.darkMode.subscribe(isDarkMode => console.log(isDarkMode)); // true
 
 		const bobId = 'adsfzxcv';
 		const bob: User = { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' };
-		users.addOne(bob);
+
+		// Add an entity to the store
+		store.users.addOne(bob);
 
 		// ... somewhere else that's watching for updates ...
-		users.watchOne(bobId).subscribe(user => {
+		store.users.watchOne(bobId).subscribe(user => {
 			console.log('user model change -> ', user); // { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' }
 		});
 
 		// Get a model manually from the map
-		const bobCopy = users.getOne(bobId);
+		const bobCopy = store.users.getOne(bobId);
 
 		// NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection
+		console.log(bobCopy === bob); // false
+
+		// Make some changes and publish back
 		bobCopy.email = 'altbobemail@blah.com';
+		store.users.upsertOne(bobCopy);
 
-		// Use this module's utility operator functions to capture entity models 
-		// as they come in from http / other observable sources.
+		// This module also has operator functions to capture entity models 
+		// as they come in from other http / observable sources.
 		of(bobCopy).pipe(
-			storeEntityIn(users) // will publish emitted values into the 'users' map by side-effect
-		).subscribe();
+			storeEntityIn(store.users) // will publish emitted values into the 'users' map by side-effect
+		).subscribe(user => console.log(user));
 
-		expect(bobCopy).toEqual(users.getOne(bobId));
-		expect(bobCopy).not.toBe(users.getOne(bobId));
+		expect(bobCopy).toEqual(store.users.getOne(bobId));
+		expect(bobCopy).not.toBe(store.users.getOne(bobId));
 	});
 
 	it('can perform complex relational loading', async () => {
