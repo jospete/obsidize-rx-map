@@ -94,4 +94,4 @@ export class AppStoreService extends RxStore {
 
 ## API
 
-- Source documentation can be found [here]()
+- Source documentation can be found [here](https://jospete.github.io/obsidize-rx-map/)
