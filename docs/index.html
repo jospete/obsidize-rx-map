@@ -84,21 +84,21 @@
 <span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">RxStore</span><span style="color: #000000">, </span><span style="color: #001080">storeEntityIn</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@obsidize/rx-map&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #008000">// Define the shape of the entity instances you will store.</span>
-<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">User</span><span style="color: #000000"> {</span>
+<span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">User</span><span style="color: #000000"> {</span>
 <span style="color: #000000">    </span><span style="color: #001080">id</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
 <span style="color: #000000">    </span><span style="color: #001080">name</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
 <span style="color: #000000">    </span><span style="color: #001080">email</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
 <span style="color: #000000">}</span>
 
 <span style="color: #008000">// Define your &quot;single source of truth&quot; - all state changes should go through an instance of this.</span>
-<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">AppStore</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxStore</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span>
+<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">AppStore</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxStore</span><span style="color: #000000"> {</span>
+
 <span style="color: #000000">    </span><span style="color: #008000">// There are two types of storage mechanisms we can define here:</span>
-<span style="color: #000000">    </span>
+
 <span style="color: #000000">    </span><span style="color: #008000">// 1. definedProperty() - declares an observable non-entity value</span>
 <span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">readonly</span><span style="color: #000000"> </span><span style="color: #001080">darkMode</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineProperty</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;darkMode&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
-<span style="color: #000000">    </span>
-<span style="color: #000000">    </span><span style="color: #008000">// 1. defineEntityMap() - declares an observable map of entity values</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// 2. defineEntityMap() - declares an observable map of entity values</span>
 <span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">readonly</span><span style="color: #000000"> </span><span style="color: #001080">users</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineEntityMap</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;users&#039;</span><span style="color: #000000">, (</span><span style="color: #001080">user</span><span style="color: #000000">: </span><span style="color: #267F99">User</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">user</span><span style="color: #000000">.</span><span style="color: #001080">id</span><span style="color: #000000">);</span>
 <span style="color: #000000">}</span>
 
@@ -122,7 +122,7 @@
 <span style="color: #000000">});</span>
 
 <span style="color: #008000">// Get a model manually from the map</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">bobCopy</span><span style="color: #000000"> = </span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">getOne</span><span style="color: #000000">(</span><span style="color: #001080">bobId</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">bobCopy</span><span style="color: #000000"> = </span><span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">getOne</span><span style="color: #000000">(</span><span style="color: #001080">bobId</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection</span>
 <span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">bobCopy</span><span style="color: #000000"> === </span><span style="color: #001080">bob</span><span style="color: #000000">); </span><span style="color: #008000">// false</span>
