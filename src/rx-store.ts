@@ -8,7 +8,6 @@ import { RxEntityMap } from './rx-entity-map';
  * Use the define***() methods to stand up your core storage infrastructure.
  * 
  * @example
- * 
  * export interface User {
  * 		id: string;
  * 		name: string;
