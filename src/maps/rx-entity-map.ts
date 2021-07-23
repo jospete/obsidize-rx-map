@@ -2,8 +2,8 @@ import { map, filter, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { identity } from 'lodash';
 
-import { forKey, forKeyIn, pluckValue } from './operators';
-import { MapStateChangeEvent } from './map-state-change-event';
+import { forKey, forKeyIn, pluckValue } from '../common/operators';
+import { MapStateChangeEvent } from '../events/map-state-change-event';
 import { EntityMap, KeySelector } from './entity-map';
 import { RxMap } from './rx-map';
 

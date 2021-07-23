@@ -17,7 +17,7 @@ describe('General Usage', () => {
 			public readonly darkMode = this.defineProperty('darkMode', false);
 
 			// 2. defineEntityMap() - declares an observable map of entity values
-			public readonly users = this.defineEntityMap('users', (user: User) => user.id);
+			public readonly users = this.defineEntity('users', (user: User) => user.id);
 		}
 
 		const store = new AppStore();

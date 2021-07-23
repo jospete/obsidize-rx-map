@@ -1,7 +1,8 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, isObservable, Observable } from 'rxjs';
 
-import { KeySelector } from './entity-map';
-import { RxEntityMap } from './rx-entity-map';
+import { KeySelector } from './maps/entity-map';
+import { RxEntityMap } from './maps/rx-entity-map';
+import { Subsink } from './common/subsink';
 
 /**
  * Base class for defining an app's storage data.
@@ -26,27 +27,33 @@ export class RxStore {
 	protected readonly propertyKeys: Map<BehaviorSubject<any>, string> = new Map();
 	protected readonly entityMaps: Map<string, RxEntityMap<any, any>> = new Map();
 	protected readonly entityMapKeys: Map<RxEntityMap<any, any>, string> = new Map();
+	private readonly effectSubscriptions: Subsink = new Subsink();
 
 	public defineProperty<V>(id: string, startValue: V): BehaviorSubject<V> {
-		return this.definePropertyBinding(id, new BehaviorSubject<V>(startValue));
+		return this.registerProperty(id, new BehaviorSubject<V>(startValue));
 	}
 
-	public definePropertyBinding<V>(id: string, property: BehaviorSubject<V>): BehaviorSubject<V> {
+	public registerProperty<V>(id: string, property: BehaviorSubject<V>): BehaviorSubject<V> {
 		if (this.properties.has(id)) throw new Error('property ID already defined! -> ' + id);
 		this.properties.set(id, property);
 		this.propertyKeys.set(property, id);
 		return property;
 	}
 
-	public defineEntityMap<K, V>(id: string, selectKey: KeySelector<K, V>): RxEntityMap<K, V> {
-		return this.defineEntityMapBinding(id, new RxEntityMap<K, V>(selectKey));
+	public defineEntity<K, V>(id: string, selectKey: KeySelector<K, V>): RxEntityMap<K, V> {
+		return this.registerEntity(id, new RxEntityMap<K, V>(selectKey));
 	}
 
-	public defineEntityMapBinding<K, V>(id: string, entityMap: RxEntityMap<K, V>): RxEntityMap<K, V> {
+	public registerEntity<K, V>(id: string, entityMap: RxEntityMap<K, V>): RxEntityMap<K, V> {
 		if (this.entityMaps.has(id)) throw new Error('entity ID already defined! -> ' + id);
 		this.entityMaps.set(id, entityMap);
 		this.entityMapKeys.set(entityMap, id);
 		return entityMap;
+	}
+
+	public registerEffect<T>(effect: Observable<T>): Observable<T> {
+		if (isObservable(effect)) this.effectSubscriptions.add(effect.subscribe());
+		return effect;
 	}
 
 	public getProperty(id: string): BehaviorSubject<any> | undefined {
@@ -57,15 +64,16 @@ export class RxStore {
 		return this.propertyKeys.get(property);
 	}
 
-	public getEntityMap(id: string): RxEntityMap<any, any> | undefined {
+	public getEntity(id: string): RxEntityMap<any, any> | undefined {
 		return this.entityMaps.get(id);
 	}
 
-	public getEntityMapId(entityMap: RxEntityMap<any, any>): string | undefined {
+	public getEntityId(entityMap: RxEntityMap<any, any>): string | undefined {
 		return this.entityMapKeys.get(entityMap);
 	}
 
 	public destroy(): void {
+		this.effectSubscriptions.unsubscribe();
 		this.entityMaps.forEach((value, key) => this.onDestroyEntityMap(value, key));
 		this.properties.forEach((value, key) => this.onDestroyProperty(value, key));
 	}

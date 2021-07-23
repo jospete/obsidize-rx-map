@@ -1,7 +1,7 @@
 import { transform, isEqual, isObject, get } from 'lodash';
 
-import { ChangeDetectionResult, ChangeDetectionResultType } from './change-detection-event';
-import { MapStateChangeEvent } from './map-state-change-event';
+import { ChangeDetectionResult, ChangeDetectionResultType } from '../events/change-detection-event';
+import { MapStateChangeEvent } from '../events/map-state-change-event';
 
 // Shamelessly stolen from here:
 // https://gist.github.com/Yimiprod/7ee176597fef230d1451#gistcomment-2565071

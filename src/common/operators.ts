@@ -2,10 +2,10 @@ import { MonoTypeOperatorFunction, OperatorFunction } from 'rxjs';
 import { filter, map, scan } from 'rxjs/operators';
 import { identity } from 'lodash';
 
-import { isActionableChangeDetectionResultType } from './change-detection-event';
-import { MapStateChangeEvent, MapStateChangeEventType } from './map-state-change-event';
+import { isActionableChangeDetectionResultType } from '../events/change-detection-event';
+import { MapStateChangeEvent, MapStateChangeEventType } from '../events/map-state-change-event';
 import { ChangeDetectionAccumulator, detectAccumulatedChanges } from './utility';
-import { RxEntityMap } from './rx-entity-map';
+import { RxEntityMap } from '../maps/rx-entity-map';
 
 /**
  * Variant of filter() that uses a Set to increase lookup speed when checking emissions for a single property value.

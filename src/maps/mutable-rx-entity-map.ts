@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { MapStateChangeEvent } from './map-state-change-event';
+import { MapStateChangeEvent } from '../events/map-state-change-event';
 import { KeySelector } from './entity-map';
 import { RxEntityMap } from './rx-entity-map';
 import { RxMap } from './rx-map';

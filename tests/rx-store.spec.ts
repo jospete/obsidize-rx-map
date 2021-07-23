@@ -7,9 +7,9 @@ class AppStore extends RxStore {
 
 	public readonly darkMode = this.defineProperty('darkMode', true);
 	public readonly clickCount = this.defineProperty('clickCount', 0);
-	public readonly users = this.defineEntityMap('users', (user: User) => user.id);
-	public readonly products = this.defineEntityMap('products', (product: Product) => product.id);
-	public readonly productOrders = this.defineEntityMap('productOrders', (order: ProductOrder) => order.id);
+	public readonly users = this.defineEntity('users', (user: User) => user.id);
+	public readonly products = this.defineEntity('products', (product: Product) => product.id);
+	public readonly productOrders = this.defineEntity('productOrders', (order: ProductOrder) => order.id);
 }
 
 describe('RxStore', () => {
@@ -21,9 +21,9 @@ describe('RxStore', () => {
 		const darkModeId = 'darkMode';
 
 		expect(store.users).toBeDefined();
-		expect(store.getEntityMapId(store.users)).toBe(usersId);
-		expect(store.getEntityMap(usersId)).toBe(store.users);
-		expect(store.getEntityMapId(null)).not.toBeDefined();
+		expect(store.getEntityId(store.users)).toBe(usersId);
+		expect(store.getEntity(usersId)).toBe(store.users);
+		expect(store.getEntityId(null)).not.toBeDefined();
 
 		expect(store.darkMode).toBeDefined();
 		expect(store.getPropertyId(store.darkMode)).toBe(darkModeId);
@@ -40,7 +40,7 @@ describe('RxStore', () => {
 		expect(() => new BadPropStore()).toThrowError();
 
 		class BadMapStore extends AppStore {
-			public readonly dupeUsers = this.defineEntityMap('users', null);
+			public readonly dupeUsers = this.defineEntity('users', null);
 		}
 
 		expect(() => new BadMapStore()).toThrowError();
