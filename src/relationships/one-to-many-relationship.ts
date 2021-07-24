@@ -1,4 +1,4 @@
-import { filter, map, startWith, tap } from 'rxjs/operators';
+import { filter, map, share, startWith, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { isUndefined } from 'lodash';
 
@@ -38,7 +38,8 @@ export class OneToManyRelationship<K, V, T> {
 	public readonly changes: Observable<EntityPropertyChangeEvent<K, T>> = this.entityMap.changes.pipe(
 		pluckValueChanges<K, V, T>(this.selectForeignKey),
 		filter(ev => ev.currentValue !== ev.previousValue),
-		tap(ev => this.consume(ev))
+		tap(ev => this.consume(ev)),
+		share()
 	);
 
 	constructor(
@@ -70,13 +71,6 @@ export class OneToManyRelationship<K, V, T> {
 	public clear(): void {
 		this.store.forEach(context => context.clear());
 		this.store.clear();
-	}
-
-	public upsert(entity: V): void {
-		if (!entity) return;
-		const pk = this.selectForeignKey(entity);
-		const fk = this.entityMap.keyOf(entity)!;
-		this.associate(pk, fk);
 	}
 
 	public watchPrimaryKey(id: T): Observable<V[]> {

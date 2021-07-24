@@ -77,33 +77,19 @@ describe('RxStore', () => {
 			{ id: breadId, name: 'Bread' },
 		]);
 
-		// Bob _really_ likes bread
-		const bobOrders = [
+		store.productOrders.addMany([
 			{ id: 0, userId: bobId, productId: breadId },
 			{ id: 1, userId: bobId, productId: breadId },
 			{ id: 2, userId: bobId, productId: breadId },
-		];
-
-		const tedOrders = [
 			{ id: 3, userId: tedId, productId: toastId },
 			{ id: 4, userId: tedId, productId: milkId },
-		];
-
-		store.productOrders.addMany(bobOrders.concat(tedOrders));
-
-		expect(() => store.productOrdersByProductId.getRelatedValues(null)).not.toThrow();
-		expect(() => store.productOrdersByProductId.associate(null, 5)).not.toThrow();
-		expect(() => store.productOrdersByProductId.disassociate(null, 2)).not.toThrow();
+		]);
 
 		expect(store.productOrdersByProductId.getRelatedValues(toastId).length).toBe(1);
 		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(1);
 		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(3);
 
-		const waitForUpdate = store.productOrdersByProductId.changes.pipe(first()).toPromise();
-
 		store.productOrders.updateOne({ key: 0, changes: { productId: milkId } });
-		await waitForUpdate;
-
 		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(2);
 		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(2);
 
@@ -115,5 +101,72 @@ describe('RxStore', () => {
 
 		store.destroy();
 		expect(store.productOrdersByProductId.clear).toHaveBeenCalled();
+	});
+
+	it('does not explode when given a bad effect to register', () => {
+		const store = new AppStore();
+		expect(() => store.registerEffect(null)).not.toThrow();
+	});
+
+	it('does not explode when a relationship context is given bad association input', () => {
+
+		const store = new AppStore();
+
+		expect(() => store.productOrdersByProductId.getRelatedValues(null)).not.toThrow();
+		expect(() => store.productOrdersByProductId.associate(null, 5)).not.toThrow();
+		expect(() => store.productOrdersByProductId.disassociate(null, 2)).not.toThrow();
+		expect(() => store.productOrdersByProductId.associate(undefined, undefined)).not.toThrow();
+		expect(store.productOrdersByProductId.getRelatedValues(undefined).length).toBe(0);
+	});
+
+	it('has an option to watch foreign key entities by a given primary key', async () => {
+
+		const store = new AppStore();
+
+		const firstSpy = jasmine.createSpy('firstSpy').and.callFake(values => values && values.length === 3);
+		const targetProductId = 1;
+
+		const waitForUpdates = store.productOrdersByProductId.watchPrimaryKey(targetProductId).pipe(
+			first(firstSpy)
+		).toPromise();
+
+		const bobId = 'adsf';
+		const tedId = 'zxcv';
+		const frankId = 'mnbv';
+
+		store.users.addMany([
+			{ id: bobId, name: 'Bob' },
+			{ id: tedId, name: 'Ted' },
+			{ id: frankId, name: 'Frank' },
+		]);
+
+		const toastId = 0;
+		const milkId = targetProductId;
+		const breadId = 2;
+
+		store.products.addMany([
+			{ id: toastId, name: 'Toast' },
+			{ id: milkId, name: 'Milk' },
+			{ id: breadId, name: 'Bread' },
+		]);
+
+		store.productOrders.addMany([
+			{ id: 0, userId: bobId, productId: breadId },
+			{ id: 1, userId: bobId, productId: milkId },
+			{ id: 2, userId: bobId, productId: milkId },
+			{ id: 3, userId: tedId, productId: toastId },
+			{ id: 4, userId: tedId, productId: milkId },
+			{ id: 5, userId: tedId, productId: toastId },
+		]);
+
+		const orders = await waitForUpdates;
+
+		expect(orders).toEqual([
+			{ id: 1, userId: bobId, productId: milkId },
+			{ id: 2, userId: bobId, productId: milkId },
+			{ id: 4, userId: tedId, productId: milkId },
+		]);
+
+		expect(firstSpy).toHaveBeenCalledTimes(4);
 	});
 });

@@ -20,7 +20,8 @@ export class RxMap<K, V, T extends Map<K, V> = Map<K, V>> implements Map<K, V> {
 
 	public readonly changes: Observable<MapStateChangeEvent<K, V>> = this.allChanges.pipe(
 		map(ev => extractChanges(ev)),
-		filter(ev => isActionableChangeDetectionResultType(ev.changeType))
+		filter(ev => isActionableChangeDetectionResultType(ev.changeType)),
+		share()
 	);
 
 	constructor(
