@@ -28,4 +28,4 @@ test suites to get a feel for how to use this module.
 
 ## API
 
-- Source documentation can be found [here](https://jospete.github.io/obsidize-rx-map/)
+Source documentation can be found [here](https://jospete.github.io/obsidize-rx-map/)
