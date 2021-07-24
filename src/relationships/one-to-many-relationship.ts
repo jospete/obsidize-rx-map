@@ -82,6 +82,12 @@ export class OneToManyRelationship<K, V, T> {
 		);
 	}
 
+	public deletePrimaryKeyContext(id: T): boolean {
+		const context = this.store.get(id);
+		if (context) context.clear();
+		return this.store.delete(id);
+	}
+
 	public getPrimaryKeyContext(id: T): OneToManyContext<T, K> {
 
 		let result = this.store.get(id);

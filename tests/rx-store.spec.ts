@@ -195,4 +195,18 @@ describe('RxStore', () => {
 		productOrderContext.setForeignKeys(manuallyInsertedKeys);
 		expect(productOrderContext.getForeignKeys()).toEqual(manuallyInsertedKeys);
 	});
+
+	it('allows for relationship primary key context deletion', () => {
+
+		const store = new AppStore();
+		const productOrderContext = store.productOrdersByProductId.getPrimaryKeyContext(42);
+
+		spyOn(productOrderContext, 'clear').and.callThrough();
+
+		store.productOrdersByProductId.deletePrimaryKeyContext(productOrderContext.id);
+		expect(productOrderContext.clear).toHaveBeenCalled();
+
+		// Should not explode when given a non-existent key
+		expect(() => store.productOrdersByProductId.deletePrimaryKeyContext(-5)).not.toThrow();
+	});
 });
