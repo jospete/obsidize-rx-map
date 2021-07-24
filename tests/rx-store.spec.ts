@@ -19,11 +19,15 @@ describe('RxStore', () => {
 
 		const store = new AppStore();
 		spyOn(store.users, 'destroy').and.callThrough();
+		spyOn(store.productOrdersByProductId, 'clear').and.callThrough();
 		const onDestroyDarkModeStream = store.darkMode.asObservable().toPromise().catch(e => e);
 
 		store.destroy();
+
 		await onDestroyDarkModeStream;
+
 		expect(store.users.destroy).toHaveBeenCalled();
+		expect(store.productOrdersByProductId.clear).toHaveBeenCalled();
 	});
 
 	it('can perform deep change detection on property entries', async () => {
@@ -89,7 +93,18 @@ describe('RxStore', () => {
 		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(1);
 		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(3);
 
+		const onOrderUpdate = store.productOrders.changes.pipe(
+			first(ev => ev.key === 0)
+		).toPromise();
+
 		store.productOrders.updateOne({ key: 0, changes: { productId: milkId } });
+		const ev = await onOrderUpdate;
+
+		expect(ev.value).toBeDefined();
+		expect(ev.value.productId).toBe(milkId);
+		expect(ev.changes).toBeDefined();
+		expect(ev.previousValue.productId).toBe(breadId);
+
 		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(2);
 		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(2);
 
@@ -97,10 +112,7 @@ describe('RxStore', () => {
 		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(1);
 		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(2);
 
-		spyOn(store.productOrdersByProductId, 'clear').and.callThrough();
-
-		store.destroy();
-		expect(store.productOrdersByProductId.clear).toHaveBeenCalled();
+		expect(() => store.destroy()).not.toThrow();
 	});
 
 	it('does not explode when given a bad effect to register', () => {
@@ -108,7 +120,7 @@ describe('RxStore', () => {
 		expect(() => store.registerEffect(null)).not.toThrow();
 	});
 
-	it('does not explode when a relationship context is given bad association input', () => {
+	it('does not explode when a relationship context is given bad input', () => {
 
 		const store = new AppStore();
 
@@ -116,6 +128,7 @@ describe('RxStore', () => {
 		expect(() => store.productOrdersByProductId.associate(null, 5)).not.toThrow();
 		expect(() => store.productOrdersByProductId.disassociate(null, 2)).not.toThrow();
 		expect(() => store.productOrdersByProductId.associate(undefined, undefined)).not.toThrow();
+		expect(() => store.productOrdersByProductId.consume(undefined)).not.toThrow();
 		expect(store.productOrdersByProductId.getRelatedValues(undefined).length).toBe(0);
 	});
 

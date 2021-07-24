@@ -18,4 +18,9 @@ export class OneToManyContext<PrimaryKeyType, ForeignKeyType> {
 	public getForeignKeys(): ForeignKeyType[] {
 		return Array.from(this.foreignKeySet);
 	}
+
+	public setForeignKeys(keys: ForeignKeyType[]): void {
+		this.clear();
+		Array.from(keys).forEach(key => this.foreignKeySet.add(key));
+	}
 }

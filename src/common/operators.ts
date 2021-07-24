@@ -59,7 +59,7 @@ export function pluckValueChanges<K, V, T>(
 		map(ev => ({
 			entityId: ev.key,
 			currentValue: selectSafe(ev.value),
-			previousValue: selectSafe(ev.changes as V),
+			previousValue: selectSafe(ev.previousValue as V),
 		}))
 	);
 }

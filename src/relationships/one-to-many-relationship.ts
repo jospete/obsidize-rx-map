@@ -36,7 +36,7 @@ export class OneToManyRelationship<K, V, T> {
 	 * being changed is 'productId' on ProductOrder, not 'id' on Product.
 	 */
 	public readonly changes: Observable<EntityPropertyChangeEvent<K, T>> = this.entityMap.changes.pipe(
-		pluckValueChanges<K, V, T>(this.selectForeignKey),
+		pluckValueChanges<K, V, T>(ev => this.selectForeignKey(ev)),
 		filter(ev => ev.currentValue !== ev.previousValue),
 		tap(ev => this.consume(ev)),
 		share()
@@ -50,20 +50,21 @@ export class OneToManyRelationship<K, V, T> {
 
 	public associate(id: T, fk: K): void {
 		const context = this.getPrimaryKeyContext(id);
-		if (context) context.foreignKeySet.add(fk);
+		context.foreignKeySet.add(fk);
 	}
 
 	public disassociate(id: T, fk: K): void {
 		const context = this.getPrimaryKeyContext(id);
-		if (context) context.foreignKeySet.delete(fk);
+		context.foreignKeySet.delete(fk);
 	}
 
 	public getRelatedValues(id: T): V[] {
 		const context = this.getPrimaryKeyContext(id);
-		return context ? this.entityMap.getManyExisting(context.getForeignKeys()) : [];
+		return this.entityMap.getManyExisting(context.getForeignKeys());
 	}
 
 	public consume(ev: EntityPropertyChangeEvent<K, T>): void {
+		if (!ev) return;
 		this.disassociate(ev.previousValue!, ev.entityId);
 		this.associate(ev.currentValue!, ev.entityId);
 	}
@@ -81,9 +82,7 @@ export class OneToManyRelationship<K, V, T> {
 		);
 	}
 
-	public getPrimaryKeyContext(id: T): OneToManyContext<T, K> | undefined {
-
-		if (isUndefined(id)) return undefined;
+	public getPrimaryKeyContext(id: T): OneToManyContext<T, K> {
 
 		let result = this.store.get(id);
 
