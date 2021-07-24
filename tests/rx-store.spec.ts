@@ -182,4 +182,17 @@ describe('RxStore', () => {
 
 		expect(firstSpy).toHaveBeenCalledTimes(4);
 	});
+
+	it('allows for manually overwriting a set of foreign keys', () => {
+
+		const store = new AppStore();
+
+		const productOrderContext = store.productOrdersByProductId.getPrimaryKeyContext(42);
+		const originalKeys = productOrderContext.getForeignKeys();
+		expect(originalKeys.length).toBe(0);
+
+		const manuallyInsertedKeys = [1, 2, 3];
+		productOrderContext.setForeignKeys(manuallyInsertedKeys);
+		expect(productOrderContext.getForeignKeys()).toEqual(manuallyInsertedKeys);
+	});
 });
