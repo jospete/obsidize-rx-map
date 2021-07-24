@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ProxyIterableIterator | @obsidize/rx-map</title>
+	<title>Subsink | @obsidize/rx-map</title>
 	<meta name="description" content="Documentation for @obsidize/rx-map">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">@obsidize/rx-map</a>
 				</li>
 				<li>
-					<a href="ProxyIterableIterator.html">ProxyIterableIterator</a>
+					<a href="Subsink.html">Subsink</a>
 				</li>
 			</ul>
-			<h1>Class ProxyIterableIterator&lt;T, R&gt;</h1>
+			<h1>Class Subsink</h1>
 		</div>
 	</div>
 </header>
@@ -68,34 +68,23 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Utility for masking RxMap iterators, so that
-						the underlying map values cannot be mutated while using them.</p>
+						<p>Simple subscription aggregator.
+						This is needed to prevent unwarrented rxjs exceptions when attempting to mass-unsubscribe.</p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-type-parameters">
-				<h3>Type parameters</h3>
-				<ul class="tsd-type-parameters">
-					<li>
-						<h4>T</h4>
-					</li>
-					<li>
-						<h4>R</h4>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ProxyIterableIterator</span>
+						<span class="target">Subsink</span>
 					</li>
 				</ul>
 			</section>
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li><a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -105,14 +94,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter"><a href="ProxyIterableIterator.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="Subsink.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="Subsink.html#mSubscriptions" class="tsd-kind-icon">m<wbr>Subscriptions</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ProxyIterableIterator.html#_Symbol_iterator_" class="tsd-kind-icon">[<wbr>Symbol.iterator]</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ProxyIterableIterator.html#next" class="tsd-kind-icon">next</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Subsink.html#add" class="tsd-kind-icon">add</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Subsink.html#addMany" class="tsd-kind-icon">add<wbr>Many</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Subsink.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="Subsink.html#unsubscribeSafe" class="tsd-kind-icon">unsubscribe<wbr>Safe</a></li>
 							</ul>
 						</section>
 					</div>
@@ -120,95 +117,120 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Proxy<wbr>Iterable<wbr>Iterator&lt;T, R&gt;<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span>, transform<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ProxyIterableIterator.html" class="tsd-signature-type" data-tsd-kind="Class">ProxyIterableIterator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Subsink<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Subsink.html" class="tsd-signature-type" data-tsd-kind="Class">Subsink</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/maps/proxy-iterable-iterator.ts#L7">maps/proxy-iterable-iterator.ts:7</a></li>
-								</ul>
 							</aside>
-							<h4 class="tsd-type-parameters-title">Type parameters</h4>
-							<ul class="tsd-type-parameters">
-								<li>
-									<h4>T</h4>
-								</li>
-								<li>
-									<h4>R</h4>
-								</li>
-							</ul>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>source: <span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5>transform: <span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">R</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-signature">
-											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">R</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>value: <span class="tsd-signature-type">T</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">R</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="ProxyIterableIterator.html" class="tsd-signature-type" data-tsd-kind="Class">ProxyIterableIterator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="Subsink.html" class="tsd-signature-type" data-tsd-kind="Class">Subsink</a></h4>
 						</li>
 					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="mSubscriptions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> m<wbr>Subscriptions</h3>
+					<div class="tsd-signature tsd-kind-icon">m<wbr>Subscriptions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/common/subsink.ts#L15">common/subsink.ts:15</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_Symbol_iterator_" class="tsd-anchor"></a>
-					<h3>[<wbr>Symbol.iterator]</h3>
+					<a name="add" class="tsd-anchor"></a>
+					<h3>add</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">[<wbr>Symbol.iterator]<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>targets<span class="tsd-signature-symbol">: </span><a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Subsink.html" class="tsd-signature-type" data-tsd-kind="Class">Subsink</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of IterableIterator.__@iterator</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/maps/proxy-iterable-iterator.ts#L13">maps/proxy-iterable-iterator.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/common/subsink.ts#L21">common/subsink.ts:21</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>targets: <a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="Subsink.html" class="tsd-signature-type" data-tsd-kind="Class">Subsink</a></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="next" class="tsd-anchor"></a>
-					<h3>next</h3>
+					<a name="addMany" class="tsd-anchor"></a>
+					<h3>add<wbr>Many</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">next<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IteratorResult</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Many<span class="tsd-signature-symbol">(</span>targets<span class="tsd-signature-symbol">: </span><a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Subsink.html" class="tsd-signature-type" data-tsd-kind="Class">Subsink</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of IterableIterator.next</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/maps/proxy-iterable-iterator.ts#L17">maps/proxy-iterable-iterator.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/common/subsink.ts#L30">common/subsink.ts:30</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IteratorResult</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>targets: <a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="Subsink.html" class="tsd-signature-type" data-tsd-kind="Class">Subsink</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="unsubscribe" class="tsd-anchor"></a>
+					<h3>unsubscribe</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">unsubscribe<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/Unsubscribable.html">Unsubscribable</a>.<a href="../interfaces/Unsubscribable.html#unsubscribe">unsubscribe</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/common/subsink.ts#L25">common/subsink.ts:25</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="unsubscribeSafe" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> unsubscribe<wbr>Safe</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">unsubscribe<wbr>Safe<span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/common/subsink.ts#L17">common/subsink.ts:17</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>target: <a href="../interfaces/Unsubscribable.html" class="tsd-signature-type" data-tsd-kind="Interface">Unsubscribable</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -245,24 +267,9 @@
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="OneToManyRelationship.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Relationship</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-has-type-parameter">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="ProxyIterableIterator.html" class="tsd-kind-icon">Proxy<wbr>Iterable<wbr>Iterator</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="ProxyIterableIterator.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ProxyIterableIterator.html#_Symbol_iterator_" class="tsd-kind-icon">[<wbr>Symbol.iterator]</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ProxyIterableIterator.html#next" class="tsd-kind-icon">next</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="RxEntityMap.html" class="tsd-kind-icon">Rx<wbr>Entity<wbr>Map</a>
 					</li>
@@ -272,9 +279,33 @@
 					<li class=" tsd-kind-class">
 						<a href="RxStore.html" class="tsd-kind-icon">Rx<wbr>Store</a>
 					</li>
-					<li class=" tsd-kind-class">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
 						<a href="Subsink.html" class="tsd-kind-icon">Subsink</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="Subsink.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="Subsink.html#mSubscriptions" class="tsd-kind-icon">m<wbr>Subscriptions</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Subsink.html#add" class="tsd-kind-icon">add</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Subsink.html#addMany" class="tsd-kind-icon">add<wbr>Many</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Subsink.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="Subsink.html#unsubscribeSafe" class="tsd-kind-icon">unsubscribe<wbr>Safe</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="../interfaces/ChangeDetectionAccumulator.html" class="tsd-kind-icon">Change<wbr>Detection<wbr>Accumulator</a>
 					</li>

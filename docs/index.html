@@ -80,71 +80,9 @@
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
-				<pre><code class="language-typescript"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">of</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;rxjs&#039;</span><span style="color: #000000">;</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">RxStore</span><span style="color: #000000">, </span><span style="color: #001080">storeEntityIn</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@obsidize/rx-map&#039;</span><span style="color: #000000">;</span>
-
-<span style="color: #008000">// Define the shape of the entity instances you will store.</span>
-<span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">User</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #001080">id</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span><span style="color: #001080">name</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
-<span style="color: #000000">    </span><span style="color: #001080">email</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
-<span style="color: #000000">}</span>
-
-<span style="color: #008000">// Define your &quot;single source of truth&quot; - all state changes should go through an instance of this.</span>
-<span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">AppStore</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxStore</span><span style="color: #000000"> {</span>
-
-<span style="color: #000000">    </span><span style="color: #008000">// There are two types of storage mechanisms we can define here:</span>
-
-<span style="color: #000000">    </span><span style="color: #008000">// 1. definedProperty() - declares an observable non-entity value</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">readonly</span><span style="color: #000000"> </span><span style="color: #001080">darkMode</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineProperty</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;darkMode&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">false</span><span style="color: #000000">);</span>
-
-<span style="color: #000000">    </span><span style="color: #008000">// 2. defineEntityMap() - declares an observable map of entity values</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #0000FF">readonly</span><span style="color: #000000"> </span><span style="color: #001080">users</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineEntityMap</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;users&#039;</span><span style="color: #000000">, (</span><span style="color: #001080">user</span><span style="color: #000000">: </span><span style="color: #267F99">User</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">user</span><span style="color: #000000">.</span><span style="color: #001080">id</span><span style="color: #000000">);</span>
-<span style="color: #000000">}</span>
-
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">store</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">AppStore</span><span style="color: #000000">();</span>
-
-<span style="color: #008000">// update a store property</span>
-<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">darkMode</span><span style="color: #000000">.</span><span style="color: #795E26">next</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
-
-<span style="color: #008000">// watch a store property</span>
-<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">darkMode</span><span style="color: #000000">.</span><span style="color: #795E26">subscribe</span><span style="color: #000000">(</span><span style="color: #001080">isDarkMode</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">isDarkMode</span><span style="color: #000000">)); </span><span style="color: #008000">// true</span>
-
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">bobId</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;adsfzxcv&#039;</span><span style="color: #000000">;</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">bob</span><span style="color: #000000">: </span><span style="color: #267F99">User</span><span style="color: #000000"> = { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #001080">bobId</span><span style="color: #000000">, </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Bob&#039;</span><span style="color: #000000">, </span><span style="color: #001080">email:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;whatsy@whosit.org&#039;</span><span style="color: #000000"> };</span>
-
-<span style="color: #008000">// Add an entity to the store</span>
-<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">addOne</span><span style="color: #000000">(</span><span style="color: #001080">bob</span><span style="color: #000000">);</span>
-
-<span style="color: #008000">// ... somewhere else that&#039;s watching for updates ...</span>
-<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">watchOne</span><span style="color: #000000">(</span><span style="color: #001080">bobId</span><span style="color: #000000">).</span><span style="color: #795E26">subscribe</span><span style="color: #000000">(</span><span style="color: #001080">user</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;user model change -&gt; &#039;</span><span style="color: #000000">, </span><span style="color: #001080">user</span><span style="color: #000000">); </span><span style="color: #008000">// { id: bobId, name: &#039;Bob&#039;, email: &#039;whatsy@whosit.org&#039; }</span>
-<span style="color: #000000">});</span>
-
-<span style="color: #008000">// Get a model manually from the map</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">bobCopy</span><span style="color: #000000"> = </span><span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">getOne</span><span style="color: #000000">(</span><span style="color: #001080">bobId</span><span style="color: #000000">);</span>
-
-<span style="color: #008000">// NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection</span>
-<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">bobCopy</span><span style="color: #000000"> === </span><span style="color: #001080">bob</span><span style="color: #000000">); </span><span style="color: #008000">// false</span>
-
-<span style="color: #008000">// Make some changes and publish back</span>
-<span style="color: #001080">bobCopy</span><span style="color: #000000">.</span><span style="color: #001080">email</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;altbobemail@blah.com&#039;</span><span style="color: #000000">;</span>
-<span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">upsertOne</span><span style="color: #000000">(</span><span style="color: #001080">bobCopy</span><span style="color: #000000">);</span>
-
-<span style="color: #008000">// This module also has operator functions to capture entity models </span>
-<span style="color: #008000">// as they come in from other http / observable sources.</span>
-<span style="color: #795E26">of</span><span style="color: #000000">(</span><span style="color: #001080">bobCopy</span><span style="color: #000000">).</span><span style="color: #795E26">pipe</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #795E26">storeEntityIn</span><span style="color: #000000">(</span><span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">) </span><span style="color: #008000">// will publish emitted values into the &#039;users&#039; map by side-effect</span>
-<span style="color: #000000">).</span><span style="color: #795E26">subscribe</span><span style="color: #000000">(</span><span style="color: #001080">user</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">user</span><span style="color: #000000">));</span>
-</code></pre>
-				<p>Note that for angular projects, your store should be a root-level service:</p>
-				<pre><code class="language-typescript"><span style="color: #000000">@</span><span style="color: #795E26">Injectable</span><span style="color: #000000">({</span>
-<span style="color: #000000">    </span><span style="color: #001080">providedIn:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;root&#039;</span>
-<span style="color: #000000">})</span>
-<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">AppStoreService</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">RxStore</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #008000">// TODO: add properties and entity maps here</span>
-<span style="color: #000000">}</span>
-</code></pre>
+				<p>See the <a href="https://github.com/jospete/obsidize-rx-map/blob/master/tests/rx-store.spec.ts">RxStore</a>
+					and <a href="https://github.com/jospete/obsidize-rx-map/blob/master/tests/general-usage.spec.ts">General Usage</a>
+				test suites to get a feel for how to use this module.</p>
 				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
 					<h2>API</h2>
 				</a>
@@ -179,6 +117,12 @@
 						<a href="classes/MutableRxEntityMap.html" class="tsd-kind-icon">Mutable<wbr>RxEntity<wbr>Map</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/OneToManyContext.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="classes/OneToManyRelationship.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Relationship</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/ProxyIterableIterator.html" class="tsd-kind-icon">Proxy<wbr>Iterable<wbr>Iterator</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
@@ -190,6 +134,9 @@
 					<li class=" tsd-kind-class">
 						<a href="classes/RxStore.html" class="tsd-kind-icon">Rx<wbr>Store</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/Subsink.html" class="tsd-kind-icon">Subsink</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/ChangeDetectionAccumulator.html" class="tsd-kind-icon">Change<wbr>Detection<wbr>Accumulator</a>
 					</li>
@@ -200,10 +147,16 @@
 						<a href="interfaces/EntityMapLike.html" class="tsd-kind-icon">Entity<wbr>Map<wbr>Like</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/EntityPropertyChangeEvent.html" class="tsd-kind-icon">Entity<wbr>Property<wbr>Change<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/MapStateChangeEvent.html" class="tsd-kind-icon">Map<wbr>State<wbr>Change<wbr>Event</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/MapStateChangeEventContext.html" class="tsd-kind-icon">Map<wbr>State<wbr>Change<wbr>Event<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/Unsubscribable.html" class="tsd-kind-icon">Unsubscribable</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/Update.html" class="tsd-kind-icon">Update</a>
@@ -212,10 +165,10 @@
 						<a href="modules.html#EntityTransform" class="tsd-kind-icon">Entity<wbr>Transform</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="modules.html#KeySelector" class="tsd-kind-icon">Key<wbr>Selector</a>
+						<a href="modules.html#Predicate" class="tsd-kind-icon">Predicate</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="modules.html#Predicate" class="tsd-kind-icon">Predicate</a>
+						<a href="modules.html#PropertySelector" class="tsd-kind-icon">Property<wbr>Selector</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="modules.html#accumulateChanges" class="tsd-kind-icon">accumulate<wbr>Changes</a>
@@ -251,6 +204,9 @@
 						<a href="modules.html#pluckValue" class="tsd-kind-icon">pluck<wbr>Value</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#pluckValueChanges" class="tsd-kind-icon">pluck<wbr>Value<wbr>Changes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="modules.html#spreadFilterBy" class="tsd-kind-icon">spread<wbr>Filter<wbr>By</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
@@ -283,6 +239,12 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>

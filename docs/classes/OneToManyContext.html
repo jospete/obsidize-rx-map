@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ProxyIterableIterator | @obsidize/rx-map</title>
+	<title>OneToManyContext | @obsidize/rx-map</title>
 	<meta name="description" content="Documentation for @obsidize/rx-map">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">@obsidize/rx-map</a>
 				</li>
 				<li>
-					<a href="ProxyIterableIterator.html">ProxyIterableIterator</a>
+					<a href="OneToManyContext.html">OneToManyContext</a>
 				</li>
 			</ul>
-			<h1>Class ProxyIterableIterator&lt;T, R&gt;</h1>
+			<h1>Class OneToManyContext&lt;PrimaryKeyType, ForeignKeyType&gt;</h1>
 		</div>
 	</div>
 </header>
@@ -68,8 +68,8 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Utility for masking RxMap iterators, so that
-						the underlying map values cannot be mutated while using them.</p>
+						<p>Simple cache container used to relate a single id to a set of foreign keys.
+						Allows for fast lookup times of one-to-many projections.</p>
 					</div>
 				</div>
 			</section>
@@ -77,10 +77,10 @@
 				<h3>Type parameters</h3>
 				<ul class="tsd-type-parameters">
 					<li>
-						<h4>T</h4>
+						<h4>PrimaryKeyType</h4>
 					</li>
 					<li>
-						<h4>R</h4>
+						<h4>ForeignKeyType</h4>
 					</li>
 				</ul>
 			</section>
@@ -88,14 +88,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ProxyIterableIterator</span>
+						<span class="target">OneToManyContext</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implements</h3>
-				<ul class="tsd-hierarchy">
-					<li><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -105,14 +99,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter"><a href="ProxyIterableIterator.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter"><a href="OneToManyContext.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="OneToManyContext.html#foreignKeySet" class="tsd-kind-icon">foreign<wbr>Key<wbr>Set</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="OneToManyContext.html#id" class="tsd-kind-icon">id</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ProxyIterableIterator.html#_Symbol_iterator_" class="tsd-kind-icon">[<wbr>Symbol.iterator]</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ProxyIterableIterator.html#next" class="tsd-kind-icon">next</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="OneToManyContext.html#clear" class="tsd-kind-icon">clear</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="OneToManyContext.html#getForeignKeys" class="tsd-kind-icon">get<wbr>Foreign<wbr>Keys</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="OneToManyContext.html#setForeignKeys" class="tsd-kind-icon">set<wbr>Foreign<wbr>Keys</a></li>
 							</ul>
 						</section>
 					</div>
@@ -124,91 +126,111 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Proxy<wbr>Iterable<wbr>Iterator&lt;T, R&gt;<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span>, transform<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ProxyIterableIterator.html" class="tsd-signature-type" data-tsd-kind="Class">ProxyIterableIterator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>One<wbr>ToMany<wbr>Context&lt;PrimaryKeyType, ForeignKeyType&gt;<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PrimaryKeyType</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="OneToManyContext.html" class="tsd-signature-type" data-tsd-kind="Class">OneToManyContext</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PrimaryKeyType</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ForeignKeyType</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/maps/proxy-iterable-iterator.ts#L7">maps/proxy-iterable-iterator.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/relationships/one-to-many-context.ts#L9">relationships/one-to-many-context.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
-									<h4>T</h4>
+									<h4>PrimaryKeyType</h4>
 								</li>
 								<li>
-									<h4>R</h4>
+									<h4>ForeignKeyType</h4>
 								</li>
 							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>source: <span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5>transform: <span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">R</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-signature">
-											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">R</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>value: <span class="tsd-signature-type">T</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">R</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
+									<h5>id: <span class="tsd-signature-type">PrimaryKeyType</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="ProxyIterableIterator.html" class="tsd-signature-type" data-tsd-kind="Class">ProxyIterableIterator</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="OneToManyContext.html" class="tsd-signature-type" data-tsd-kind="Class">OneToManyContext</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">PrimaryKeyType</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ForeignKeyType</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="foreignKeySet" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> foreign<wbr>Key<wbr>Set</h3>
+					<div class="tsd-signature tsd-kind-icon">foreign<wbr>Key<wbr>Set<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ForeignKeyType</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/relationships/one-to-many-context.ts#L7">relationships/one-to-many-context.ts:7</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="id" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">PrimaryKeyType</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_Symbol_iterator_" class="tsd-anchor"></a>
-					<h3>[<wbr>Symbol.iterator]</h3>
+					<a name="clear" class="tsd-anchor"></a>
+					<h3>clear</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">[<wbr>Symbol.iterator]<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">clear<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of IterableIterator.__@iterator</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/maps/proxy-iterable-iterator.ts#L13">maps/proxy-iterable-iterator.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/relationships/one-to-many-context.ts#L14">relationships/one-to-many-context.ts:14</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="next" class="tsd-anchor"></a>
-					<h3>next</h3>
+					<a name="getForeignKeys" class="tsd-anchor"></a>
+					<h3>get<wbr>Foreign<wbr>Keys</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">next<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IteratorResult</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Foreign<wbr>Keys<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ForeignKeyType</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of IterableIterator.next</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/maps/proxy-iterable-iterator.ts#L17">maps/proxy-iterable-iterator.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/relationships/one-to-many-context.ts#L18">relationships/one-to-many-context.ts:18</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IteratorResult</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ForeignKeyType</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setForeignKeys" class="tsd-anchor"></a>
+					<h3>set<wbr>Foreign<wbr>Keys</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Foreign<wbr>Keys<span class="tsd-signature-symbol">(</span>keys<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ForeignKeyType</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/df4e049/src/relationships/one-to-many-context.ts#L22">relationships/one-to-many-context.ts:22</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>keys: <span class="tsd-signature-type">ForeignKeyType</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -239,30 +261,39 @@
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="MutableRxEntityMap.html" class="tsd-kind-icon">Mutable<wbr>RxEntity<wbr>Map</a>
 					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="OneToManyContext.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="OneToManyRelationship.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Relationship</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-has-type-parameter">
-						<a href="ProxyIterableIterator.html" class="tsd-kind-icon">Proxy<wbr>Iterable<wbr>Iterator</a>
+						<a href="OneToManyContext.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Context</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="ProxyIterableIterator.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="OneToManyContext.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="OneToManyContext.html#foreignKeySet" class="tsd-kind-icon">foreign<wbr>Key<wbr>Set</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="OneToManyContext.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ProxyIterableIterator.html#_Symbol_iterator_" class="tsd-kind-icon">[<wbr>Symbol.iterator]</a>
+								<a href="OneToManyContext.html#clear" class="tsd-kind-icon">clear</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ProxyIterableIterator.html#next" class="tsd-kind-icon">next</a>
+								<a href="OneToManyContext.html#getForeignKeys" class="tsd-kind-icon">get<wbr>Foreign<wbr>Keys</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="OneToManyContext.html#setForeignKeys" class="tsd-kind-icon">set<wbr>Foreign<wbr>Keys</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="OneToManyRelationship.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Relationship</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter">
+						<a href="ProxyIterableIterator.html" class="tsd-kind-icon">Proxy<wbr>Iterable<wbr>Iterator</a>
+					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="RxEntityMap.html" class="tsd-kind-icon">Rx<wbr>Entity<wbr>Map</a>
 					</li>
