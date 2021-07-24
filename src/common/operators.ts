@@ -4,7 +4,8 @@ import { identity } from 'lodash';
 
 import { isActionableChangeDetectionResultType } from '../events/change-detection-event';
 import { MapStateChangeEvent, MapStateChangeEventType } from '../events/map-state-change-event';
-import { ChangeDetectionAccumulator, detectAccumulatedChanges } from './utility';
+import { EntityPropertyChangeEvent } from '../events/entity-property-change-event';
+import { ChangeDetectionAccumulator, detectAccumulatedChanges, PropertySelector } from './utility';
 import { RxEntityMap } from '../maps/rx-entity-map';
 
 /**
@@ -43,6 +44,23 @@ export function forKey<K, V>(key: K): MonoTypeOperatorFunction<MapStateChangeEve
 export function forKeyIn<K, V>(keys: K[]): MonoTypeOperatorFunction<MapStateChangeEvent<K, V>> {
 	return source => source.pipe(
 		spreadFilterBy(keys, ev => ev.key)
+	);
+}
+
+/**
+ * Narrows the scope of raw map change events into property-specific events.
+ */
+export function pluckValueChanges<K, V, T>(
+	selectValue: PropertySelector<T, V>
+): OperatorFunction<MapStateChangeEvent<K, V>, EntityPropertyChangeEvent<K, T>> {
+	const selectSafe = (v?: V) => v ? selectValue(v) : undefined;
+	return source => source.pipe(
+		filter(ev => !!ev),
+		map(ev => ({
+			entityId: ev.key,
+			currentValue: selectSafe(ev.value),
+			previousValue: selectSafe(ev.changes as V),
+		}))
 	);
 }
 

@@ -4,7 +4,8 @@ import { identity } from 'lodash';
 
 import { forKey, forKeyIn, pluckValue } from '../common/operators';
 import { MapStateChangeEvent } from '../events/map-state-change-event';
-import { EntityMap, KeySelector } from './entity-map';
+import { PropertySelector } from '../common/utility';
+import { EntityMap } from './entity-map';
 import { RxMap } from './rx-map';
 
 /**
@@ -13,7 +14,7 @@ import { RxMap } from './rx-map';
 export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends EntityMap<K, V, T> {
 
 	constructor(
-		selectKey: KeySelector<K, V>,
+		selectKey: PropertySelector<K, V>,
 		store: T = (new RxMap<K, V>() as T)
 	) {
 		super(store, selectKey);

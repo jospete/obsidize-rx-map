@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { MapStateChangeEvent } from '../events/map-state-change-event';
-import { KeySelector } from './entity-map';
+import { PropertySelector } from '../common/utility';
 import { RxEntityMap } from './rx-entity-map';
 import { RxMap } from './rx-map';
 
@@ -15,7 +15,7 @@ import { RxMap } from './rx-map';
 export class MutableRxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends RxEntityMap<K, V, T> {
 
 	constructor(
-		selectKey: KeySelector<K, V>,
+		selectKey: PropertySelector<K, V>,
 		store: T = (new RxMap(new Map<K, V>()) as T)
 	) {
 		super(selectKey, store);

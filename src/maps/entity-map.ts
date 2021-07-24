@@ -1,8 +1,8 @@
 import 'tslib';
 import { isNil, merge, isFunction, identity } from 'lodash';
 
-export type Predicate<T> = (entity: T) => boolean;
-export type KeySelector<K, V> = (entity: V) => K;
+import { Predicate, PropertySelector } from '../common/utility';
+
 export type EntityTransform<T> = (entity: T) => T;
 
 export interface Update<K, V> {
@@ -47,7 +47,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 
 	constructor(
 		protected readonly store: T,
-		protected readonly selectKey: KeySelector<K, V>
+		protected readonly selectKey: PropertySelector<K, V>
 	) {
 	}
 

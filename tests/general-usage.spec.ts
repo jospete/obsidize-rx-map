@@ -14,10 +14,10 @@ describe('General Usage', () => {
 			// There are two types of storage mechanisms we can define here:
 
 			// 1. definedProperty() - declares an observable non-entity value
-			public readonly darkMode = this.defineProperty('darkMode', false);
+			public readonly darkMode = this.defineProperty(false);
 
 			// 2. defineEntityMap() - declares an observable map of entity values
-			public readonly users = this.defineEntity('users', (user: User) => user.id);
+			public readonly users = this.defineEntity((user: User) => user.id);
 		}
 
 		const store = new AppStore();

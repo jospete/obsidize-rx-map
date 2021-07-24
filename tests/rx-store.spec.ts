@@ -5,46 +5,14 @@ import { Product, ProductOrder, User } from './test-utility';
 
 class AppStore extends RxStore {
 
-	public readonly darkMode = this.defineProperty('darkMode', true);
-	public readonly clickCount = this.defineProperty('clickCount', 0);
-	public readonly users = this.defineEntity('users', (user: User) => user.id);
-	public readonly products = this.defineEntity('products', (product: Product) => product.id);
-	public readonly productOrders = this.defineEntity('productOrders', (order: ProductOrder) => order.id);
+	public readonly darkMode = this.defineProperty(true);
+	public readonly clickCount = this.defineProperty(0);
+	public readonly users = this.defineEntity((user: User) => user.id);
+	public readonly products = this.defineEntity((product: Product) => product.id);
+	public readonly productOrders = this.defineEntity((order: ProductOrder) => order.id);
 }
 
 describe('RxStore', () => {
-
-	it('is a base class for iteracting with the app root state', () => {
-
-		const store = new AppStore();
-		const usersId = 'users';
-		const darkModeId = 'darkMode';
-
-		expect(store.users).toBeDefined();
-		expect(store.getEntityId(store.users)).toBe(usersId);
-		expect(store.getEntity(usersId)).toBe(store.users);
-		expect(store.getEntityId(null)).not.toBeDefined();
-
-		expect(store.darkMode).toBeDefined();
-		expect(store.getPropertyId(store.darkMode)).toBe(darkModeId);
-		expect(store.getProperty(darkModeId)).toBe(store.darkMode);
-		expect(store.getPropertyId(null)).not.toBeDefined();
-	});
-
-	it('throws an exception when one of the define methods is given an id that has already been defined', () => {
-
-		class BadPropStore extends AppStore {
-			public readonly dupeDarkMode = this.defineProperty('darkMode', false);
-		}
-
-		expect(() => new BadPropStore()).toThrowError();
-
-		class BadMapStore extends AppStore {
-			public readonly dupeUsers = this.defineEntity('users', null);
-		}
-
-		expect(() => new BadMapStore()).toThrowError();
-	});
 
 	it('will destroy all defined constructs when destroy() is called', async () => {
 
@@ -62,7 +30,7 @@ describe('RxStore', () => {
 		const seedUser: User = { id: '21234', name: 'John', email: '123@abc.com' };
 
 		class CustomStore extends RxStore {
-			public readonly selectedUser = this.defineProperty('selectedUser', null);
+			public readonly selectedUser = this.defineProperty<User>(null);
 		}
 
 		const store = new CustomStore();

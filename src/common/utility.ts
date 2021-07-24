@@ -3,6 +3,9 @@ import { transform, isEqual, isObject, get } from 'lodash';
 import { ChangeDetectionResult, ChangeDetectionResultType } from '../events/change-detection-event';
 import { MapStateChangeEvent } from '../events/map-state-change-event';
 
+export type Predicate<V> = (value: V) => boolean;
+export type PropertySelector<K, V> = (value: V) => K;
+
 // Shamelessly stolen from here:
 // https://gist.github.com/Yimiprod/7ee176597fef230d1451#gistcomment-2565071
 export function deepDifferenceBetween<T>(current: T, previous: T): Partial<T> {
