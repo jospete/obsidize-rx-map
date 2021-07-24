@@ -10,6 +10,7 @@ class AppStore extends RxStore {
 	public readonly users = this.defineEntity((user: User) => user.id);
 	public readonly products = this.defineEntity((product: Product) => product.id);
 	public readonly productOrders = this.defineEntity((order: ProductOrder) => order.id);
+	public readonly productOrdersByProductId = this.defineEntityForeignKey(this.productOrders, order => order.productId);
 }
 
 describe('RxStore', () => {
@@ -50,5 +51,69 @@ describe('RxStore', () => {
 
 		const changeResult = await changeResultPromise;
 		expect(changeResult).toEqual(changes);
+	});
+
+	it('can quickly load entities related by foreign keys using a OneToManyRelationship instance', async () => {
+
+		const store = new AppStore();
+
+		const bobId = 'adsf';
+		const tedId = 'zxcv';
+		const frankId = 'mnbv';
+
+		store.users.addMany([
+			{ id: bobId, name: 'Bob' },
+			{ id: tedId, name: 'Ted' },
+			{ id: frankId, name: 'Frank' },
+		]);
+
+		const toastId = 0;
+		const milkId = 1;
+		const breadId = 2;
+
+		store.products.addMany([
+			{ id: toastId, name: 'Toast' },
+			{ id: milkId, name: 'Milk' },
+			{ id: breadId, name: 'Bread' },
+		]);
+
+		// Bob _really_ likes bread
+		const bobOrders = [
+			{ id: 0, userId: bobId, productId: breadId },
+			{ id: 1, userId: bobId, productId: breadId },
+			{ id: 2, userId: bobId, productId: breadId },
+		];
+
+		const tedOrders = [
+			{ id: 3, userId: tedId, productId: toastId },
+			{ id: 4, userId: tedId, productId: milkId },
+		];
+
+		store.productOrders.addMany(bobOrders.concat(tedOrders));
+
+		expect(() => store.productOrdersByProductId.getRelatedValues(null)).not.toThrow();
+		expect(() => store.productOrdersByProductId.associate(null, 5)).not.toThrow();
+		expect(() => store.productOrdersByProductId.disassociate(null, 2)).not.toThrow();
+
+		expect(store.productOrdersByProductId.getRelatedValues(toastId).length).toBe(1);
+		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(1);
+		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(3);
+
+		const waitForUpdate = store.productOrdersByProductId.changes.pipe(first()).toPromise();
+
+		store.productOrders.updateOne({ key: 0, changes: { productId: milkId } });
+		await waitForUpdate;
+
+		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(2);
+		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(2);
+
+		store.productOrders.removeOne(0);
+		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(1);
+		expect(store.productOrdersByProductId.getRelatedValues(breadId).length).toBe(2);
+
+		spyOn(store.productOrdersByProductId, 'clear').and.callThrough();
+
+		store.destroy();
+		expect(store.productOrdersByProductId.clear).toHaveBeenCalled();
 	});
 });

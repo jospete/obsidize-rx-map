@@ -22,22 +22,13 @@ export class Subsink implements Unsubscribable {
 		return this.addMany(targets);
 	}
 
-	public set(...targets: Unsubscribable[]): this {
-		return this.setAll(targets);
-	}
-
 	public unsubscribe(): void {
 		this.mSubscriptions.forEach(Subsink.unsubscribeSafe);
 		this.mSubscriptions.clear();
 	}
 
 	public addMany(targets: Unsubscribable[]): this {
-		Array.from(targets).forEach(target => this.add(target));
+		Array.from(targets).forEach(target => this.mSubscriptions.add(target));
 		return this;
-	}
-
-	public setAll(targets: Unsubscribable[]): this {
-		this.unsubscribe();
-		return this.addMany(targets);
 	}
 }

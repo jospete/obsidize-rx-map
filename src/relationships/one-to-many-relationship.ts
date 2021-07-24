@@ -1,4 +1,4 @@
-import { distinct, filter, map, startWith, tap } from 'rxjs/operators';
+import { filter, map, startWith, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { isUndefined } from 'lodash';
 
@@ -37,7 +37,7 @@ export class OneToManyRelationship<K, V, T> {
 	 */
 	public readonly changes: Observable<EntityPropertyChangeEvent<K, T>> = this.entityMap.changes.pipe(
 		pluckValueChanges<K, V, T>(this.selectForeignKey),
-		distinct(ev => ev.currentValue),
+		filter(ev => ev.currentValue !== ev.previousValue),
 		tap(ev => this.consume(ev))
 	);
 
@@ -57,7 +57,7 @@ export class OneToManyRelationship<K, V, T> {
 		if (context) context.foreignKeySet.delete(fk);
 	}
 
-	public getForeignEntitiesByPrimaryKey(id: T): V[] {
+	public getRelatedValues(id: T): V[] {
 		const context = this.getPrimaryKeyContext(id);
 		return context ? this.entityMap.getManyExisting(context.getForeignKeys()) : [];
 	}
@@ -82,8 +82,8 @@ export class OneToManyRelationship<K, V, T> {
 	public watchPrimaryKey(id: T): Observable<V[]> {
 		return this.changes.pipe(
 			filter(ev => !!ev && (ev.previousValue === id || ev.currentValue === id)),
-			map(() => this.getForeignEntitiesByPrimaryKey(id)),
-			startWith(this.getForeignEntitiesByPrimaryKey(id))
+			map(() => this.getRelatedValues(id)),
+			startWith(this.getRelatedValues(id))
 		);
 	}
 
