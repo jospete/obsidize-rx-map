@@ -102,7 +102,7 @@ describe('RxStore', () => {
 
 		expect(ev.value).toBeDefined();
 		expect(ev.value.productId).toBe(milkId);
-		expect(ev.changes).toBeDefined();
+		expect(ev.previousValue).toBeDefined();
 		expect(ev.previousValue.productId).toBe(breadId);
 
 		expect(store.productOrdersByProductId.getRelatedValues(milkId).length).toBe(2);
