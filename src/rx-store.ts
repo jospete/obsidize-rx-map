@@ -8,20 +8,6 @@ import { Subsink } from './common/subsink';
 /**
  * Base class for defining an app's storage data.
  * Use the define***() methods to stand up your core storage infrastructure.
- * 
- * @example
- * 
- * export interface User {
- * 		id: string;
- * 		name: string;
- * 		age: number;
- * }
- * 
- * export class AppStore extends RxStore {
- * 		
- * 		public readonly darkMode = this.defineProperty('darkMode', true);
- * 		public readonly users = this.defineEntityMap('users', (user: User) => user.id);
- * }
  */
 export class RxStore {
 

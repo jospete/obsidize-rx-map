@@ -22,8 +22,8 @@ npm install --save git+https://github.com/jospete/obsidize-rx-map.git
 
 ## Usage
 
-See the [RxStore](https://github.com/jospete/obsidize-rx-map/blob/master/tests/rx-store.spec.ts)
-and [General Usage](https://github.com/jospete/obsidize-rx-map/blob/master/tests/general-usage.spec.ts)
+See the [General Usage](https://github.com/jospete/obsidize-rx-map/blob/master/tests/general-usage.spec.ts)
+and [RxStore](https://github.com/jospete/obsidize-rx-map/blob/master/tests/rx-store.spec.ts)
 test suites to get a feel for how to use this module.
 
 ## API

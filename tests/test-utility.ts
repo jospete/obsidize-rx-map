@@ -34,17 +34,3 @@ export const getTestUsers = () => [
 	{ id: 'asdf', name: 'Dennis', age: 37 },
 	{ id: 'bvcx', name: 'Fred', age: 25 },
 ];
-
-export const loadUser = (): Observable<User> => of(
-	{ id: 'asdffdgh', name: 'ted', email: 'tedrulez@tedswebsite.tv' },
-);
-
-export const loadProducts = (): Observable<Product[]> => of([
-	{ id: 0, name: 'Toast' },
-	{ id: 1, name: 'Butter' },
-	{ id: 2, name: 'Milk' },
-]);
-
-export const loadProductOrdersByUserId = (userId: string): Observable<ProductOrder[]> => of([
-	{ id: 0, userId, productId: 2 }
-]);

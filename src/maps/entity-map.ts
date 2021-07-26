@@ -32,6 +32,7 @@ export interface EntityMapLike<K, V> {
 	removeAll(): void;
 	updateOne(update: Update<K, V>): V | undefined;
 	updateMany(updates: Update<K, V>[]): V[];
+	updateOneByKey(key: K, changes: Partial<V>): V | undefined;
 	upsertOne(entity: V): V | undefined;
 	upsertMany(entities: V[]): V[];
 	transformOne(key: K, transform: EntityTransform<V>): V | undefined;
@@ -149,12 +150,16 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 		this.store.clear();
 	}
 
-	public updateOne(update: Update<K, V>): V | undefined {
-		if (!update) return undefined;
-		const { key, changes } = update;
+	public updateOneByKey(key: K, changes: Partial<V>): V | undefined {
 		const combinedValue = merge(this.store.get(key), changes);
 		this.onSetEntry(key, combinedValue);
 		return combinedValue;
+	}
+
+	public updateOne(update: Update<K, V>): V | undefined {
+		if (!update) return undefined;
+		const { key, changes } = update;
+		return this.updateOneByKey(key, changes);
 	}
 
 	public updateMany(updates: Update<K, V>[]): V[] {

@@ -1,90 +1,151 @@
-import { of } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { first, tap } from 'rxjs/operators';
 
-import { storeEntityIn, storeEntityArrayIn, pluckValue, RxEntityMap, RxStore } from '../src';
-import { loadProductOrdersByUserId, loadProducts, loadUser, Product, ProductOrder, User } from './test-utility';
+import { RxStore, ofType, MapStateChangeEventType, storeEntityArrayIn, storeEntityIn } from '../src';
+
+interface User {
+	id: string;
+	firstName?: string;
+	lastName?: string;
+	email: string;
+	emailVerified?: boolean;
+}
+
+interface Book {
+	id: number;
+	name: string;
+	description?: string;
+}
+
+interface UserBookOwnership {
+	id: number;
+	userId: string;
+	bookId: number;
+}
+
+// Define your "single source of truth" - all state changes should go through an instance of this.
+class AppStore extends RxStore {
+
+	// Use defineProperty() to make watchable non-entity content
+	// (i.e. anything that you won't have multiple instances of)
+	public readonly initialModelsLoaded = this.defineProperty(false);
+
+	// Use defineEntity() to make a watchable map of entity values
+	// (i.e. when you will need to store something like multiple User instances by id)
+	//
+	// Note that the generics for this "users" property are implied by the given key selector function.
+	// You will almost never need to supply these generics manually.
+	public readonly users = this.defineEntity((user: User) => user.id);
+
+	// Each store-able entity should get its own define call
+	public readonly books = this.defineEntity((book: Book) => book.id);
+
+	// Even purely relational models - we want to effectively mirror a database architecture with these defines.
+	public readonly userBooks = this.defineEntity((userBook: UserBookOwnership) => userBook.id);
+
+	// Use defineEntityForeignKey() to indicate to RxStore the existence of a foreign key property on an entity.
+	public readonly userBooksByUserId = this.defineEntityForeignKey(this.userBooks, userBook => userBook.userId);
+
+	// You can define multiple foreign keys for the same model
+	public readonly userBooksByBookId = this.defineEntityForeignKey(this.userBooks, userBook => userBook.bookId);
+
+	// Register an effect stream so that when a User is deleted, we need to sync the userBooks map.
+	public readonly onUserDelete = this.registerEffect(this.users.changes.pipe(
+		ofType(MapStateChangeEventType.DELETE),
+		tap(({ key }) => this.userBooks.removeWhere(v => v.userId === key))
+	));
+
+	// When a Book is deleted, we need to sync the userBooks map.
+	public readonly onBookDelete = this.registerEffect(this.books.changes.pipe(
+		ofType(MapStateChangeEventType.DELETE),
+		tap(({ key }) => this.userBooks.removeWhere(v => v.bookId === key))
+	));
+
+	public loadPrimaryUser(): Observable<User> {
+
+		const primaryUser: User = {
+			id: 'asdfzxcv',
+			firstName: 'Schmitty',
+			email: 'vanwagnermeisn@boogienights.tv'
+		};
+
+		return of(primaryUser).pipe(
+			// Coinvenience to capture a single entity from an outside source (storage / network / etc.)
+			storeEntityIn(this.users)
+		);
+	}
+
+	public loadAdditionalBooks(): Observable<Book[]> {
+
+		const extraBooks: Book[] = [
+			{ id: 42, name: 'The 42nd Thing' },
+			{ id: 55, name: 'Schfifty Five' },
+			{ id: 1941, name: 'Definitely Celcius' },
+		];
+
+		return of(extraBooks).pipe(
+			// Coinvenience to capture an entity array from an outside source (storage / network / etc.)
+			storeEntityArrayIn(this.books)
+		);
+	}
+}
 
 describe('General Usage', () => {
 
-	it('works as advertised', () => {
-
-		// Define your "single source of truth" - all state changes should go through an instance of this.
-		class AppStore extends RxStore {
-
-			// There are two types of storage mechanisms we can define here:
-
-			// 1. definedProperty() - declares an observable non-entity value
-			public readonly darkMode = this.defineProperty(false);
-
-			// 2. defineEntityMap() - declares an observable map of entity values
-			public readonly users = this.defineEntity((user: User) => user.id);
-		}
+	it('Use RxStore to scaffold your core storage architecture', async () => {
 
 		const store = new AppStore();
+		const waitForModelLoad = store.initialModelsLoaded.pipe(first(loaded => loaded)).toPromise();
 
-		// update a store property
-		store.darkMode.next(true);
+		const [bob, ted, frank] = store.users.addMany([
+			{ id: 'a', firstName: 'Bob', email: 'bobbyboy@thing.com' },
+			{ id: 'b', firstName: 'Ted', email: 'tedrulez@yahoo.com' },
+			{ id: 'c', firstName: 'Frank', email: 'frankandbeans@squidz.com' },
+		]);
 
-		// watch a store property
-		store.darkMode.subscribe(isDarkMode => console.log(isDarkMode)); // true
+		const [fireAndIce, mobyDick, potatoes] = store.books.addMany([
+			{ id: 0, name: 'Fire and Ice or something' },
+			{ id: 1, name: 'Moby Dick' },
+			{ id: 2, name: '99 Ways to Peel a Potato' },
+		]);
 
-		const bobId = 'adsfzxcv';
-		const bob: User = { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' };
+		const [bobFireIce, bobPotatoes, tedFireIce, frankMobyDick, bobFireIce2] = store.userBooks.addMany([
+			{ id: 0, userId: bob.id, bookId: fireAndIce.id },
+			{ id: 1, userId: bob.id, bookId: potatoes.id },
+			{ id: 2, userId: ted.id, bookId: fireAndIce.id },
+			{ id: 3, userId: frank.id, bookId: mobyDick.id },
+			{ id: 4, userId: bob.id, bookId: fireAndIce.id }, // Bob really likes the fire and ice book for some reason
+		]);
 
-		// Add an entity to the store
-		store.users.addOne(bob);
+		store.initialModelsLoaded.next(true);
+		await waitForModelLoad; // Somewhere else in the app can be notified by the above next() call.
 
-		// ... somewhere else that's watching for updates ...
-		store.users.watchOne(bobId).subscribe(user => {
-			console.log('user model change -> ', user); // { id: bobId, name: 'Bob', email: 'whatsy@whosit.org' }
-		});
+		// Foreign key declarations allow for fast relational lookups
+		expect(store.userBooksByUserId.getRelatedValues(bob.id)).toEqual([
+			bobFireIce, bobPotatoes, bobFireIce2
+		]);
 
-		// Get a model manually from the map
-		const bobCopy = store.users.getOne(bobId);
+		expect(store.userBooksByBookId.getRelatedValues(mobyDick.id)).toEqual([
+			frankMobyDick
+		]);
 
-		// NOTE: all returned / emitted instances are a deep copy to prevent callers from bypassing change detection
-		console.log(bobCopy === bob); // false
+		expect(store.userBooksByBookId.getRelatedValues(fireAndIce.id)).toEqual([
+			bobFireIce, tedFireIce, bobFireIce2
+		]);
 
-		// Make some changes and publish back
-		bobCopy.email = 'altbobemail@blah.com';
-		store.users.upsertOne(bobCopy);
+		store.books.removeOne(fireAndIce.id);
 
-		// This module also has operator functions to capture entity models 
-		// as they come in from other http / observable sources.
-		of(bobCopy).pipe(
-			storeEntityIn(store.users) // will publish emitted values into the 'users' map by side-effect
-		).subscribe(user => console.log(user));
+		// Our deletion registerEffect() calls will automatically take care of model dependencies
+		expect(store.userBooksByBookId.getRelatedValues(fireAndIce.id)).toEqual([]);
+		expect(store.books.count).toBe(2);
 
-		expect(bobCopy).toEqual(store.users.getOne(bobId));
-		expect(bobCopy).not.toBe(store.users.getOne(bobId));
-	});
+		const extraBooks = await store.loadAdditionalBooks().toPromise();
+		expect(store.books.count).toBe(2 + extraBooks.length);
 
-	it('can perform complex relational loading', async () => {
+		const primaryUser = await store.loadPrimaryUser().toPromise();
+		expect(store.users.getOne(primaryUser.id)).toEqual(primaryUser);
 
-		const users = new RxEntityMap((v: User) => v.id);
-		const products = new RxEntityMap((v: Product) => v.id);
-		const productOrders = new RxEntityMap((v: ProductOrder) => v.id);
-
-		const user = await loadUser().pipe(
-			storeEntityIn(users)
-		).toPromise();
-
-		const onCaptureUserProductOrder = productOrders.changes.pipe(
-			pluckValue(),
-			first(order => !!order && order.userId === user.id)
-		).toPromise();
-
-		await loadProducts().pipe(
-			storeEntityArrayIn(products)
-		).toPromise();
-
-		await loadProductOrdersByUserId(user.id).pipe(
-			storeEntityArrayIn(productOrders)
-		).toPromise();
-
-		const capturedOrder = await onCaptureUserProductOrder;
-
-		expect(capturedOrder.userId).toBe(user.id);
-		expect(products.getOne(capturedOrder.productId).name).toBe('Milk');
+		// Be sure to tear down your store before de-referencing it (usually when your app completes / closes)
+		store.destroy();
 	});
 });
