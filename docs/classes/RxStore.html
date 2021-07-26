@@ -71,20 +71,6 @@
 						<p>Base class for defining an app&#39;s storage data.
 						Use the define***() methods to stand up your core storage infrastructure.</p>
 					</div>
-					<dl class="tsd-comment-tags">
-						<dt>example</dt>
-						<dd><p>export interface User {
-								id: string;
-								name: string;
-								age: number;
-							}</p>
-							<p>export class AppStore extends RxStore {</p>
-							<pre><code><span style="color: #000000">    </span><span style="color: #001080">public</span><span style="color: #000000"> </span><span style="color: #001080">readonly</span><span style="color: #000000"> </span><span style="color: #001080">darkMode</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineProperty</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;darkMode&#039;</span><span style="color: #000000">, </span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
-<span style="color: #000000">    </span><span style="color: #001080">public</span><span style="color: #000000"> </span><span style="color: #001080">readonly</span><span style="color: #000000"> </span><span style="color: #001080">users</span><span style="color: #000000"> = </span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #795E26">defineEntityMap</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;users&#039;</span><span style="color: #000000">, (</span><span style="color: #001080">user</span><span style="color: #000000">: </span><span style="color: #267F99">User</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">user</span><span style="color: #000000">.</span><span style="color: #001080">id</span><span style="color: #000000">);</span>
-</code></pre>
-							<p>}</p>
-						</dd>
-					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -157,7 +143,7 @@
 					<div class="tsd-signature tsd-kind-icon">effect<wbr>Subscriptions<span class="tsd-signature-symbol">:</span> <a href="Subsink.html" class="tsd-signature-type" data-tsd-kind="Class">Subsink</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L28">rx-store.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L14">rx-store.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -167,7 +153,7 @@
 					<div class="tsd-signature tsd-kind-icon">entity<wbr>Maps<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="RxEntityMap.html" class="tsd-signature-type" data-tsd-kind="Class">RxEntityMap</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><a href="RxMap.html" class="tsd-signature-type" data-tsd-kind="Class">RxMap</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L30">rx-store.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L16">rx-store.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -177,7 +163,7 @@
 					<div class="tsd-signature tsd-kind-icon">one<wbr>ToMany<wbr>Relationships<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="OneToManyRelationship.html" class="tsd-signature-type" data-tsd-kind="Class">OneToManyRelationship</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L31">rx-store.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L17">rx-store.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -187,7 +173,7 @@
 					<div class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">BehaviorSubject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L29">rx-store.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L15">rx-store.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -204,7 +190,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L62">rx-store.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L48">rx-store.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -236,7 +222,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L76">rx-store.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L62">rx-store.ts:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -274,7 +260,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L53">rx-store.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L39">rx-store.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -303,7 +289,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L46">rx-store.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L32">rx-store.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -320,7 +306,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L38">rx-store.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L24">rx-store.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -343,7 +329,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L42">rx-store.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L28">rx-store.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -366,7 +352,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L33">rx-store.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L19">rx-store.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -389,7 +375,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L71">rx-store.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L57">rx-store.ts:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -418,7 +404,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L66">rx-store.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L52">rx-store.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -450,7 +436,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/a2bdc03/src/rx-store.ts#L57">rx-store.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/69b5b17/src/rx-store.ts#L43">rx-store.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
