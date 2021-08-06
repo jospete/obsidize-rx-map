@@ -48,30 +48,34 @@ export class OneToManyRelationship<K, V, T> {
 	) {
 	}
 
+	public getPrimaryKeys(): T[] {
+		return Array.from(this.store.keys());
+	}
+
+	public clear(): void {
+		this.store.forEach(context => context.clear());
+		this.store.clear();
+	}
+
 	public associate(id: T, fk: K): void {
 		const context = this.getPrimaryKeyContext(id);
-		context.foreignKeySet.add(fk);
+		context?.foreignKeySet.add(fk);
 	}
 
 	public disassociate(id: T, fk: K): void {
 		const context = this.getPrimaryKeyContext(id);
-		context.foreignKeySet.delete(fk);
+		context?.foreignKeySet.delete(fk);
 	}
 
 	public getRelatedValues(id: T): V[] {
 		const context = this.getPrimaryKeyContext(id);
-		return this.entityMap.getManyExisting(context.getForeignKeys());
+		return context ? this.entityMap.getManyExisting(context.getForeignKeys()) : [];
 	}
 
 	public consume(ev: EntityPropertyChangeEvent<K, T>): void {
 		if (!ev) return;
 		this.disassociate(ev.previousValue!, ev.entityId);
 		this.associate(ev.currentValue!, ev.entityId);
-	}
-
-	public clear(): void {
-		this.store.forEach(context => context.clear());
-		this.store.clear();
 	}
 
 	public watchPrimaryKey(id: T): Observable<V[]> {
@@ -88,11 +92,11 @@ export class OneToManyRelationship<K, V, T> {
 		return this.store.delete(id);
 	}
 
-	public getPrimaryKeyContext(id: T): OneToManyContext<T, K> {
+	public getPrimaryKeyContext(id: T): OneToManyContext<T, K> | undefined {
 
 		let result = this.store.get(id);
 
-		if (!result) {
+		if (!result && !isUndefined(id)) {
 			result = new OneToManyContext<T, K>(id);
 			this.store.set(id, result);
 		}

@@ -172,6 +172,13 @@ describe('RxStore', () => {
 			{ id: 5, userId: tedId, productId: toastId },
 		]);
 
+		// Associations are added linearly
+		expect(store.productOrdersByProductId.getPrimaryKeys()).toEqual([
+			milkId,
+			breadId,
+			toastId,
+		]);
+
 		const orders = await waitForUpdates;
 
 		expect(orders).toEqual([
