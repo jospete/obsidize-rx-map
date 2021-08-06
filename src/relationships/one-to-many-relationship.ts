@@ -67,6 +67,11 @@ export class OneToManyRelationship<K, V, T> {
 		context?.foreignKeySet.delete(fk);
 	}
 
+	public hasAssociation(id: T, fk: K): boolean {
+		const context = this.getPrimaryKeyContext(id);
+		return !!context && context.foreignKeySet.has(fk);
+	}
+
 	public getRelatedValues(id: T): V[] {
 		const context = this.getPrimaryKeyContext(id);
 		return context ? this.entityMap.getManyExisting(context.getForeignKeys()) : [];

@@ -179,6 +179,12 @@ describe('RxStore', () => {
 			toastId,
 		]);
 
+		expect(store.productOrdersByProductId.hasAssociation(milkId, 1)).toBe(true);
+		expect(store.productOrdersByProductId.hasAssociation(toastId, 5)).toBe(true);
+		expect(store.productOrdersByProductId.hasAssociation(breadId, 1)).toBe(false);
+		expect(store.productOrdersByProductId.hasAssociation(55, 1)).toBe(false);
+		expect(store.productOrdersByProductId.hasAssociation(null, null)).toBe(false);
+
 		const orders = await waitForUpdates;
 
 		expect(orders).toEqual([
