@@ -72,9 +72,22 @@ export class OneToManyRelationship<K, V, T> {
 		return !!context && context.foreignKeySet.has(fk);
 	}
 
-	public getRelatedValues(id: T): V[] {
+	public getRelatedKeys(id: T): K[] {
 		const context = this.getPrimaryKeyContext(id);
-		return context ? this.entityMap.getManyExisting(context.getForeignKeys()) : [];
+		return context ? context.getForeignKeys() : [];
+	}
+
+	public getRelatedKeyCount(id: T): number {
+		const context = this.getPrimaryKeyContext(id);
+		return context ? context.foreignKeySet.size : 0;
+	}
+
+	public hasAnyAssociation(id: T): boolean {
+		return this.getRelatedKeyCount(id) > 0;
+	}
+
+	public getRelatedValues(id: T): V[] {
+		return this.entityMap.getManyExisting(this.getRelatedKeys(id));
 	}
 
 	public consume(ev: EntityPropertyChangeEvent<K, T>): void {

@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { RxStore } from '../src';
 
 export interface Book {
 	id: number;
@@ -34,3 +34,13 @@ export const getTestUsers = () => [
 	{ id: 'asdf', name: 'Dennis', age: 37 },
 	{ id: 'bvcx', name: 'Fred', age: 25 },
 ];
+
+export class AppStore extends RxStore {
+
+	public readonly darkMode = this.defineProperty(true);
+	public readonly clickCount = this.defineProperty(0);
+	public readonly users = this.defineEntity((user: User) => user.id);
+	public readonly products = this.defineEntity((product: Product) => product.id);
+	public readonly productOrders = this.defineEntity((order: ProductOrder) => order.id);
+	public readonly productOrdersByProductId = this.defineEntityForeignKey(this.productOrders, order => order.productId);
+}

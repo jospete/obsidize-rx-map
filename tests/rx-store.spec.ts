@@ -1,17 +1,7 @@
 import { first } from 'rxjs/operators';
 
 import { RxStore, accumulateChanges, pluckChanges } from '../src';
-import { Product, ProductOrder, User } from './test-utility';
-
-class AppStore extends RxStore {
-
-	public readonly darkMode = this.defineProperty(true);
-	public readonly clickCount = this.defineProperty(0);
-	public readonly users = this.defineEntity((user: User) => user.id);
-	public readonly products = this.defineEntity((product: Product) => product.id);
-	public readonly productOrders = this.defineEntity((order: ProductOrder) => order.id);
-	public readonly productOrdersByProductId = this.defineEntityForeignKey(this.productOrders, order => order.productId);
-}
+import { User, AppStore } from './test-utility';
 
 describe('RxStore', () => {
 
@@ -180,9 +170,12 @@ describe('RxStore', () => {
 		]);
 
 		expect(store.productOrdersByProductId.hasAssociation(milkId, 1)).toBe(true);
+		expect(store.productOrdersByProductId.hasAnyAssociation(milkId)).toBe(true);
 		expect(store.productOrdersByProductId.hasAssociation(toastId, 5)).toBe(true);
+		expect(store.productOrdersByProductId.hasAnyAssociation(toastId)).toBe(true);
 		expect(store.productOrdersByProductId.hasAssociation(breadId, 1)).toBe(false);
 		expect(store.productOrdersByProductId.hasAssociation(55, 1)).toBe(false);
+		expect(store.productOrdersByProductId.hasAnyAssociation(55)).toBe(false);
 		expect(store.productOrdersByProductId.hasAssociation(null, null)).toBe(false);
 
 		const orders = await waitForUpdates;
