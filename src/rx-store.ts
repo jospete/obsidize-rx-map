@@ -29,37 +29,30 @@ export class RxStore {
 		relation.clear();
 	}
 
-	public destroy(): void {
-		this.effectSubscriptions.unsubscribe();
-		this.oneToManyRelationships.forEach((value) => this.onDestroyOneToManyRelationship(value));
-		this.entityMaps.forEach((value) => this.onDestroyEntityMap(value));
-		this.properties.forEach((value) => this.onDestroyProperty(value));
-	}
-
-	public defineProperty<V>(startValue: V): BehaviorSubject<V> {
+	protected defineProperty<V>(startValue: V): BehaviorSubject<V> {
 		return this.registerProperty(new BehaviorSubject<V>(startValue));
 	}
 
-	public registerProperty<V>(property: BehaviorSubject<V>): BehaviorSubject<V> {
+	protected registerProperty<V>(property: BehaviorSubject<V>): BehaviorSubject<V> {
 		this.properties.add(property);
 		return property;
 	}
 
-	public defineEntity<K, V>(selectKey: PropertySelector<K, V>): RxEntityMap<K, V> {
+	protected defineEntity<K, V>(selectKey: PropertySelector<K, V>): RxEntityMap<K, V> {
 		return this.registerEntity(new RxEntityMap<K, V>(selectKey));
 	}
 
-	public registerEntity<K, V>(entityMap: RxEntityMap<K, V>): RxEntityMap<K, V> {
+	protected registerEntity<K, V>(entityMap: RxEntityMap<K, V>): RxEntityMap<K, V> {
 		this.entityMaps.add(entityMap);
 		return entityMap;
 	}
 
-	public registerEffect<T>(effect: Observable<T>): Observable<T> {
+	protected registerEffect<T>(effect: Observable<T>): Observable<T> {
 		if (isObservable(effect)) this.effectSubscriptions.add(effect.subscribe());
 		return effect;
 	}
 
-	public defineEntityForeignKey<K, V, T>(
+	protected defineEntityForeignKey<K, V, T>(
 		entityMap: RxEntityMap<K, V>,
 		selectForeignKey: PropertySelector<T, V>
 	): OneToManyRelationship<K, V, T> {
@@ -67,5 +60,12 @@ export class RxStore {
 		this.oneToManyRelationships.add(entityFkRelationship);
 		this.registerEffect(entityFkRelationship.changes);
 		return entityFkRelationship;
+	}
+
+	public destroy(): void {
+		this.effectSubscriptions.unsubscribe();
+		this.oneToManyRelationships.forEach((value) => this.onDestroyOneToManyRelationship(value));
+		this.entityMaps.forEach((value) => this.onDestroyEntityMap(value));
+		this.properties.forEach((value) => this.onDestroyProperty(value));
 	}
 }

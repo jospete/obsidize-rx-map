@@ -8,7 +8,6 @@ export * from './events/map-state-change-event';
 
 export * from './maps/entity-map';
 export * from './maps/immutable-map';
-export * from './maps/mutable-rx-entity-map';
 export * from './maps/proxy-iterable-iterator';
 export * from './maps/rx-entity-map';
 export * from './maps/rx-map';

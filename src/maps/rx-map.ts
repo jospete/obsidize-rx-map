@@ -103,9 +103,7 @@ export class RxMap<K, V, T extends Map<K, V> = Map<K, V>> implements Map<K, V> {
 	}
 
 	public set(key: K, value: V, context?: MapStateChangeEventContext): this {
-		const storedValue = this.get(key);
-		// Only clone the stored value when necessary since cloning can be expensive
-		const previousValue = storedValue === value ? cloneDeep(storedValue) : storedValue;
+		const previousValue = this.get(key);
 		this.source.set(key, value);
 		this.emitSet(key, value, previousValue, context);
 		return this;

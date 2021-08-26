@@ -15,9 +15,17 @@ export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends Enti
 
 	constructor(
 		selectKey: PropertySelector<K, V>,
-		store: T = (new RxMap<K, V>() as T)
+		store?: T
 	) {
-		super(store, selectKey);
+		super(store || (new RxMap<K, V>() as T), selectKey);
+	}
+
+	public static mutable<K, V>(selectKey: PropertySelector<K, V>): RxEntityMap<K, V> {
+		return new RxEntityMap(selectKey, new RxMap<K, V>(new Map<K, V>()));
+	}
+
+	public get allChanges(): Observable<MapStateChangeEvent<K, V>> {
+		return this.store.allChanges;
 	}
 
 	public get changes(): Observable<MapStateChangeEvent<K, V>> {

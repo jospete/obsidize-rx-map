@@ -106,8 +106,16 @@ describe('RxStore', () => {
 	});
 
 	it('does not explode when given a bad effect to register', () => {
-		const store = new AppStore();
-		expect(() => store.registerEffect(null)).not.toThrow();
+
+		class NullStore extends AppStore {
+
+			public readonly nullEffect = this.registerEffect(null);
+		}
+
+		let store: NullStore;
+
+		expect(() => store = new NullStore()).not.toThrow();
+		expect(store.nullEffect).toBe(null);
 	});
 
 	it('does not explode when a relationship context is given bad input', () => {
