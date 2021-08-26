@@ -1,5 +1,5 @@
 import 'tslib';
-import { isNil, merge, isFunction, identity } from 'lodash';
+import { isUndefined, merge, isFunction, identity } from 'lodash';
 
 import { Predicate, PropertySelector } from '../common/utility';
 
@@ -69,7 +69,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public isValidKey(key: K | undefined | null): boolean {
-		return !isNil(key);
+		return !isUndefined(key);
 	}
 
 	public keys(): K[] {
