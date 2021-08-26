@@ -94,11 +94,6 @@
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">RxEntityMap</span>
-								<ul class="tsd-hierarchy">
-									<li>
-										<a href="MutableRxEntityMap.html" class="tsd-signature-type" data-tsd-kind="Class">MutableRxEntityMap</a>
-									</li>
-								</ul>
 							</li>
 						</ul>
 					</li>
@@ -124,6 +119,7 @@
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="RxEntityMap.html#allChanges" class="tsd-kind-icon">all<wbr>Changes</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="RxEntityMap.html#changes" class="tsd-kind-icon">changes</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="RxEntityMap.html#count" class="tsd-kind-icon">count</a></li>
 							</ul>
@@ -164,6 +160,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="RxEntityMap.html#watchAll" class="tsd-kind-icon">watch<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="RxEntityMap.html#watchMany" class="tsd-kind-icon">watch<wbr>Many</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="RxEntityMap.html#watchOne" class="tsd-kind-icon">watch<wbr>One</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static"><a href="RxEntityMap.html#mutable" class="tsd-kind-icon">mutable</a></li>
 							</ul>
 						</section>
 					</div>
@@ -182,7 +179,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/rx-entity-map.ts#L16">maps/rx-entity-map.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L16">maps/rx-entity-map.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -203,7 +200,7 @@
 									<h5>selectKey: <a href="../modules.html#PropertySelector" class="tsd-signature-type" data-tsd-kind="Type alias">PropertySelector</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
-									<h5>store: <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> = ...</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> store: <span class="tsd-signature-type">T</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="RxEntityMap.html" class="tsd-signature-type" data-tsd-kind="Class">RxEntityMap</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -233,6 +230,23 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="allChanges" class="tsd-anchor"></a>
+					<h3>all<wbr>Changes</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> allChanges<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/MapStateChangeEvent.html" class="tsd-signature-type" data-tsd-kind="Interface">MapStateChangeEvent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L27">maps/rx-entity-map.ts:27</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/MapStateChangeEvent.html" class="tsd-signature-type" data-tsd-kind="Interface">MapStateChangeEvent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="changes" class="tsd-anchor"></a>
 					<h3>changes</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
@@ -242,7 +256,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/rx-entity-map.ts#L23">maps/rx-entity-map.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L31">maps/rx-entity-map.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/MapStateChangeEvent.html" class="tsd-signature-type" data-tsd-kind="Interface">MapStateChangeEvent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -259,7 +273,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L63">maps/entity-map.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L63">maps/entity-map.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -280,7 +294,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#addMany">addMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L115">maps/entity-map.ts:115</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L115">maps/entity-map.ts:115</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -304,7 +318,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#addOne">addOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L111">maps/entity-map.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L111">maps/entity-map.ts:111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -327,7 +341,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/rx-entity-map.ts#L27">maps/rx-entity-map.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L35">maps/rx-entity-map.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -345,7 +359,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#entries">entries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L83">maps/entity-map.ts:83</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L83">maps/entity-map.ts:83</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -363,7 +377,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#getMany">getMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L91">maps/entity-map.ts:91</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L91">maps/entity-map.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -387,7 +401,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#getManyExisting">getManyExisting</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L95">maps/entity-map.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L95">maps/entity-map.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -411,7 +425,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#getOne">getOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L87">maps/entity-map.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L87">maps/entity-map.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -435,7 +449,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#hasEvery">hasEvery</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L103">maps/entity-map.ts:103</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L103">maps/entity-map.ts:103</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -459,7 +473,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#hasOne">hasOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L99">maps/entity-map.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L99">maps/entity-map.ts:99</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -483,7 +497,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#hasSome">hasSome</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L107">maps/entity-map.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L107">maps/entity-map.ts:107</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -507,7 +521,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#isValidKey">isValidKey</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L71">maps/entity-map.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L71">maps/entity-map.ts:71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -531,7 +545,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#keyOf">keyOf</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L67">maps/entity-map.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L67">maps/entity-map.ts:67</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -555,7 +569,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#keys">keys</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L75">maps/entity-map.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L75">maps/entity-map.ts:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -573,7 +587,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#onDeleteEntry">onDeleteEntry</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L59">maps/entity-map.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L59">maps/entity-map.ts:59</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -597,7 +611,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#onSetEntry">onSetEntry</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L55">maps/entity-map.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L55">maps/entity-map.ts:55</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -624,7 +638,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#removeAll">removeAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L149">maps/entity-map.ts:149</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L149">maps/entity-map.ts:149</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -642,7 +656,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#removeMany">removeMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L138">maps/entity-map.ts:138</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L138">maps/entity-map.ts:138</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -666,7 +680,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#removeOne">removeOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L134">maps/entity-map.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L134">maps/entity-map.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -690,7 +704,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#removeWhere">removeWhere</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L142">maps/entity-map.ts:142</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L142">maps/entity-map.ts:142</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -714,7 +728,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#setAll">setAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L129">maps/entity-map.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L129">maps/entity-map.ts:129</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -738,7 +752,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#setMany">setMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L125">maps/entity-map.ts:125</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L125">maps/entity-map.ts:125</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -762,7 +776,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#setOne">setOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L119">maps/entity-map.ts:119</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L119">maps/entity-map.ts:119</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -786,7 +800,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#transformMany">transformMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L187">maps/entity-map.ts:187</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L187">maps/entity-map.ts:187</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -810,7 +824,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#transformOne">transformOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L180">maps/entity-map.ts:180</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L180">maps/entity-map.ts:180</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -837,7 +851,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#updateMany">updateMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L165">maps/entity-map.ts:165</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L165">maps/entity-map.ts:165</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -861,7 +875,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#updateOne">updateOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L159">maps/entity-map.ts:159</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L159">maps/entity-map.ts:159</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -885,7 +899,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#updateOneByKey">updateOneByKey</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L153">maps/entity-map.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L153">maps/entity-map.ts:153</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -912,7 +926,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#upsertMany">upsertMany</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L176">maps/entity-map.ts:176</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L176">maps/entity-map.ts:176</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -936,7 +950,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#upsertOne">upsertOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L169">maps/entity-map.ts:169</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L169">maps/entity-map.ts:169</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -960,7 +974,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="EntityMap.html">EntityMap</a>.<a href="EntityMap.html#values">values</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/entity-map.ts#L79">maps/entity-map.ts:79</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/entity-map.ts#L79">maps/entity-map.ts:79</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -977,7 +991,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/rx-entity-map.ts#L48">maps/rx-entity-map.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L56">maps/rx-entity-map.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -994,7 +1008,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/rx-entity-map.ts#L40">maps/rx-entity-map.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L48">maps/rx-entity-map.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1017,7 +1031,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/7f26f81/src/maps/rx-entity-map.ts#L31">maps/rx-entity-map.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L39">maps/rx-entity-map.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1027,6 +1041,38 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+					<a name="mutable" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> mutable</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">mutable&lt;K, V&gt;<span class="tsd-signature-symbol">(</span>selectKey<span class="tsd-signature-symbol">: </span><a href="../modules.html#PropertySelector" class="tsd-signature-type" data-tsd-kind="Type alias">PropertySelector</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="RxEntityMap.html" class="tsd-signature-type" data-tsd-kind="Class">RxEntityMap</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">, </span><a href="RxMap.html" class="tsd-signature-type" data-tsd-kind="Class">RxMap</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/jospete/obsidize-rx-map/blob/9d35f33/src/maps/rx-entity-map.ts#L23">maps/rx-entity-map.ts:23</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>K</h4>
+								</li>
+								<li>
+									<h4>V</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>selectKey: <a href="../modules.html#PropertySelector" class="tsd-signature-type" data-tsd-kind="Type alias">PropertySelector</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="RxEntityMap.html" class="tsd-signature-type" data-tsd-kind="Class">RxEntityMap</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">, </span><a href="RxMap.html" class="tsd-signature-type" data-tsd-kind="Class">RxMap</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1055,9 +1101,6 @@
 						<a href="ImmutableMap.html" class="tsd-kind-icon">Immutable<wbr>Map</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="MutableRxEntityMap.html" class="tsd-kind-icon">Mutable<wbr>RxEntity<wbr>Map</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="OneToManyContext.html" class="tsd-kind-icon">One<wbr>ToMany<wbr>Context</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
@@ -1079,6 +1122,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="RxEntityMap.html#store" class="tsd-kind-icon">store</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="RxEntityMap.html#allChanges" class="tsd-kind-icon">all<wbr>Changes</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="RxEntityMap.html#changes" class="tsd-kind-icon">changes</a>
@@ -1184,6 +1230,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="RxEntityMap.html#watchOne" class="tsd-kind-icon">watch<wbr>One</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+								<a href="RxEntityMap.html#mutable" class="tsd-kind-icon">mutable</a>
 							</li>
 						</ul>
 					</li>
