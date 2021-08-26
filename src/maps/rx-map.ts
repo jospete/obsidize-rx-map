@@ -1,11 +1,10 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share } from 'rxjs/operators';
-import { cloneDeep } from 'lodash';
 
 import { MapStateChangeEvent, MapStateChangeEventContext, MapStateChangeEventType } from '../events/map-state-change-event';
 import { isActionableChangeDetectionResultType } from '../events/change-detection-event';
-import { ImmutableMap } from './immutable-map';
 import { extractChanges } from '../common/utility';
+import { ImmutableMap } from './immutable-map';
 
 /**
  * Extension of the standard ES6 Map with rxjs change event observables tacked on.
