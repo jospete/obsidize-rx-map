@@ -39,6 +39,13 @@ module.exports = function (config) {
 				{ type: 'text-summary' }
 			]
 		},
+		karmaTypescriptConfig: {
+			bundlerOptions: {
+				transforms: [
+					require("karma-typescript-es6-transform")()
+				]
+			}
+		},
 		reporters: ['progress', 'kjhtml', 'karma-typescript', 'coverage-istanbul'],
 		port: 9876,
 		colors: true,

@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { isUndefined } from 'lodash';
 
 import { EntityPropertyChangeEvent } from '../events/entity-property-change-event';
-import { pluckValueChanges } from '../common/operators';
 import { PropertySelector } from '../common/utility';
+import { pluckValueChanges } from '../common/operators';
 import { RxEntityMap } from '../maps/rx-entity-map';
 import { OneToManyContext } from './one-to-many-context';
 

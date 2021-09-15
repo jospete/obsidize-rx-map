@@ -1,4 +1,4 @@
-import { transform, isEqual, isObject, get } from 'lodash';
+import { transform, isEqual, isObject } from 'lodash';
 
 import { ChangeDetectionResult, ChangeDetectionResultType } from '../events/change-detection-event';
 import { MapStateChangeEvent } from '../events/map-state-change-event';
@@ -67,7 +67,7 @@ export interface ChangeDetectionAccumulator<T> extends ChangeDetectionResult<T> 
  * Special variant of change detection that compares against an accumulated state.
  */
 export function detectAccumulatedChanges<T>(acc: ChangeDetectionAccumulator<T>, current: T): ChangeDetectionAccumulator<T> {
-	const previous: T = get(acc, 'current')!;
+	const previous: T | undefined = acc ? acc.current : undefined;
 	const changeDetectionResult = detectChanges(current, previous);
 	return Object.assign({ current, previous }, changeDetectionResult);
 }

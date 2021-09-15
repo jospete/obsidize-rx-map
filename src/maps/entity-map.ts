@@ -1,4 +1,3 @@
-import 'tslib';
 import { isUndefined, merge, isFunction, identity } from 'lodash';
 
 import { Predicate, PropertySelector } from '../common/utility';
