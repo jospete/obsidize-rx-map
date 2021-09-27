@@ -27,7 +27,7 @@ npm install --save git+https://github.com/jospete/obsidize-rx-map.git
 Here is a minimal working example - keep in mind that this example only scratches the surface of the full extent of this module.
 
 ```typescript
-import {RxConsole} from '@obsidize/rx-map';
+import {RxStore} from '@obsidize/rx-map';
 
 // Step 1 - Stand up your model structures
 
