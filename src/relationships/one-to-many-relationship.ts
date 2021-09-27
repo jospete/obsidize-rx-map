@@ -13,6 +13,7 @@ import { OneToManyContext } from './one-to-many-context';
  * 
  * @example
  * 
+ * ```typescript
  * // Has many orders
  * interface Product {
  * 		id: number; // is the primary key
@@ -23,6 +24,7 @@ import { OneToManyContext } from './one-to-many-context';
  * 		id: number;
  * 		productId: number; // is the foreign key
  * }
+ * ```
  */
 export class OneToManyRelationship<K, V, T> {
 
