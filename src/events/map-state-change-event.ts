@@ -1,3 +1,6 @@
+/**
+ * Type marker on emitted MapStateChangeEvent instances.
+ */
 export enum MapStateChangeEventType {
 	SET = 'SET',
 	DELETE = 'DELETE'

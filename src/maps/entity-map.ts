@@ -1,6 +1,4 @@
-import { isUndefined, merge, isFunction, identity } from 'lodash';
-
-import { Predicate, PropertySelector } from '../common/utility';
+import { Predicate, PropertySelector, isUndefined, isFunction, identity, mergeObjects } from '../common/utility';
 
 export type EntityTransform<T> = (entity: T) => T;
 
@@ -150,7 +148,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public updateOneByKey(key: K, changes: Partial<V>): V | undefined {
-		const combinedValue = merge(this.store.get(key), changes);
+		const combinedValue = mergeObjects(this.store.get(key), changes);
 		this.onSetEntry(key, combinedValue);
 		return combinedValue;
 	}

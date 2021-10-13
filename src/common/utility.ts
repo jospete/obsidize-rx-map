@@ -1,10 +1,38 @@
-import { transform, isEqual, isObject } from 'lodash';
+import { transform, isEqual, merge, cloneDeep } from 'lodash';
 
 import { ChangeDetectionResult, ChangeDetectionResultType } from '../events/change-detection-event';
 import { MapStateChangeEvent } from '../events/map-state-change-event';
 
 export type Predicate<V> = (value: V) => boolean;
 export type PropertySelector<K, V> = (value: V) => K;
+
+export function identity<T>(value: T, ..._args: any[]): any {
+	return value;
+}
+
+export function isNull(value: any): boolean {
+	return typeof value === null;
+}
+
+export function isUndefined(value: any): boolean {
+	return typeof value === 'undefined';
+}
+
+export function isFunction(value: any): boolean {
+	return typeof value === 'function';
+}
+
+export function isObject(value: any): boolean {
+	return typeof value === 'object' && !isNull(value);
+}
+
+export function mergeObjects(a: any, b: any): any {
+	return merge(a, b);
+}
+
+export function cloneObject(v: any): any {
+	return cloneDeep(v);
+}
 
 // Shamelessly stolen from here:
 // https://gist.github.com/Yimiprod/7ee176597fef230d1451#gistcomment-2565071

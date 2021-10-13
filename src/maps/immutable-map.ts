@@ -1,5 +1,4 @@
-import { cloneDeep, isFunction } from 'lodash';
-
+import { isFunction, cloneObject } from '../common/utility';
 import { ProxyIterableIterator } from './proxy-iterable-iterator';
 
 /**
@@ -31,7 +30,7 @@ export class ImmutableMap<K, V> implements Map<K, V> {
 	}
 
 	public get(key: K): V | undefined {
-		return cloneDeep(this.source.get(key));
+		return cloneObject(this.source.get(key));
 	}
 
 	public has(key: K): boolean {
@@ -43,24 +42,24 @@ export class ImmutableMap<K, V> implements Map<K, V> {
 	}
 
 	public set(key: K, value: V): this {
-		this.source.set(cloneDeep(key), cloneDeep(value));
+		this.source.set(cloneObject(key), cloneObject(value));
 		return this;
 	}
 
 	public entries(): IterableIterator<[K, V]> {
-		return new ProxyIterableIterator(this.source.entries(), v => cloneDeep(v));
+		return new ProxyIterableIterator(this.source.entries(), v => cloneObject(v));
 	}
 
 	public keys(): IterableIterator<K> {
-		return new ProxyIterableIterator(this.source.keys(), v => cloneDeep(v));
+		return new ProxyIterableIterator(this.source.keys(), v => cloneObject(v));
 	}
 
 	public values(): IterableIterator<V> {
-		return new ProxyIterableIterator(this.source.values(), v => cloneDeep(v));
+		return new ProxyIterableIterator(this.source.values(), v => cloneObject(v));
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void): void {
 		if (isFunction(callbackfn))
-			this.source.forEach((value, key) => callbackfn(cloneDeep(value), cloneDeep(key), this));
+			this.source.forEach((value, key) => callbackfn(cloneObject(value), cloneObject(key), this));
 	}
 }

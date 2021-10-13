@@ -1,18 +1,50 @@
-export * from './common/operators';
-export * from './common/subsink';
-export * from './common/utility';
+// common
+export {
+	accumulateChanges,
+	forKey,
+	forKeyIn,
+	ofType,
+	pluckChanges,
+	pluckValue,
+	pluckValueChanges,
+	spreadFilterBy,
+	storeEntityArrayIn,
+	storeEntityIn
+} from './common/operators';
+export { Subsink, Unsubscribable } from './common/subsink';
+export {
+	ChangeDetectionAccumulator,
+	Predicate,
+	PropertySelector,
+	deepDifferenceBetween,
+	detectAccumulatedChanges,
+	detectChanges,
+	extractChanges
+} from './common/utility';
 
-export * from './events/change-detection-event';
-export * from './events/entity-property-change-event';
-export * from './events/map-state-change-event';
+// events
+export {
+	ChangeDetectionResult,
+	ChangeDetectionResultType,
+	isActionableChangeDetectionResultType
+} from './events/change-detection-event';
+export { EntityPropertyChangeEvent } from './events/entity-property-change-event';
+export {
+	MapStateChangeEvent,
+	MapStateChangeEventContext,
+	MapStateChangeEventType
+} from './events/map-state-change-event';
 
-export * from './maps/entity-map';
-export * from './maps/immutable-map';
-export * from './maps/proxy-iterable-iterator';
-export * from './maps/rx-entity-map';
-export * from './maps/rx-map';
+// maps
+export { EntityMap, EntityMapLike, EntityTransform, Update } from './maps/entity-map';
+export { ImmutableMap } from './maps/immutable-map';
+export { ProxyIterableIterator } from './maps/proxy-iterable-iterator';
+export { RxEntityMap } from './maps/rx-entity-map';
+export { RxMap } from './maps/rx-map';
 
-export * from './relationships/one-to-many-context';
-export * from './relationships/one-to-many-relationship';
+// relationships
+export { OneToManyContext } from './relationships/one-to-many-context';
+export { OneToManyRelationship } from './relationships/one-to-many-relationship';
 
-export * from './rx-store';
+// root
+export { RxStore } from './rx-store';
