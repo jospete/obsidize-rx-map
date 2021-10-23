@@ -159,7 +159,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 
 	public removeWhere(predicate: Predicate<V>): V[] {
 
-		let result: V[] = [];
+		const result: V[] = [];
 
 		if (!isFunction(predicate)) {
 			return result;
@@ -181,7 +181,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public updateOneByKey(key: K, changes: Partial<V>): V | undefined {
-		const combinedValue = this.onMergeEntries(this.store.get(key), changes);
+		const combinedValue = this.onMergeEntries(this.getOne(key), changes);
 		this.onSetEntry(key, combinedValue);
 		return combinedValue;
 	}
@@ -225,7 +225,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 		}
 
 		const changes = transform(entity);
-		return this.updateOne({ key: key, changes });
+		return this.updateOne({ key, changes });
 	}
 
 	public transformMany(transform: EntityTransform<V>): V[] {
