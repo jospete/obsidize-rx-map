@@ -1,6 +1,6 @@
 {
   "name": "@obsidize/rx-map",
-  "version": "2.1.8",
+  "version": "2.2.0",
   "description": "ES6 Map with rxjs extensions for change detection",
   "author": "Josh Noel <obsidize@gmail.com>",
   "license": "MIT",
