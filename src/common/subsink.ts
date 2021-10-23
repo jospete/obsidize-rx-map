@@ -30,7 +30,7 @@ export class Subsink implements Unsubscribable {
 	}
 
 	public addMany(targets: Unsubscribable[]): this {
-		castArray(targets).forEach(target => this.mSubscriptions.add(target));
+		castArray<Unsubscribable>(targets).forEach(target => this.mSubscriptions.add(target));
 		return this;
 	}
 }

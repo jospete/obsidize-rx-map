@@ -19,7 +19,8 @@ export {
 	deepDifferenceBetween,
 	detectAccumulatedChanges,
 	detectChanges,
-	extractChanges
+	extractChanges,
+	castArray
 } from './common/utility';
 
 // events

@@ -23,6 +23,6 @@ export class OneToManyContext<PrimaryKeyType, ForeignKeyType> {
 
 	public setForeignKeys(keys: ForeignKeyType[]): void {
 		this.clear();
-		castArray(keys).forEach(key => this.foreignKeySet.add(key));
+		castArray<ForeignKeyType>(keys).forEach(key => this.foreignKeySet.add(key));
 	}
 }
