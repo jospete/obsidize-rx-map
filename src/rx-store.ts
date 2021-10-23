@@ -39,7 +39,7 @@ export class RxStore {
 	}
 
 	protected defineEntity<K, V>(selectKey: PropertySelector<K, V>): RxEntityMap<K, V> {
-		return this.registerEntity(new RxEntityMap<K, V>(selectKey));
+		return this.registerEntity(RxEntityMap.immutable(selectKey));
 	}
 
 	protected registerEntity<K, V>(entityMap: RxEntityMap<K, V>): RxEntityMap<K, V> {

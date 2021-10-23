@@ -1,8 +1,8 @@
 import { map, filter, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { forKey, forKeyIn, pluckValue } from '../common/operators';
 import { MapStateChangeEvent } from '../events/map-state-change-event';
+import { forKey, forKeyIn, pluckValue } from '../common/operators';
 import { PropertySelector, identity } from '../common/utility';
 import { EntityMap } from './entity-map';
 import { RxMap } from './rx-map';
@@ -14,13 +14,23 @@ export class RxEntityMap<K, V, T extends RxMap<K, V> = RxMap<K, V>> extends Enti
 
 	constructor(
 		selectKey: PropertySelector<K, V>,
-		store?: T
+		store: T
 	) {
-		super(store || (new RxMap<K, V>() as T), selectKey);
+		super(store, selectKey);
 	}
 
-	public static mutable<K, V>(selectKey: PropertySelector<K, V>): RxEntityMap<K, V> {
-		return new RxEntityMap(selectKey, new RxMap<K, V>(new Map<K, V>()));
+	/**
+	 * Generate an RxEntityMap instance with a standard (mutable) Map store.
+	 */
+	public static mutable<K1, V1>(selectKey: PropertySelector<K1, V1>): RxEntityMap<K1, V1> {
+		return new RxEntityMap(selectKey, RxMap.mutable());
+	}
+
+	/**
+	 * Generate an RxEntityMap instance with an immutable backend store.
+	 */
+	public static immutable<K1, V1>(selectKey: PropertySelector<K1, V1>): RxEntityMap<K1, V1> {
+		return new RxEntityMap(selectKey, RxMap.immutable());
 	}
 
 	public get allChanges(): Observable<MapStateChangeEvent<K, V>> {

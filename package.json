@@ -2,10 +2,24 @@
   "name": "@obsidize/rx-map",
   "version": "2.1.8",
   "description": "ES6 Map with rxjs extensions for change detection",
-  "main": "es5.js",
+  "author": "Josh Noel <obsidize@gmail.com>",
+  "license": "MIT",
+  "main": "index.cjs.js",
   "module": "index.js",
   "types": "index.d.ts",
   "typings": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jospete/obsidize-rx-map.git"
+  },
+  "keywords": [
+    "rx",
+    "entity",
+    "map",
+    "rxjs",
+    "observable",
+    "obsidize"
+  ],
   "scripts": {
     "test": "karma start",
     "test:single": "karma start --single-run",
@@ -29,26 +43,12 @@
     "docs": "typedoc ./src/index.ts --out ./docs --excludePrivate",
     "docs:open": "open-cli \".\\docs\\index.html\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jospete/obsidize-rx-map.git"
-  },
-  "keywords": [
-    "rx",
-    "entity",
-    "map",
-    "rxjs",
-    "observable",
-    "obsidize"
-  ],
-  "author": "Josh Noel <obsidize@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "lodash": "^4.17.21",
     "tslib": "^2.3.0"
   },
   "peerDependencies": {
-    "rxjs": ">= 6.2"
+    "rxjs": ">=6.2"
   },
   "devDependencies": {
     "@types/jasmine": "~3.6.3",

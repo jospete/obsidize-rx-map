@@ -57,6 +57,10 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 		return this.store.delete(key);
 	}
 
+	protected onMergeEntries(a?: Partial<V>, b?: Partial<V>): V {
+		return mergeObjects(a, b);
+	}
+
 	public get count(): number {
 		return this.store.size;
 	}
@@ -69,16 +73,28 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 		return !isUndefined(key);
 	}
 
+	public iterableKeys(): IterableIterator<K> {
+		return this.store.keys();
+	}
+
 	public keys(): K[] {
-		return Array.from(this.store.keys());
+		return Array.from(this.iterableKeys());
+	}
+
+	public iterableValues(): IterableIterator<V> {
+		return this.store.values();
 	}
 
 	public values(): V[] {
-		return Array.from(this.store.values());
+		return Array.from(this.iterableValues());
+	}
+
+	public iterableEntries(): IterableIterator<[K, V]> {
+		return this.store.entries();
 	}
 
 	public entries(): [K, V][] {
-		return Array.from(this.store.entries());
+		return Array.from(this.iterableEntries());
 	}
 
 	public getOne(key: K): V | undefined {
@@ -114,8 +130,13 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public setOne(entity: V): V {
+
 		const key = this.keyOf(entity);
-		if (this.isValidKey(key)) this.onSetEntry(key!, entity);
+
+		if (this.isValidKey(key)) {
+			this.onSetEntry(key!, entity);
+		}
+
 		return entity;
 	}
 
@@ -137,10 +158,23 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public removeWhere(predicate: Predicate<V>): V[] {
-		const entities = this.values().filter(predicate);
-		const keys: K[] = entities.map(e => this.keyOf(e)!).filter(key => this.isValidKey(key));
-		this.removeMany(keys);
-		return entities;
+
+		let result: V[] = [];
+
+		if (!isFunction(predicate)) {
+			return result;
+		}
+
+		for (const v of this.values()) {
+
+			if (!predicate(v)) continue;
+
+			const k = this.keyOf(v)!;
+			this.removeOne(k);
+			result.push(v);
+		}
+
+		return result;
 	}
 
 	public removeAll(): void {
@@ -148,13 +182,17 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public updateOneByKey(key: K, changes: Partial<V>): V | undefined {
-		const combinedValue = mergeObjects(this.store.get(key), changes);
+		const combinedValue = this.onMergeEntries(this.store.get(key), changes);
 		this.onSetEntry(key, combinedValue);
 		return combinedValue;
 	}
 
 	public updateOne(update: Update<K, V>): V | undefined {
-		if (!update) return undefined;
+
+		if (!update) {
+			return undefined;
+		}
+
 		const { key, changes } = update;
 		return this.updateOneByKey(key, changes);
 	}
@@ -164,8 +202,13 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public upsertOne(entity: V): V | undefined {
+
 		const key = this.keyOf(entity)!;
-		if (!this.isValidKey(key)) return entity;
+
+		if (!this.isValidKey(key)) {
+			return entity;
+		}
+
 		const entityUpdate = { key, changes: entity };
 		return this.updateOne(entityUpdate);
 	}
@@ -175,17 +218,31 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public transformOne(key: K, transform: EntityTransform<V>): V | undefined {
+
 		const entity = this.getOne(key);
-		if (!entity || !isFunction(transform)) return entity;
+
+		if (!entity || !isFunction(transform)) {
+			return entity;
+		}
+
 		const changes = transform(entity);
 		return this.updateOne({ key: key, changes });
 	}
 
 	public transformMany(transform: EntityTransform<V>): V[] {
-		if (!isFunction(transform)) return this.values();
-		return this.entries().map(([key, entity]) => {
+
+		const result: V[] = [];
+
+		if (!isFunction(transform)) {
+			return result;
+		}
+
+		for (const [key, entity] of this.entries()) {
 			const changes = transform(entity);
-			return this.updateOne({ key, changes })!;
-		});
+			const v = this.updateOne({ key, changes })!;
+			result.push(v);
+		}
+
+		return result;
 	}
 }

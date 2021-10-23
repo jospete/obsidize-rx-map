@@ -24,8 +24,22 @@ export class RxMap<K, V, T extends Map<K, V> = Map<K, V>> implements Map<K, V> {
 	);
 
 	constructor(
-		protected readonly source: T = (new ImmutableMap<K, V>() as any)
+		protected readonly source: T
 	) {
+	}
+
+	/**
+	 * Generate an RxMap instance with a standard (mutable) Map store.
+	 */
+	public static mutable<K1, V1>(): RxMap<K1, V1, Map<K1, V1>> {
+		return new RxMap(new Map());
+	}
+
+	/**
+	 * Generate an RxMap instance with an immutable backend store.
+	 */
+	public static immutable<K1, V1>(): RxMap<K1, V1, ImmutableMap<K1, V1>> {
+		return new RxMap(new ImmutableMap(new Map()));
 	}
 
 	protected emit(

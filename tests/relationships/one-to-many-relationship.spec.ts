@@ -1,4 +1,4 @@
-import { AppStore } from './test-utility';
+import { AppStore } from '../test-utility';
 
 describe('OneToManyRelationship', () => {
 

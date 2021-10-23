@@ -23,7 +23,7 @@ module.exports = {
 		extensions: ['.tsx', '.ts', '.js'],
 	},
 	output: {
-		filename: 'es5.js',
+		filename: '[name].cjs.js',
 		path: path.resolve(__dirname, 'dist'),
 		library: {
 			type: 'commonjs-module'

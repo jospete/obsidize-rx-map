@@ -9,8 +9,12 @@ import { ProxyIterableIterator } from './proxy-iterable-iterator';
 export class ImmutableMap<K, V> implements Map<K, V> {
 
 	constructor(
-		protected readonly source: Map<K, V> = new Map()
+		protected readonly source: Map<K, V>
 	) {
+	}
+
+	public static standard<K1, V1>(): ImmutableMap<K1, V1> {
+		return new ImmutableMap(new Map());
 	}
 
 	public get size(): number {

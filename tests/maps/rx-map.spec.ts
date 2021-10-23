@@ -1,13 +1,13 @@
 import { bufferCount, first, takeWhile } from 'rxjs/operators';
 
-import { MapStateChangeEventType, ofType, pluckValue, RxMap } from '../src';
-import { Game } from './test-utility';
+import { MapStateChangeEventType, ofType, pluckValue, RxMap } from '../../src';
+import { Game } from '../test-utility';
 
 describe('RxMap', () => {
 
 	it('is a standard ES6 Map with a tacked-on change stream', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 
 		expect(games.size).toBe(0);
 
@@ -35,7 +35,7 @@ describe('RxMap', () => {
 
 	it('notifies when a value is deleted', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 
 		games.set(tetris.id, tetris);
@@ -66,7 +66,7 @@ describe('RxMap', () => {
 
 	it('notifies when a values are deleted via map clear', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 		const pong: Game = { id: 1, name: 'Pong', playerCount: 1234 };
 
@@ -91,7 +91,7 @@ describe('RxMap', () => {
 
 	it('augments the set() behavior based on previous values', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 
 		games.set(tetris.id, tetris);
@@ -117,7 +117,7 @@ describe('RxMap', () => {
 
 	it('does not emit an event when no value changes are detected from duplicate set calls', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 
 		const changesSpy = jasmine.createSpy('changesSpy');
@@ -153,7 +153,7 @@ describe('RxMap', () => {
 
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 		const pong: Game = { id: 1, name: 'Pong', playerCount: 1234 };
-		const games = new RxMap<number, Game>()
+		const games = RxMap.immutable<number, Game>()
 			.set(tetris.id, tetris)
 			.set(pong.id, pong);
 
@@ -164,14 +164,14 @@ describe('RxMap', () => {
 	});
 
 	it('shares standard symbols from the ES6 Map definition', () => {
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		expect(games[Symbol.toStringTag]).toBeDefined();
 		expect(() => games[Symbol.iterator]()).not.toThrowError();
 	});
 
 	it('emits cloned data in the changes observable to prevent unauthorized mutation of the underlying data', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 
 		const addEventPromise = games.changes.pipe(
@@ -194,7 +194,7 @@ describe('RxMap', () => {
 	it('can be instantiated with a custom map source', () => {
 
 		const testSource = new Map<number, string>();
-		const testRxMap = new RxMap<number, string>(testSource);
+		const testRxMap = new RxMap(testSource);
 
 		spyOn(testSource, 'set').and.callThrough();
 		testRxMap.set(5, 'asdfasdfg');
@@ -203,7 +203,7 @@ describe('RxMap', () => {
 
 	it('can have custom context data passed along with set calls', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 		const sourceName = 'unit_test_block_12345';
 
@@ -220,7 +220,7 @@ describe('RxMap', () => {
 
 	it('can have custom context data passed along with delete calls', async () => {
 
-		const games = new RxMap<number, Game>();
+		const games = RxMap.immutable<number, Game>();
 		const tetris: Game = { id: 0, name: 'Tetris', playerCount: 9001 };
 		const sourceName = 'unit_test_block_12345';
 		games.set(tetris.id, tetris);

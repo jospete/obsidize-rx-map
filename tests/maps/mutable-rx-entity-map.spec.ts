@@ -1,7 +1,7 @@
 import { first } from 'rxjs/operators';
 
-import { RxEntityMap } from '../src';
-import { Book } from './test-utility';
+import { RxEntityMap } from '../../src';
+import { Book } from '../test-utility';
 
 describe('MutableRxEntityMap', () => {
 

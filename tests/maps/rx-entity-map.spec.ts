@@ -1,14 +1,14 @@
 import { some } from 'lodash';
 import { bufferCount, first, tap, skipWhile, take } from 'rxjs/operators';
 
-import { forKey, MapStateChangeEventType, ofType, pluckChanges, pluckValue, RxEntityMap } from '../src';
-import { getTestUsers, User } from './test-utility';
+import { forKey, MapStateChangeEventType, ofType, pluckChanges, pluckValue, RxEntityMap } from '../../src';
+import { getTestUsers, User } from '../test-utility';
 
 describe('RxEntityMap', () => {
 
 	it('is used to store and query entity models', async () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const addedUsers = getTestUsers();
 
 		const addedUsersPromise = users.changes.pipe(
@@ -26,7 +26,7 @@ describe('RxEntityMap', () => {
 
 	it('has a shortcut for obtaining keys', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const addedUsers = getTestUsers();
 		users.addMany(addedUsers);
 
@@ -37,7 +37,7 @@ describe('RxEntityMap', () => {
 
 	it('can be destroyed', async () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const errorPromise = users.changes.pipe(first()).toPromise().catch(e => e);
 
 		users.destroy();
@@ -51,7 +51,7 @@ describe('RxEntityMap', () => {
 
 	it('has a shortcut for obtaining values', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const addedUsers = getTestUsers();
 		users.addMany(addedUsers);
 
@@ -62,7 +62,7 @@ describe('RxEntityMap', () => {
 
 	it('has a shortcut for obtaining entries', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const addedUsers = getTestUsers();
 		users.addMany(addedUsers);
 
@@ -72,13 +72,13 @@ describe('RxEntityMap', () => {
 	});
 
 	it('returns undefined id for nullish entities', () => {
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		expect(users.keyOf(null)).not.toBeDefined();
 	});
 
 	it('has a shortcut for clearing the store', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 37 };
 		expect(users.count).toBe(0);
 
@@ -91,7 +91,7 @@ describe('RxEntityMap', () => {
 
 	it('has a shortcut for overwriting a single entity', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 
 		expect(() => users.setOne(null)).not.toThrowError();
 
@@ -107,7 +107,7 @@ describe('RxEntityMap', () => {
 
 	it('has query utilities for entities by id', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 37 };
 		const b: User = { id: 'mnbv', name: 'Potato', age: 5 };
 
@@ -133,7 +133,7 @@ describe('RxEntityMap', () => {
 
 	it('can overwrite multiple instances at once', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 
 		expect(() => users.setOne(null)).not.toThrowError();
 
@@ -147,7 +147,7 @@ describe('RxEntityMap', () => {
 
 	it('can overwrite the entire map at once', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 37 };
 		const b: User = { id: 'zxcv', name: 'Potato', age: 5 };
 
@@ -162,7 +162,7 @@ describe('RxEntityMap', () => {
 
 	it('can remove one or multiple ids from the map', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 37 };
 		const b: User = { id: 'zxcv', name: 'Potato', age: 5 };
 
@@ -180,7 +180,7 @@ describe('RxEntityMap', () => {
 
 	it('can remove by a predicate', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 		const b: User = { id: 'zxcv', name: 'David', age: 25 };
 		const c: User = { id: 'gggg', name: 'Bob', age: 15 };
@@ -197,7 +197,7 @@ describe('RxEntityMap', () => {
 
 	it('can update many at once', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 		const b: User = { id: 'zxcv', name: 'David', age: 25 };
 		const c: User = { id: 'gggg', name: 'Bob', age: 15 };
@@ -220,7 +220,7 @@ describe('RxEntityMap', () => {
 
 	it('can transform an entity in-place', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 
 		users.addOne(a);
@@ -236,7 +236,7 @@ describe('RxEntityMap', () => {
 
 	it('can transform many entities in-place', () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 		const b: User = { id: 'zxcv', name: 'David', age: 25 };
 		const c: User = { id: 'gggg', name: 'Bob', age: 15 };
@@ -256,7 +256,7 @@ describe('RxEntityMap', () => {
 
 	it('can watch for changes by a target entity id', async () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 
 		users.addOne(a);
@@ -276,7 +276,7 @@ describe('RxEntityMap', () => {
 
 	it('performs proper change detection when an entity is mutated and then re-inserted', async () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 
 		users.setOne(a);
@@ -295,7 +295,7 @@ describe('RxEntityMap', () => {
 
 	it('has a convenience method for watching the entire collection', async () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 		const b: User = { id: 'nbvc', name: 'Bob', age: 42 };
 
@@ -312,7 +312,7 @@ describe('RxEntityMap', () => {
 
 	it('has a convenience method for watching a single entity', async () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 		const userUpdateSpy = jasmine.createSpy('userUpdateSpy');
 
@@ -337,7 +337,7 @@ describe('RxEntityMap', () => {
 
 	it('has a convenience method for watching a set of entity ids', async () => {
 
-		const users = new RxEntityMap((user: User) => user.id);
+		const users = RxEntityMap.immutable((user: User) => user.id);
 		const a: User = { id: 'asdf', name: 'Dennis', age: 20 };
 		const b: User = { id: 'jhgf', name: 'Bob', age: 32 };
 		const c: User = { id: 'trew', name: 'Larry', age: 64 };

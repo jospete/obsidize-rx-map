@@ -1,4 +1,4 @@
-import { ChangeDetectionResultType, detectChanges } from '../src';
+import { ChangeDetectionResultType, detectChanges } from '../../src';
 
 describe('change detection utilities', () => {
 
