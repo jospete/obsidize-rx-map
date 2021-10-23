@@ -1,4 +1,4 @@
-import { Predicate, PropertySelector, isUndefined, isFunction, identity, mergeObjects } from '../common/utility';
+import { Predicate, PropertySelector, isUndefined, isFunction, identity, mergeObjects, castArray } from '../common/utility';
 
 export type EntityTransform<T> = (entity: T) => T;
 
@@ -102,7 +102,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public getMany(keys: K[]): V[] {
-		return Array.from(keys).map(key => this.getOne(key)!);
+		return castArray(keys).map(key => this.getOne(key)!);
 	}
 
 	public getManyExisting(keys: K[]): V[] {
@@ -114,11 +114,11 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public hasEvery(keys: K[]): boolean {
-		return Array.from(keys).every(key => this.hasOne(key));
+		return castArray(keys).every(key => this.hasOne(key));
 	}
 
 	public hasSome(keys: K[]): boolean {
-		return Array.from(keys).some(key => this.hasOne(key));
+		return castArray(keys).some(key => this.hasOne(key));
 	}
 
 	public addOne(entity: V): V | undefined {
@@ -126,7 +126,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public addMany(entities: V[]): V[] {
-		return Array.from(entities).map(e => this.addOne(e)!);
+		return castArray(entities).map(e => this.addOne(e)!);
 	}
 
 	public setOne(entity: V): V {
@@ -141,7 +141,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public setMany(entities: V[]): V[] {
-		return Array.from(entities).map(e => this.setOne(e));
+		return castArray(entities).map(e => this.setOne(e));
 	}
 
 	public setAll(entities: V[]): V[] {
@@ -154,7 +154,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public removeMany(keys: K[]): boolean[] {
-		return Array.from(keys).map(k => this.removeOne(k));
+		return castArray(keys).map(k => this.removeOne(k));
 	}
 
 	public removeWhere(predicate: Predicate<V>): V[] {
@@ -165,13 +165,18 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 			return result;
 		}
 
-		for (const v of this.values()) {
+		const iter = this.iterableValues();
+		let nextVal = iter.next();
 
+		while (nextVal && !nextVal.done) {
+
+			const v = nextVal.value;
 			if (!predicate(v)) continue;
 
 			const k = this.keyOf(v)!;
 			this.removeOne(k);
 			result.push(v);
+			nextVal = iter.next();
 		}
 
 		return result;
@@ -198,7 +203,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public updateMany(updates: Update<K, V>[]): V[] {
-		return Array.from(updates).map(u => this.updateOne(u)!);
+		return castArray(updates).map(u => this.updateOne(u)!);
 	}
 
 	public upsertOne(entity: V): V | undefined {
@@ -214,7 +219,7 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 	}
 
 	public upsertMany(entities: V[]): V[] {
-		return Array.from(entities).map(e => this.upsertOne(e)!);
+		return castArray(entities).map(e => this.upsertOne(e)!);
 	}
 
 	public transformOne(key: K, transform: EntityTransform<V>): V | undefined {
@@ -237,10 +242,17 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 			return result;
 		}
 
-		for (const [key, entity] of this.entries()) {
+		const iter = this.iterableEntries();
+		let nextVal = iter.next();
+
+		while (nextVal && !nextVal.done) {
+
+			const [key, entity] = nextVal.value;
 			const changes = transform(entity);
 			const v = this.updateOne({ key, changes })!;
+
 			result.push(v);
+			nextVal = iter.next();
 		}
 
 		return result;

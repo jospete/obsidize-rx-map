@@ -14,7 +14,7 @@ export class ProxyIterableIterator<T, R> implements IterableIterator<R> {
 		return this;
 	}
 
-	next(): IteratorResult<R> {
+	public next(): IteratorResult<R> {
 		const { value, done } = this.source.next();
 		return {
 			value: this.transform(value),

@@ -1,3 +1,5 @@
+import { castArray } from './utility';
+
 /**
  * Alias for standard rxjs Unsubscribable entities.
  * Re-defined here to keep this implementation as isolated as possible.
@@ -28,7 +30,7 @@ export class Subsink implements Unsubscribable {
 	}
 
 	public addMany(targets: Unsubscribable[]): this {
-		Array.from(targets).forEach(target => this.mSubscriptions.add(target));
+		castArray(targets).forEach(target => this.mSubscriptions.add(target));
 		return this;
 	}
 }

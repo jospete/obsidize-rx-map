@@ -39,7 +39,7 @@ export class RxMap<K, V, T extends Map<K, V> = Map<K, V>> implements Map<K, V> {
 	 * Generate an RxMap instance with an immutable backend store.
 	 */
 	public static immutable<K1, V1>(): RxMap<K1, V1, ImmutableMap<K1, V1>> {
-		return new RxMap(new ImmutableMap(new Map()));
+		return new RxMap(ImmutableMap.standard());
 	}
 
 	protected emit(

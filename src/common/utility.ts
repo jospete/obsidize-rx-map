@@ -26,6 +26,10 @@ export function isObject(value: any): boolean {
 	return typeof value === 'object' && !isNull(value);
 }
 
+export function castArray<T>(v: T[]): T[] {
+	return Array.isArray(v) ? v : Array.from(v);
+}
+
 export function mergeObjects(a: any, b: any): any {
 	return merge(a, b);
 }

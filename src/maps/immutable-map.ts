@@ -63,7 +63,7 @@ export class ImmutableMap<K, V> implements Map<K, V> {
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void): void {
-		if (isFunction(callbackfn))
-			this.source.forEach((value, key) => callbackfn(cloneObject(value), cloneObject(key), this));
+		if (!isFunction(callbackfn)) return;
+		this.source.forEach((value, key) => callbackfn(cloneObject(value), cloneObject(key), this));
 	}
 }
