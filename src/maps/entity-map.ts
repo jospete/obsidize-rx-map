@@ -165,19 +165,13 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 			return result;
 		}
 
-		const iter = this.iterableValues();
-		let nextVal = iter.next();
+		this.store.forEach((entity: V, key: K) => {
 
-		while (nextVal && !nextVal.done) {
+			if (!predicate(entity)) return;
 
-			const v = nextVal.value;
-			if (!predicate(v)) continue;
-
-			const k = this.keyOf(v)!;
-			this.removeOne(k);
-			result.push(v);
-			nextVal = iter.next();
-		}
+			this.removeOne(key);
+			result.push(entity);
+		});
 
 		return result;
 	}
@@ -242,18 +236,13 @@ export class EntityMap<K, V, T extends Map<K, V>> implements EntityMapLike<K, V>
 			return result;
 		}
 
-		const iter = this.iterableEntries();
-		let nextVal = iter.next();
+		this.store.forEach((entity: V, key: K) => {
 
-		while (nextVal && !nextVal.done) {
-
-			const [key, entity] = nextVal.value;
 			const changes = transform(entity);
 			const v = this.updateOne({ key, changes })!;
 
 			result.push(v);
-			nextVal = iter.next();
-		}
+		});
 
 		return result;
 	}

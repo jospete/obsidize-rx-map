@@ -1,10 +1,10 @@
 import { MonoTypeOperatorFunction, OperatorFunction } from 'rxjs';
 import { filter, map, scan } from 'rxjs/operators';
 
+import { ChangeDetectionAccumulator, detectAccumulatedChanges, PropertySelector, identity } from './utility';
 import { isActionableChangeDetectionResultType } from '../events/change-detection-event';
 import { MapStateChangeEvent, MapStateChangeEventType } from '../events/map-state-change-event';
 import { EntityPropertyChangeEvent } from '../events/entity-property-change-event';
-import { ChangeDetectionAccumulator, detectAccumulatedChanges, PropertySelector, identity } from './utility';
 import { RxEntityMap } from '../maps/rx-entity-map';
 
 /**
